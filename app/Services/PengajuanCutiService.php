@@ -1,0 +1,219 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Pegawai;
+use App\Models\PengajuanCuti;
+use App\Repositories\DokumenRepository;
+use App\Repositories\PegawaiRepository;
+use App\Repositories\PengajuanCutiRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+
+class PengajuanCutiService
+{
+    public function __construct(
+        private PengajuanCutiRepository $repo,
+        private DokumenRepository $dokumenRepo,
+        private PegawaiRepository $pegawaiRepo,
+        private ActivityLogService $logService,
+        private PdfService $pdfService,
+    ) {}
+
+    public function paginateForAdmin(int $perPage = 15, array $filters = []): LengthAwarePaginator
+    {
+        return $this->repo->paginateForAdmin($perPage, $filters);
+    }
+
+    public function paginateForPegawai(int $pegawaiId, int $perPage = 10, array $filters = []): LengthAwarePaginator
+    {
+        return $this->repo->paginateForPegawai($pegawaiId, $perPage, $filters);
+    }
+
+    public function findById(int $id): PengajuanCuti
+    {
+        return $this->repo->findById($id);
+    }
+
+    public function findByIdForPegawai(int $id, int $pegawaiId): PengajuanCuti
+    {
+        return $this->repo->findByIdForPegawai($id, $pegawaiId);
+    }
+
+    /**
+     * Proses pengajuan cuti baru sesuai SOP ASN
+     */
+    public function ajukan(Pegawai $pegawai, array $data): PengajuanCuti
+    {
+        return DB::transaction(function () use ($pegawai, $data) {
+            $jenisCuti = \App\Models\JenisCuti::findOrFail($data['jenis_cuti_id']);
+
+            // Hitung lama cuti (hari kerja, tidak termasuk weekend)
+            $lamaCuti = $this->hitungHariKerja($data['tanggal_mulai'], $data['tanggal_selesai']);
+
+            // Validasi bisnis
+            $this->validasiPengajuan($pegawai, $jenisCuti, $data, $lamaCuti);
+
+            // Generate nomor surat otomatis
+            $nomorSurat = $this->repo->generateNomorSurat();
+
+            // Simpan pengajuan
+            $pengajuan = $this->repo->create([
+                'pegawai_id'          => $pegawai->id,
+                'jenis_cuti_id'       => $data['jenis_cuti_id'],
+                'nomor_surat'         => $nomorSurat,
+                'tanggal_mulai'       => $data['tanggal_mulai'],
+                'tanggal_selesai'     => $data['tanggal_selesai'],
+                'lama_cuti'           => $lamaCuti,
+                'alasan_cuti'         => $data['alasan_cuti'],
+                'alamat_selama_cuti'  => $data['alamat_selama_cuti'],
+                'no_telp_selama_cuti' => $data['no_telp_selama_cuti'] ?? null,
+                'status'              => PengajuanCuti::STATUS_MENUNGGU,
+                'tanggal_pengajuan'   => now(),
+            ]);
+
+            // Generate PDF surat cuti otomatis
+            $pdfPath = $this->pdfService->generateSuratCuti($pengajuan->load(['pegawai.bidang', 'pegawai.jabatan', 'jenisCuti']));
+            $pengajuan->update(['pdf_surat' => $pdfPath]);
+
+            $this->logService->logCreate('pengajuan', "Mengajukan cuti: {$nomorSurat} - {$jenisCuti->nama_cuti} ({$lamaCuti} hari)", $pengajuan);
+
+            return $pengajuan->fresh();
+        });
+    }
+
+    /**
+     * Admin: verifikasi dan ubah status pengajuan
+     */
+    public function verifikasi(PengajuanCuti $pengajuan, string $status, ?string $catatan): PengajuanCuti
+    {
+        return DB::transaction(function () use ($pengajuan, $status, $catatan) {
+            if (!in_array($status, [PengajuanCuti::STATUS_DISETUJUI, PengajuanCuti::STATUS_DITOLAK])) {
+                throw ValidationException::withMessages(['status' => 'Status tidak valid.']);
+            }
+
+            if ($pengajuan->status !== PengajuanCuti::STATUS_MENUNGGU) {
+                throw ValidationException::withMessages(['status' => 'Pengajuan ini sudah diverifikasi sebelumnya.']);
+            }
+
+            // Jika disetujui dan jenis cuti memotong kuota, kurangi sisa cuti
+            if ($status === PengajuanCuti::STATUS_DISETUJUI) {
+                $jenisCuti = $pengajuan->jenisCuti;
+                if ($jenisCuti->potong_kuota) {
+                    $pegawai = $pengajuan->pegawai;
+                    if ($pegawai->sisa_cuti_tahunan < $pengajuan->lama_cuti) {
+                        throw ValidationException::withMessages(['cuti' => 'Sisa cuti tahunan pegawai tidak mencukupi.']);
+                    }
+                    $this->pegawaiRepo->kurangiSisaCuti($pegawai, $pengajuan->lama_cuti);
+                }
+            }
+
+            $pengajuan = $this->repo->updateStatus($pengajuan, $status, $catatan, Auth::id());
+
+            $label = $status === PengajuanCuti::STATUS_DISETUJUI ? 'Disetujui' : 'Ditolak';
+            $this->logService->logStatus('pengajuan', "Status pengajuan {$pengajuan->nomor_surat} diubah menjadi: {$label}", $pengajuan);
+
+            return $pengajuan;
+        });
+    }
+
+    /**
+     * Hitung hari kerja (Senin - Jumat)
+     */
+    public function hitungHariKerja(string $mulai, string $selesai): int
+    {
+        $start  = \Carbon\Carbon::parse($mulai);
+        $end    = \Carbon\Carbon::parse($selesai);
+        $count  = 0;
+
+        $current = $start->copy();
+        while ($current->lte($end)) {
+            if ($current->isWeekday()) {
+                $count++;
+            }
+            $current->addDay();
+        }
+
+        return $count;
+    }
+
+    /**
+     * Validasi logika bisnis pengajuan cuti
+     */
+    private function validasiPengajuan(Pegawai $pegawai, $jenisCuti, array $data, int $lamaCuti): void
+    {
+        $mulai   = \Carbon\Carbon::parse($data['tanggal_mulai']);
+        $selesai = \Carbon\Carbon::parse($data['tanggal_selesai']);
+
+        // Tanggal mulai harus sebelum atau sama dengan tanggal selesai
+        if ($mulai->gt($selesai)) {
+            throw ValidationException::withMessages(['tanggal_selesai' => 'Tanggal selesai harus setelah tanggal mulai.']);
+        }
+
+        // Tanggal mulai tidak boleh di masa lalu
+        if ($mulai->lt(now()->startOfDay())) {
+            throw ValidationException::withMessages(['tanggal_mulai' => 'Tanggal mulai tidak boleh di masa lalu.']);
+        }
+
+        // Validasi maksimum hari
+        if ($jenisCuti->maks_hari && $lamaCuti > $jenisCuti->maks_hari) {
+            throw ValidationException::withMessages(['tanggal_selesai' => "Maksimum cuti {$jenisCuti->nama_cuti} adalah {$jenisCuti->maks_hari} hari kerja."]);
+        }
+
+        // Validasi sisa cuti tahunan jika memotong kuota
+        if ($jenisCuti->potong_kuota && $pegawai->sisa_cuti_tahunan < $lamaCuti) {
+            throw ValidationException::withMessages(['lama_cuti' => "Sisa cuti tahunan Anda ({$pegawai->sisa_cuti_tahunan} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);
+        }
+
+        // Cek tidak ada pengajuan aktif yang bertabrakan
+        $bertabrakan = $pegawai->pengajuanCuti()
+            ->where('status', '!=', PengajuanCuti::STATUS_DITOLAK)
+            ->where(function ($q) use ($data) {
+                $q->whereBetween('tanggal_mulai', [$data['tanggal_mulai'], $data['tanggal_selesai']])
+                  ->orWhereBetween('tanggal_selesai', [$data['tanggal_mulai'], $data['tanggal_selesai']])
+                  ->orWhere(function ($q2) use ($data) {
+                      $q2->where('tanggal_mulai', '<=', $data['tanggal_mulai'])
+                         ->where('tanggal_selesai', '>=', $data['tanggal_selesai']);
+                  });
+            })
+            ->exists();
+
+        if ($bertabrakan) {
+            throw ValidationException::withMessages(['tanggal_mulai' => 'Terdapat pengajuan cuti lain pada periode yang sama.']);
+        }
+    }
+
+    public function getStatistik(): array
+    {
+        return [
+            'total_menunggu'  => $this->repo->countByStatus(PengajuanCuti::STATUS_MENUNGGU),
+            'total_disetujui' => $this->repo->countByStatus(PengajuanCuti::STATUS_DISETUJUI),
+            'total_ditolak'   => $this->repo->countByStatus(PengajuanCuti::STATUS_DITOLAK),
+            'total_tahun_ini' => $this->repo->countTahunIni(),
+        ];
+    }
+
+    public function statistikBulanan(int $tahun): array
+    {
+        $raw    = $this->repo->statistikBulanan($tahun);
+        $result = array_fill(1, 12, ['menunggu' => 0, 'disetujui' => 0, 'ditolak' => 0]);
+
+        foreach ($raw as $item) {
+            $result[$item->bulan][$item->status] = $item->total;
+        }
+
+        return $result;
+    }
+
+    public function statistikPerBidang(int $tahun): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->repo->statistikPerBidang($tahun);
+    }
+
+    public function getForExport(array $filters = []): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->repo->getForExport($filters);
+    }
+}
