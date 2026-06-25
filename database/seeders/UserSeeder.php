@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
         // ==========================
         User::updateOrCreate(
             [
-                'nip' => ' ',
+                'nip' => '196904101995031002',
             ],
             [
                 'name'      => 'Ir. Bani Ispriyanto M.M.',

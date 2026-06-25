@@ -12,6 +12,7 @@ Route::get('/', fn() => redirect()->route('login'));
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])

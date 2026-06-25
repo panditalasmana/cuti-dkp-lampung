@@ -395,7 +395,7 @@ III. ALASAN CUTI
 
 <td style="height:60px">
 
-{{ $pengajuan->alasan }}
+{{ $pengajuan->alasan_cuti }}
 
 </td>
 
@@ -657,7 +657,7 @@ Telepon
 
 <td>
 
-{{ $pengajuan->no_hp ?? '-' }}
+{{ $pengajuan->no_telp_selama_cuti ?? '-' }}
 
 </td>
 

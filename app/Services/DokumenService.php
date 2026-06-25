@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Dokumen;
 use App\Models\PengajuanCuti;
 use App\Repositories\DokumenRepository;
+use App\Repositories\PegawaiRepository;
 use App\Repositories\PengajuanCutiRepository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,7 @@ class DokumenService
     public function __construct(
         private DokumenRepository $repo,
         private PengajuanCutiRepository $pengajuanRepo,
+        private PegawaiRepository $pegawaiRepo,
         private ActivityLogService $logService,
     ) {}
 
@@ -55,6 +57,16 @@ class DokumenService
                 'ukuran_file'       => $file->getSize(),
                 'keterangan'        => $keterangan,
             ]);
+
+            // Jika jenis cuti memotong kuota, kurangi sisa cuti
+            $jenisCuti = $pengajuan->jenisCuti;
+            if ($jenisCuti->potong_kuota) {
+                $pegawai = $pengajuan->pegawai;
+                if ($pegawai->sisa_cuti_tahunan < $pengajuan->lama_cuti) {
+                    throw ValidationException::withMessages(['file' => 'Sisa cuti tahunan pegawai tidak mencukupi untuk pengajuan ini.']);
+                }
+                $this->pegawaiRepo->kurangiSisaCuti($pegawai, $pengajuan->lama_cuti);
+            }
 
             // Update status pengajuan menjadi Disetujui
             $this->pengajuanRepo->updateStatus(

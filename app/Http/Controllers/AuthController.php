@@ -20,6 +20,14 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function showAdminLogin(): View|RedirectResponse
+    {
+        if (Auth::check()) {
+            return $this->redirectByRole();
+        }
+        return view('auth.admin-login');
+    }
+
     public function login(Request $request): RedirectResponse
     {
         $request->validate([
@@ -42,11 +50,31 @@ class AuthController extends Controller
                 ->withErrors(['nip' => 'NIP atau password salah, atau akun tidak aktif.']);
         }
 
+        $user = Auth::user();
+        $loginType = $request->input('login_type', 'pegawai');
+
+        if ($loginType === 'admin' && $user->role !== 'admin') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('admin.login')
+                ->withInput(['nip' => $request->nip])
+                ->withErrors(['nip' => 'Halaman ini khusus untuk login Administrator. Pegawai silakan login di halaman pegawai.']);
+        }
+
+        if ($loginType === 'pegawai' && $user->role === 'admin') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')
+                ->withInput(['nip' => $request->nip])
+                ->withErrors(['nip' => 'Administrator hanya diperbolehkan login melalui halaman login admin.']);
+        }
+
         $request->session()->regenerate();
 
-
         // Update last login
-        Auth::user()->update(['last_login_at' => now()]);
+        $user->update(['last_login_at' => now()]);
 
         $this->logService->logLogin($request->nip);
 

@@ -50,7 +50,7 @@ class JenisCutiSeeder extends Seeder
                 'kode_cuti'     => 'CAK',
                 'nama_cuti'     => 'Cuti Alasan Keluarga Penting',
                 'maks_hari'     => null,
-                'potong_kuota'  => false,
+                'potong_kuota'  => true,
                 'perlu_lampiran'=> false,
                 'keterangan'    => 'Cuti karena anggota keluarga meninggal, pernikahan, dll.',
                 'dasar_hukum'   => 'Pasal 11 PP No. 11 Tahun 2017',

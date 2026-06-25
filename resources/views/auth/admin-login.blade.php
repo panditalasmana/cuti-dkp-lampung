@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — Cuti DKP Lampung</title>
+    <title>Login Administrator — Cuti DKP Lampung</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
             <div class="login-brand-icon">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 100px; height: 100px; object-fit: contain;">
             </div>
-            <h1 class="login-title">CUTI DKP LAMPUNG</h1>
+            <h1 class="login-title">ADMIN PANEL</h1>
             <p class="login-subtitle">Sistem Informasi Pengajuan Cuti Pegawai</p>
             <div class="login-divider"></div>
             <p class="login-desc">
@@ -48,8 +48,8 @@
                 <p class="text-muted small">DKP Provinsi Lampung</p>
             </div>
 
-            <h2 class="login-heading">Selamat Datang</h2>
-            <p class="login-sub-heading">Masuk menggunakan NIP dan password Anda</p>
+            <h2 class="login-heading">Login Administrator</h2>
+            <p class="login-sub-heading">Masuk menggunakan NIP dan password admin Anda</p>
 
             @if(session('success'))
                 <div class="alert alert-success">
@@ -57,13 +57,20 @@
                 </div>
             @endif
 
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('login.post') }}" autocomplete="off">
                 @csrf
-                <input type="hidden" name="login_type" value="pegawai">
+                <input type="hidden" name="login_type" value="admin">
 
                 <div class="form-group mb-4">
                     <label class="form-label fw-semibold" for="nip">
-                        <i class="bi bi-person-badge me-1"></i>NIP (Nomor Induk Pegawai)
+                        <i class="bi bi-person-badge me-1"></i>NIP Administrator
                     </label>
                     <input
                         type="text"
@@ -77,9 +84,6 @@
                         autofocus
                         required
                     >
-                    @error('nip')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
                 </div>
 
                 <div class="form-group mb-4">
@@ -98,9 +102,6 @@
                         <button type="button" class="btn-toggle-password" id="togglePassword">
                             <i class="bi bi-eye" id="togglePasswordIcon"></i>
                         </button>
-                        @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
 
@@ -109,22 +110,21 @@
                     <label class="form-check-label" for="remember">Ingat saya di perangkat ini</label>
                 </div>
 
-                <button type="submit" class="btn btn-login w-100">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem
+                <button type="submit" class="btn btn-login w-100 mb-3">
+                    <i class="bi bi-shield-lock-fill me-2"></i>Masuk Ke Admin Panel
                 </button>
 
-                <div class="text-center mt-3">
-                    <a href="{{ route('admin.login') }}" class="text-decoration-none text-muted small" style="transition: all 0.2s; opacity: 0.8;" onmouseover="this.style.opacity='1'; this.style.color='var(--primary)'" onmouseout="this.style.opacity='0.8'; this.style.color='#6c757d'">
-                        <i class="bi bi-shield-lock-fill me-1"></i>Masuk sebagai Admin
+                <div class="text-center">
+                    <a href="javascript:void(0)" id="btnAutofillAdmin" class="text-decoration-none text-muted small d-block mb-2" style="font-weight: 500;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#6c757d'">
+                        <i class="bi bi-magic me-1"></i>Gunakan Akun Demo Admin
+                    </a>
+                    <a href="{{ route('login') }}" class="text-decoration-none text-primary small d-block mt-3" style="font-weight: 500;">
+                        <i class="bi bi-arrow-left me-1"></i>Masuk sebagai Pegawai
                     </a>
                 </div>
             </form>
 
-            <p class="login-footer-text">
-                Lupa password? Hubungi Administrator DKP Lampung.
-            </p>
-
-            <p class="text-center text-muted" style="font-size: 0.75rem; margin-top: 2rem;">
+            <p class="text-center text-muted" style="font-size: 0.75rem; margin-top: 3rem;">
                 © {{ date('Y') }} Dinas Kelautan dan Perikanan Provinsi Lampung<br>
                 Cuti DKP Lampung v1.0 — Hak Cipta Dilindungi
             </p>
@@ -144,6 +144,20 @@
             pwd.type  = 'password';
             icon.className = 'bi bi-eye';
         }
+    });
+
+    document.getElementById('btnAutofillAdmin').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('nip').value = '198501012010011001';
+        document.getElementById('password').value = 'Admin@DKP2026';
+        
+        const loginBtn = document.querySelector('.btn-login');
+        loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+        loginBtn.disabled = true;
+        
+        setTimeout(() => {
+            loginBtn.closest('form').submit();
+        }, 400);
     });
 </script>
 </body>

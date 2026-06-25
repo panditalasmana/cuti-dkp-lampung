@@ -1,5 +1,5 @@
 /**
- * SIPENCUTI — Global JavaScript
+ * Cuti DKP Lampung — Global JavaScript
  * DKP Provinsi Lampung
  */
 

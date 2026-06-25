@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'SIPENCUTI') — DKP Provinsi Lampung</title>
+    <title>@yield('title', 'Cuti DKP Lampung') — DKP Provinsi Lampung</title>
 
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,12 +32,12 @@
 <nav class="sidebar" id="sidebar">
     <!-- Logo -->
     <div class="sidebar-brand">
-        <div class="brand-logo">
-            <i class="bi bi-water"></i>
+        <div class="brand-logo" style="background: transparent;">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         <div class="brand-text">
-            <span class="brand-title">SIPENCUTI</span>
-            <span class="brand-sub">DKP Prov. Lampung</span>
+            <span class="brand-title">Cuti DKP Lampung</span>
+            <span class="brand-sub">Dinas Kelautan & Perikanan</span>
         </div>
         <button class="sidebar-close d-lg-none" id="sidebarClose">
             <i class="bi bi-x-lg"></i>
@@ -238,7 +238,7 @@
 
     <!-- Footer -->
     <footer class="page-footer">
-        <span>© {{ date('Y') }} Dinas Kelautan dan Perikanan Provinsi Lampung. SIPENCUTI v1.0</span>
+        <span>© {{ date('Y') }} Dinas Kelautan dan Perikanan Provinsi Lampung. Cuti DKP Lampung v1.0</span>
     </footer>
 </div>
 

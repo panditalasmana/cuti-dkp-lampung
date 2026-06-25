@@ -210,7 +210,21 @@
                         @csrf
                         <div class="mb-3">
                             <label class="form-label fw-semibold">File Scan <span class="text-danger">*</span></label>
-                            <input type="file" name="file_scan" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
+                            
+                            <!-- Tombol Kamera Scan Baru -->
+                            <button type="button" class="btn btn-outline-info btn-sm w-100 mb-2" id="btnBukaKamera">
+                                <i class="bi bi-camera me-1"></i>Ambil dari Kamera
+                            </button>
+                            
+                            <!-- Thumbnail Preview dari Tangkapan Kamera -->
+                            <div id="previewKameraContainer" class="d-none mb-2 text-center p-2 border rounded bg-light position-relative">
+                                <img id="previewKameraImg" style="max-height: 120px; border-radius: 6px;" alt="preview scan">
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" id="btnHapusPreviewKamera" title="Hapus foto">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+
+                            <input type="file" name="file_scan" id="fileScanInput" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
                             <div class="form-text">Format: PDF, JPG, PNG. Maks. 5MB.</div>
                         </div>
                         <div class="mb-3">
@@ -242,6 +256,52 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Kamera Scan -->
+<div class="modal fade" id="modalKamera" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-camera me-2"></i>Kamera Scan Bukti Cuti</h5>
+                <button type="button" class="btn-close" id="btnTutupModalKamera" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Dropdown Pilih Kamera (jika ada lebih dari 1) -->
+                <div class="mb-3 d-none" id="selectKameraContainer">
+                    <label class="form-label small fw-semibold">Pilih Kamera Devices</label>
+                    <select class="form-select form-select-sm" id="selectKameraDevice"></select>
+                </div>
+
+                <!-- Video Stream Area -->
+                <div class="position-relative border rounded bg-dark overflow-hidden d-flex align-items-center justify-content-center" style="min-height: 350px;">
+                    <!-- Video Live Feed -->
+                    <video id="videoFeed" class="w-100 h-auto" autoplay playsinline style="object-fit: cover;"></video>
+                    
+                    <!-- Captured Canvas (tersembunyi) -->
+                    <canvas id="canvasCapture" class="d-none"></canvas>
+
+                    <!-- Preview Hasil Foto -->
+                    <img id="capturePreview" class="w-100 h-auto d-none" style="object-fit: cover;" alt="preview capture">
+
+                    <!-- Loading overlay -->
+                    <div id="cameraLoading" class="position-absolute d-flex flex-column align-items-center justify-content-center text-white bg-dark bg-opacity-75 w-100 h-100 d-none">
+                        <div class="spinner-border text-primary mb-2" role="status"></div>
+                        <span>Mengaktifkan kamera...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelKamera">Batal</button>
+                <div class="d-flex gap-2">
+                    <!-- Tombol Aksi Kamera -->
+                    <button type="button" class="btn btn-warning d-none" id="btnFotoUlang"><i class="bi bi-arrow-counterclockwise me-1"></i>Foto Ulang</button>
+                    <button type="button" class="btn btn-success" id="btnAmbilFoto"><i class="bi bi-camera-fill me-1"></i>Ambil Foto</button>
+                    <button type="button" class="btn btn-primary d-none" id="btnGunakanFoto"><i class="bi bi-check-circle me-1"></i>Gunakan Foto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -267,5 +327,176 @@ function konfirmasiVerifikasi(status) {
         }
     });
 }
+
+// Logika Kamera Scan
+let mediaStream = null;
+let currentDeviceId = null;
+const modalKamera = new bootstrap.Modal(document.getElementById('modalKamera'));
+
+const videoFeed = document.getElementById('videoFeed');
+const canvasCapture = document.getElementById('canvasCapture');
+const capturePreview = document.getElementById('capturePreview');
+const selectKameraDevice = document.getElementById('selectKameraDevice');
+const selectKameraContainer = document.getElementById('selectKameraContainer');
+const cameraLoading = document.getElementById('cameraLoading');
+
+const btnBukaKamera = document.getElementById('btnBukaKamera');
+const btnTutupModalKamera = document.getElementById('btnTutupModalKamera');
+const btnCancelKamera = document.getElementById('btnCancelKamera');
+const btnAmbilFoto = document.getElementById('btnAmbilFoto');
+const btnFotoUlang = document.getElementById('btnFotoUlang');
+const btnGunakanFoto = document.getElementById('btnGunakanFoto');
+
+const fileScanInput = document.getElementById('fileScanInput');
+const previewKameraContainer = document.getElementById('previewKameraContainer');
+const previewKameraImg = document.getElementById('previewKameraImg');
+const btnHapusPreviewKamera = document.getElementById('btnHapusPreviewKamera');
+
+let capturedBlob = null;
+
+// Membuka modal dan menginisiasi kamera
+btnBukaKamera.addEventListener('click', async () => {
+    modalKamera.show();
+    resetStateKamera();
+    await inisialisasiKamera();
+});
+
+// Tutup kamera ketika modal ditutup
+document.getElementById('modalKamera').addEventListener('hidden.bs.modal', stopKameraStream);
+
+async function inisialisasiKamera(deviceId = null) {
+    cameraLoading.classList.remove('d-none');
+    stopKameraStream();
+
+    const constraints = {
+        video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'environment' }
+    };
+
+    try {
+        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoFeed.srcObject = mediaStream;
+        
+        // Memuat daftar kamera pendukung
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        
+        selectKameraDevice.innerHTML = '';
+        if (videoDevices.length > 1) {
+            selectKameraContainer.classList.remove('d-none');
+            videoDevices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Kamera ${selectKameraDevice.length + 1}`;
+                if (deviceId && device.deviceId === deviceId) {
+                    option.selected = true;
+                } else if (!deviceId && mediaStream.getVideoTracks()[0].getSettings().deviceId === device.deviceId) {
+                    option.selected = true;
+                }
+                selectKameraDevice.appendChild(option);
+            });
+        } else {
+            selectKameraContainer.classList.add('d-none');
+        }
+    } catch (error) {
+        console.error("Gagal membuka kamera:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Akses Kamera',
+            text: 'Pastikan Anda telah memberikan izin akses kamera ke browser ini.'
+        });
+        modalKamera.hide();
+    } finally {
+        cameraLoading.classList.add('d-none');
+    }
+}
+
+// Berpindah kamera jika dipilih dari dropdown
+selectKameraDevice.addEventListener('change', (e) => {
+    inisialisasiKamera(e.target.value);
+});
+
+function stopKameraStream() {
+    if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+    }
+}
+
+function resetStateKamera() {
+    videoFeed.classList.remove('d-none');
+    capturePreview.classList.add('d-none');
+    btnAmbilFoto.classList.remove('d-none');
+    btnFotoUlang.classList.add('d-none');
+    btnGunakanFoto.classList.add('d-none');
+    capturedBlob = null;
+}
+
+// Tombol Ambil Foto
+btnAmbilFoto.addEventListener('click', () => {
+    const videoWidth = videoFeed.videoWidth || 640;
+    const videoHeight = videoFeed.videoHeight || 480;
+
+    canvasCapture.width = videoWidth;
+    canvasCapture.height = videoHeight;
+
+    const ctx = canvasCapture.getContext('2d');
+    // Mirror handling jika kamera menghadap pengguna
+    const settings = mediaStream.getVideoTracks()[0].getSettings();
+    if (settings.facingMode === 'user') {
+        ctx.translate(videoWidth, 0);
+        ctx.scale(-1, 1);
+    }
+    ctx.drawImage(videoFeed, 0, 0, videoWidth, videoHeight);
+
+    canvasCapture.toBlob((blob) => {
+        capturedBlob = blob;
+        const imgUrl = URL.createObjectURL(blob);
+        capturePreview.src = imgUrl;
+        
+        videoFeed.classList.add('d-none');
+        capturePreview.classList.remove('d-none');
+
+        btnAmbilFoto.classList.add('d-none');
+        btnFotoUlang.classList.remove('d-none');
+        btnGunakanFoto.classList.remove('d-none');
+    }, 'image/jpeg', 0.9);
+});
+
+// Tombol Foto Ulang
+btnFotoUlang.addEventListener('click', () => {
+    resetStateKamera();
+});
+
+// Tombol Gunakan Foto
+btnGunakanFoto.addEventListener('click', () => {
+    if (!capturedBlob) return;
+
+    // Convert blob to File object
+    const file = new File([capturedBlob], "scan_kamera.jpg", { type: "image/jpeg" });
+    
+    // Injeksi file ke input file HTML menggunakan DataTransfer API
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    fileScanInput.files = dataTransfer.files;
+
+    // Tampilkan thumbnail preview di form utama
+    previewKameraImg.src = URL.createObjectURL(capturedBlob);
+    previewKameraContainer.classList.remove('d-none');
+    
+    // Hapus tanda required jika sebelumnya ada
+    fileScanInput.required = false;
+
+    modalKamera.hide();
+    stopKameraStream();
+});
+
+// Tombol Hapus Preview di form utama
+btnHapusPreviewKamera.addEventListener('click', () => {
+    fileScanInput.value = '';
+    fileScanInput.required = true;
+    previewKameraContainer.classList.add('d-none');
+    previewKameraImg.src = '';
+    capturedBlob = null;
+});
 </script>
 @endpush

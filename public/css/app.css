@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   SIPENCUTI — Ocean Blue Government Theme
+   Cuti DKP Lampung — Ocean Blue Government Theme
    DKP Provinsi Lampung
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -603,6 +603,11 @@ a:hover { color: var(--primary-dark); }
     font-size: .875rem;
     transition: var(--transition);
     color: var(--text);
+}
+
+.form-select {
+    padding-right: 36px;
+    min-width: 100px;
 }
 
 .form-control:focus, .form-select:focus {
