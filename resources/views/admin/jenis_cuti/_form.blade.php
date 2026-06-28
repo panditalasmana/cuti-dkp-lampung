@@ -18,37 +18,25 @@
         @error('nama_cuti')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
-    <div class="col-sm-4">
-        <label class="form-label fw-semibold">Maksimum Hari</label>
-        <input type="number" name="maks_hari"
-               class="form-control @error('maks_hari') is-invalid @enderror"
-               value="{{ old('maks_hari', $jenisCuti->maks_hari ?? '') }}"
-               placeholder="Kosongkan = tidak terbatas" min="1">
-        @error('maks_hari')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        <div class="form-text">Kosongkan jika tidak ada batas maksimum hari.</div>
-    </div>
-
-    <div class="col-sm-4 d-flex align-items-center pt-3">
+    <div class="col-sm-6 d-flex align-items-center pt-3">
         <div class="form-check form-switch mt-3">
-            <input class="form-check-input" type="checkbox" name="potong_kuota"
-                   id="potongKuota" value="1"
-                   {{ old('potong_kuota', $jenisCuti->potong_kuota ?? true) ? 'checked' : '' }}>
+            <input class="form-check-input" type="checkbox" id="potongKuota" checked disabled>
+            <input type="hidden" name="potong_kuota" value="1">
             <label class="form-check-label fw-semibold" for="potongKuota">
                 Memotong Kuota Cuti Tahunan
             </label>
-            <div class="form-text">Centang jika jenis cuti ini mengurangi jatah cuti tahunan.</div>
+            <div class="form-text">Mengurangi jatah cuti tahunan (Wajib Ya).</div>
         </div>
     </div>
 
-    <div class="col-sm-4 d-flex align-items-center pt-3">
+    <div class="col-sm-6 d-flex align-items-center pt-3">
         <div class="form-check form-switch mt-3">
-            <input class="form-check-input" type="checkbox" name="perlu_lampiran"
-                   id="perluLampiran" value="1"
-                   {{ old('perlu_lampiran', $jenisCuti->perlu_lampiran ?? false) ? 'checked' : '' }}>
+            <input class="form-check-input" type="checkbox" id="perluLampiran" checked disabled>
+            <input type="hidden" name="perlu_lampiran" value="1">
             <label class="form-check-label fw-semibold" for="perluLampiran">
                 Wajib Upload Lampiran
             </label>
-            <div class="form-text">Contoh: surat dokter untuk cuti sakit.</div>
+            <div class="form-text">Lampiran dokumen pendukung wajib dilampirkan (Wajib Ya).</div>
         </div>
     </div>
 

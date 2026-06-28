@@ -45,7 +45,6 @@ class ExportService
             // Header kolom
             fputcsv($handle, [
                 'No',
-                'Nomor Surat',
                 'NIP',
                 'Nama Pegawai',
                 'Bidang',
@@ -64,7 +63,6 @@ class ExportService
             foreach ($data as $index => $item) {
                 fputcsv($handle, [
                     $index + 1,
-                    $item->nomor_surat,
                     $item->pegawai->nip ?? '-',
                     $item->pegawai->nama_lengkap ?? '-',
                     $item->pegawai->bidang->nama_bidang ?? '-',

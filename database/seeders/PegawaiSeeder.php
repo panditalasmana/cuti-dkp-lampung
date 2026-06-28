@@ -23,6 +23,8 @@ class PegawaiSeeder extends Seeder
 
         // Hapus data lama dengan aman
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('dokumen')->truncate();
+        DB::table('pengajuan_cuti')->truncate();
         Pegawai::truncate();
         User::where('role', 'pegawai')->forceDelete();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

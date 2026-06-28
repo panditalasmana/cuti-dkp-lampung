@@ -46,7 +46,6 @@
                         <th>No</th>
                         <th>Kode</th>
                         <th>Nama Cuti</th>
-                        <th>Maks. Hari</th>
                         <th>Potong Kuota</th>
                         <th>Perlu Lampiran</th>
                         <th>Digunakan</th>
@@ -65,13 +64,6 @@
                                 <div class="fw-semibold">{{ $item->nama_cuti }}</div>
                                 @if($item->dasar_hukum)
                                     <small class="text-muted">{{ Str::limit($item->dasar_hukum, 50) }}</small>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                @if($item->maks_hari)
-                                    <span class="badge bg-info text-dark">{{ $item->maks_hari }} hari</span>
-                                @else
-                                    <span class="text-muted small">Tidak terbatas</span>
                                 @endif
                             </td>
                             <td class="text-center">

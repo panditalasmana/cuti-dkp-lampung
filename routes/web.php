@@ -4,9 +4,21 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Pegawai;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
-// ─── Root Redirect ─────────────────────────────────────────────────────────────
+// ─── Root Redirect & Home Fallback ──────────────────────────────────────────────
 Route::get('/', fn() => redirect()->route('login'));
+
+Route::get('/home', function () {
+    if (Auth::check()) {
+        return match (Auth::user()->role) {
+            'admin'   => redirect()->route('admin.dashboard'),
+            'pegawai' => redirect()->route('pegawai.dashboard'),
+            default   => redirect()->route('login'),
+        };
+    }
+    return redirect()->route('login');
+})->name('home');
 
 // ─── Authentication ────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {

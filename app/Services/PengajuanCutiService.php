@@ -59,6 +59,29 @@ class PengajuanCutiService
             // Generate nomor surat otomatis
             $nomorSurat = $this->repo->generateNomorSurat();
 
+            // Default fallbacks
+            $atasanNama = 'A. FAISAL, A.Pi.';
+            $atasanNip = '197402031999031006';
+            $atasanJabatan = 'Sekretaris Dinas';
+
+            if (isset($data['atasan_langsung_select']) && str_contains($data['atasan_langsung_select'], '|')) {
+                $atasanParts = explode('|', $data['atasan_langsung_select']);
+                $atasanNama = $atasanParts[0] ?? $atasanNama;
+                $atasanNip = $atasanParts[1] ?? $atasanNip;
+                $atasanJabatan = $atasanParts[2] ?? $atasanJabatan;
+            }
+
+            $pejabatNama = 'Ir. BANI ISPRIYANTO, M.M.';
+            $pejabatNip = '196904101995031002';
+            $pejabatJabatan = 'Kepala Dinas';
+
+            if (isset($data['pejabat_wenang_select']) && str_contains($data['pejabat_wenang_select'], '|')) {
+                $pejabatParts = explode('|', $data['pejabat_wenang_select']);
+                $pejabatNama = $pejabatParts[0] ?? $pejabatNama;
+                $pejabatNip = $pejabatParts[1] ?? $pejabatNip;
+                $pejabatJabatan = $pejabatParts[2] ?? $pejabatJabatan;
+            }
+
             // Simpan pengajuan
             $pengajuan = $this->repo->create([
                 'pegawai_id'          => $pegawai->id,
@@ -72,6 +95,12 @@ class PengajuanCutiService
                 'no_telp_selama_cuti' => $data['no_telp_selama_cuti'] ?? null,
                 'status'              => PengajuanCuti::STATUS_MENUNGGU,
                 'tanggal_pengajuan'   => now(),
+                'atasan_nama'         => $atasanNama,
+                'atasan_nip'          => $atasanNip,
+                'atasan_jabatan'      => $atasanJabatan,
+                'pejabat_nama'        => $pejabatNama,
+                'pejabat_nip'         => $pejabatNip,
+                'pejabat_jabatan'     => $pejabatJabatan,
             ]);
 
             // Generate PDF surat cuti otomatis
@@ -155,11 +184,6 @@ class PengajuanCutiService
         // Tanggal mulai tidak boleh di masa lalu
         if ($mulai->lt(now()->startOfDay())) {
             throw ValidationException::withMessages(['tanggal_mulai' => 'Tanggal mulai tidak boleh di masa lalu.']);
-        }
-
-        // Validasi maksimum hari
-        if ($jenisCuti->maks_hari && $lamaCuti > $jenisCuti->maks_hari) {
-            throw ValidationException::withMessages(['tanggal_selesai' => "Maksimum cuti {$jenisCuti->nama_cuti} adalah {$jenisCuti->maks_hari} hari kerja."]);
         }
 
         // Validasi sisa cuti tahunan jika memotong kuota

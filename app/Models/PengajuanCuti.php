@@ -31,6 +31,12 @@ class PengajuanCuti extends Model
         'tanggal_verifikasi',
         'diverifikasi_oleh',
         'pdf_surat',
+        'atasan_nama',
+        'atasan_nip',
+        'atasan_jabatan',
+        'pejabat_nama',
+        'pejabat_nip',
+        'pejabat_jabatan',
     ];
 
     protected $casts = [

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Detail Pengajuan — ' . $pengajuan->nomor_surat)
+@section('title', 'Detail Pengajuan — ' . $pengajuan->tanggal_pengajuan->format('d/m/Y'))
 
 @section('breadcrumb')
     <a href="{{ route('admin.dashboard') }}" class="breadcrumb-item">Dashboard</a>
@@ -13,7 +13,7 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">Detail Pengajuan</h1>
-        <p class="page-subtitle">Nomor: {{ $pengajuan->nomor_surat }}</p>
+        <p class="page-subtitle">Tanggal Pengajuan: {{ $pengajuan->tanggal_pengajuan->isoFormat('D MMMM Y') }}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ route('admin.pengajuan.preview-pdf', $pengajuan) }}" class="btn btn-outline-danger" target="_blank">
@@ -36,8 +36,8 @@
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-sm-6">
-                        <label class="detail-label">Nomor Surat</label>
-                        <div class="detail-value"><code>{{ $pengajuan->nomor_surat }}</code></div>
+                        <label class="detail-label">Tanggal Pengajuan</label>
+                        <div class="detail-value">{{ $pengajuan->tanggal_pengajuan->isoFormat('D MMMM Y') }}</div>
                     </div>
                     <div class="col-sm-6">
                         <label class="detail-label">Jenis Cuti</label>
@@ -115,6 +115,10 @@
                     <div class="col-sm-6">
                         <label class="detail-label">Bidang</label>
                         <div class="detail-value">{{ $pengajuan->pegawai->bidang->nama_bidang ?? '-' }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="detail-label">Sub Bagian / Seksi</label>
+                        <div class="detail-value">{{ $pengajuan->pegawai->sub_bagian ?? '-' }}</div>
                     </div>
                     <div class="col-sm-6">
                         <label class="detail-label">Pangkat/Golongan</label>
@@ -205,7 +209,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Upload scan/foto formulir cuti yang sudah ditandatangani Kepala Bidang. Status akan otomatis berubah menjadi <strong>Disetujui</strong>.</p>
+                    <p class="text-muted small mb-3">Upload scan/foto formulir cuti yang sudah ditandatangani Kepala Bidang.</p>
                     <form method="POST" action="{{ route('admin.pengajuan.upload-scan', $pengajuan) }}" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
@@ -232,7 +236,7 @@
                             <input type="text" name="keterangan" class="form-control" placeholder="Keterangan tambahan...">
                         </div>
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-upload me-1"></i>Upload & Setujui
+                            <i class="bi bi-upload me-1"></i>Upload Scan
                         </button>
                     </form>
                 </div>
@@ -247,11 +251,6 @@
             <div class="card-body">
                 <p class="text-muted small mb-1"><strong>{{ $pengajuan->jenisCuti->nama_cuti }}</strong></p>
                 <p class="text-muted small">{{ $pengajuan->jenisCuti->dasar_hukum ?? 'Tidak ada keterangan dasar hukum.' }}</p>
-                @if($pengajuan->jenisCuti->maks_hari)
-                    <div class="alert alert-info p-2 small">
-                        <i class="bi bi-info-circle me-1"></i>Maks. {{ $pengajuan->jenisCuti->maks_hari }} hari kerja
-                    </div>
-                @endif
             </div>
         </div>
     </div>

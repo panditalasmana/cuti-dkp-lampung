@@ -69,7 +69,7 @@ class PengajuanController extends Controller
         );
 
         return redirect()->route('admin.pengajuan.show', $pengajuan)
-                         ->with('success', 'Scan surat berhasil diunggah dan status diperbarui menjadi Disetujui.');
+                         ->with('success', 'Scan surat berhasil diunggah.');
     }
 
     public function previewPdf(PengajuanCuti $pengajuan): Response

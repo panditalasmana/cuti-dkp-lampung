@@ -78,7 +78,7 @@
         <thead>
             <tr>
                 <th width="3%">No</th>
-                <th width="15%">Nomor Surat</th>
+                <th width="12%">Tanggal Pengajuan</th>
                 <th width="12%">NIP</th>
                 <th width="15%">Nama Pegawai</th>
                 <th width="12%">Bidang</th>
@@ -92,10 +92,15 @@
             @forelse($pengajuan as $index => $item)
                 <tr>
                     <td class="center">{{ $index + 1 }}</td>
-                    <td>{{ $item->nomor_surat }}</td>
+                    <td>{{ $item->tanggal_pengajuan?->format('d/m/Y') ?? '-' }}</td>
                     <td>{{ $item->pegawai->nip ?? '-' }}</td>
                     <td>{{ $item->pegawai->nama_lengkap ?? '-' }}</td>
-                    <td>{{ $item->pegawai->bidang->nama_bidang ?? '-' }}</td>
+                    <td>
+                        {{ $item->pegawai->bidang->nama_bidang ?? '-' }}
+                        @if($item->pegawai->sub_bagian)
+                            <div style="font-size: 8px; color: #666; margin-top: 2px;">{{ $item->pegawai->sub_bagian }}</div>
+                        @endif
+                    </td>
                     <td>{{ $item->jenisCuti->nama_cuti ?? '-' }}</td>
                     <td>
                         {{ $item->tanggal_mulai?->format('d/m/Y') }} s.d. {{ $item->tanggal_selesai?->format('d/m/Y') }}

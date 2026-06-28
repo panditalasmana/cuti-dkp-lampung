@@ -43,6 +43,9 @@
                 <h5 class="fw-bold mb-1">{{ $pegawai->nama_lengkap }}</h5>
                 <p class="text-muted small mb-1">{{ $pegawai->jabatan->nama_jabatan ?? '-' }}</p>
                 <span class="badge bg-primary">{{ $pegawai->bidang->nama_bidang ?? '-' }}</span>
+                @if($pegawai->sub_bagian)
+                    <span class="badge bg-secondary">{{ $pegawai->sub_bagian }}</span>
+                @endif
 
                 <div class="mt-3">
                     <span class="badge {{ $pegawai->is_active ? 'bg-success' : 'bg-danger' }} me-1">
@@ -134,6 +137,10 @@
                         <div class="detail-value">{{ $pegawai->bidang->nama_bidang ?? '-' }}</div>
                     </div>
                     <div class="col-sm-6">
+                        <label class="detail-label">Sub Bagian / Seksi</label>
+                        <div class="detail-value">{{ $pegawai->sub_bagian ?? '-' }}</div>
+                    </div>
+                    <div class="col-sm-6">
                         <label class="detail-label">Jabatan</label>
                         <div class="detail-value">{{ $pegawai->jabatan->nama_jabatan ?? '-' }}</div>
                     </div>
@@ -199,24 +206,12 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <label class="detail-label">Agama</label>
-                        <div class="detail-value">{{ $pegawai->agama }}</div>
-                    </div>
-                    <div class="col-sm-6">
-                        <label class="detail-label">Status Pernikahan</label>
-                        <div class="detail-value">{{ $pegawai->status_pernikahan }}</div>
-                    </div>
-                    <div class="col-sm-6">
                         <label class="detail-label">No. Telepon</label>
                         <div class="detail-value">{{ $pegawai->no_telepon ?? '-' }}</div>
                     </div>
                     <div class="col-sm-6">
                         <label class="detail-label">Email</label>
                         <div class="detail-value">{{ $pegawai->email ?? '-' }}</div>
-                    </div>
-                    <div class="col-12">
-                        <label class="detail-label">Alamat</label>
-                        <div class="detail-value">{{ $pegawai->alamat }}</div>
                     </div>
                 </div>
             </div>

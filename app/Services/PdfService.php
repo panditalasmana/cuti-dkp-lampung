@@ -25,7 +25,7 @@ class PdfService
         ->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled'      => false,
-            'defaultFont'          => 'Arial',
+            'defaultFont'          => 'Times-Roman',
         ]);
 
         $folder   = "pengajuan/{$pengajuan->id}";

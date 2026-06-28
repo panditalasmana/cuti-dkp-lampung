@@ -21,7 +21,7 @@
         <form method="GET" action="{{ route('admin.pengajuan.index') }}">
             <div class="row g-3">
                 <div class="col-12 col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="Cari nama / NIP / nomor surat..." value="{{ $filters['search'] ?? '' }}">
+                    <input type="text" name="search" class="form-control" placeholder="Cari nama / NIP..." value="{{ $filters['search'] ?? '' }}">
                 </div>
                 <div class="col-6 col-md-2">
                     <select name="status" class="form-select">
@@ -84,7 +84,7 @@
                 <thead class="table-head">
                     <tr>
                         <th width="5%">No</th>
-                        <th>Nomor Surat</th>
+                        <th>Tanggal</th>
                         <th>Pegawai / Bidang</th>
                         <th>Jenis Cuti</th>
                         <th>Periode</th>
@@ -98,8 +98,7 @@
                         <tr>
                             <td class="text-muted">{{ $pengajuan->firstItem() + $index }}</td>
                             <td>
-                                <code class="text-primary small">{{ $item->nomor_surat }}</code><br>
-                                <small class="text-muted">{{ $item->tanggal_pengajuan->isoFormat('D MMM Y') }}</small>
+                                <div>{{ $item->tanggal_pengajuan->isoFormat('D MMM Y') }}</div>
                             </td>
                             <td>
                                 <div class="fw-semibold">{{ $item->pegawai->nama_lengkap }}</div>

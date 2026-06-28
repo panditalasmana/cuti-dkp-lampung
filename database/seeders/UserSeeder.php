@@ -31,11 +31,11 @@ class UserSeeder extends Seeder
         // ==========================
         User::updateOrCreate(
             [
-                'nip' => '196904101995031002',
+                'nip' => '199111152025211022',
             ],
             [
-                'name'      => 'Ir. Bani Ispriyanto M.M.',
-                'email'     => '196904101995031002@dkplampung.id',
+                'name'      => 'Gerry Gahara S.Kom.',
+                'email'     => '199111152025211022@dkplampung.id',
                 'password'  => Hash::make('password123'),
                 'role'      => 'pegawai',
                 'is_active' => true,

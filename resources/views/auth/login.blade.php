@@ -27,11 +27,35 @@
                 Dinas Kelautan dan Perikanan<br>
                 Provinsi Lampung
             </p>
-            <div class="login-waves">
-                <div class="wave wave1"></div>
-                <div class="wave wave2"></div>
-                <div class="wave wave3"></div>
-            </div>
+        </div>
+        <div class="login-waves-container">
+            <svg class="editorial-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+                    <linearGradient id="wave-grad-1" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(255, 255, 255, 0.2)" />
+                        <stop offset="100%" stop-color="rgba(255, 255, 255, 0.0)" />
+                    </linearGradient>
+                    <linearGradient id="wave-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(255, 255, 255, 0.15)" />
+                        <stop offset="100%" stop-color="rgba(255, 255, 255, 0.0)" />
+                    </linearGradient>
+                    <linearGradient id="wave-grad-3" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(255, 255, 255, 0.08)" />
+                        <stop offset="100%" stop-color="rgba(255, 255, 255, 0.0)" />
+                    </linearGradient>
+                    <linearGradient id="wave-grad-4" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(255, 255, 255, 0.25)" />
+                        <stop offset="100%" stop-color="rgba(255, 255, 255, 0.0)" />
+                    </linearGradient>
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="url(#wave-grad-1)" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="url(#wave-grad-2)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="url(#wave-grad-3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="url(#wave-grad-4)" />
+                </g>
+            </svg>
         </div>
     </div>
 

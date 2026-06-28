@@ -39,7 +39,6 @@
                         <option value="">Semua Jenis</option>
                         <option value="PNS"    {{ request('jenis_pegawai') === 'PNS'    ? 'selected' : '' }}>PNS</option>
                         <option value="PPPK"   {{ request('jenis_pegawai') === 'PPPK'   ? 'selected' : '' }}>PPPK</option>
-                        <option value="Honorer"{{ request('jenis_pegawai') === 'Honorer' ? 'selected' : '' }}>Honorer</option>
                     </select>
                 </div>
                 <div class="col-auto d-flex gap-2">
@@ -95,6 +94,9 @@
                             <td><code class="small">{{ $p->nip }}</code></td>
                             <td>
                                 <div class="small fw-semibold">{{ $p->bidang->nama_bidang ?? '-' }}</div>
+                                @if($p->sub_bagian)
+                                    <div class="small text-muted" style="font-size: 0.75rem;">{{ $p->sub_bagian }}</div>
+                                @endif
                                 <div class="small text-muted">{{ $p->jabatan->nama_jabatan ?? '-' }}</div>
                             </td>
                             <td><span class="badge bg-light text-dark border">{{ $p->jenis_pegawai }}</span></td>

@@ -48,19 +48,21 @@ class PengajuanController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'jenis_cuti_id'      => ['required', 'exists:jenis_cuti,id'],
-            'tanggal_mulai'      => ['required', 'date'],
-            'tanggal_selesai'    => ['required', 'date', 'after_or_equal:tanggal_mulai'],
-            'alasan_cuti'        => ['required', 'string', 'min:10', 'max:1000'],
-            'alamat_selama_cuti' => ['required', 'string', 'max:500'],
-            'no_telp_selama_cuti'=> ['nullable', 'string', 'max:15'],
+            'jenis_cuti_id'           => ['required', 'exists:jenis_cuti,id'],
+            'tanggal_mulai'           => ['required', 'date'],
+            'tanggal_selesai'         => ['required', 'date', 'after_or_equal:tanggal_mulai'],
+            'alasan_cuti'             => ['required', 'string', 'min:10', 'max:1000'],
+            'alamat_selama_cuti'      => ['required', 'string', 'max:500'],
+            'no_telp_selama_cuti'     => ['nullable', 'string', 'max:15'],
+            'atasan_langsung_select'  => ['required', 'string'],
+            'pejabat_wenang_select'   => ['required', 'string'],
         ]);
 
         $pegawai   = $this->getPegawai();
         $pengajuan = $this->service->ajukan($pegawai, $data);
 
         return redirect()->route('pegawai.pengajuan.show', $pengajuan)
-                         ->with('success', "Pengajuan cuti berhasil dibuat dengan nomor surat: {$pengajuan->nomor_surat}");
+                         ->with('success', "Pengajuan cuti berhasil dibuat.");
     }
 
     public function show(PengajuanCuti $pengajuan): View

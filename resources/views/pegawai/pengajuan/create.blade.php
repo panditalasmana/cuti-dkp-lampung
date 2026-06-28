@@ -50,6 +50,10 @@
                                 <input type="text" class="form-control bg-light" value="{{ $pegawai->bidang->nama_bidang ?? '-' }}" readonly>
                             </div>
                             <div class="col-sm-6">
+                                <label class="form-label text-muted small">Sub Bagian / Seksi</label>
+                                <input type="text" class="form-control bg-light" value="{{ $pegawai->sub_bagian ?? '-' }}" readonly>
+                            </div>
+                            <div class="col-sm-6">
                                 <label class="form-label text-muted small">Pangkat/Golongan</label>
                                 <input type="text" class="form-control bg-light" value="{{ $pegawai->pangkat ?? '-' }}" readonly>
                             </div>
@@ -72,13 +76,11 @@
                                     <option value="">-- Pilih Jenis Cuti --</option>
                                     @foreach($jenisCuti as $jc)
                                         <option value="{{ $jc->id }}"
-                                                data-maks="{{ $jc->maks_hari }}"
                                                 data-potong="{{ $jc->potong_kuota ? 1 : 0 }}"
                                                 data-keterangan="{{ $jc->keterangan }}"
                                                 data-dasar="{{ $jc->dasar_hukum }}"
                                                 {{ old('jenis_cuti_id') == $jc->id ? 'selected' : '' }}>
                                             {{ $jc->nama_cuti }}
-                                            @if($jc->maks_hari) (maks. {{ $jc->maks_hari }} hari) @endif
                                         </option>
                                     @endforeach
                                 </select>
@@ -158,6 +160,42 @@
                         </div>
                     </div>
 
+                    <!-- Penandatangan Dokumen Cuti -->
+                    <div class="form-section mb-4">
+                        <h6 class="form-section-title"><i class="bi bi-pencil-square me-1"></i>Penandatangan Dokumen Cuti</h6>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Tanda Tangan Atasan Langsung <span class="text-danger">*</span></label>
+                                <select name="atasan_langsung_select" class="form-select @error('atasan_langsung_select') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Atasan Langsung --</option>
+                                    <option value="A. FAISAL, A.Pi.|197402031999031006|Sekretaris Dinas" {{ old('atasan_langsung_select') == 'A. FAISAL, A.Pi.|197402031999031006|Sekretaris Dinas' ? 'selected' : '' }}>
+                                        A. FAISAL, A.Pi. (Sekretaris Dinas - NIP. 197402031999031006)
+                                    </option>
+                                    <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('atasan_langsung_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
+                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
+                                    </option>
+                                    <option value="DUMMY KEPALA BIDANG, S.Pi.|198501012010011002|Kepala Bidang Perikanan Tangkap" {{ old('atasan_langsung_select') == 'DUMMY KEPALA BIDANG, S.Pi.|198501012010011002|Kepala Bidang Perikanan Tangkap' ? 'selected' : '' }}>
+                                        DUMMY KEPALA BIDANG, S.Pi. (Kepala Bidang - NIP. 198501012010011002) [Dummy]
+                                    </option>
+                                </select>
+                                @error('atasan_langsung_select')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Tanda Tangan Pejabat yang Berwenang <span class="text-danger">*</span></label>
+                                <select name="pejabat_wenang_select" class="form-select @error('pejabat_wenang_select') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Pejabat yang Berwenang --</option>
+                                    <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('pejabat_wenang_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
+                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
+                                    </option>
+                                    <option value="RENDY RISWANDI.S.STP, M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah" {{ old('pejabat_wenang_select') == 'RENDY RISWANDI.S.STP, M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah' ? 'selected' : '' }}>
+                                        RENDY RISWANDI.S.STP, M.Si (Kepala BKD - NIP. 197705261997121001)
+                                    </option>
+                                </select>
+                                @error('pejabat_wenang_select')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-1"></i>
                         <strong>Perhatian:</strong> Setelah pengajuan dikirim, sistem akan otomatis membuat surat cuti dalam format PDF.
@@ -217,11 +255,6 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
                                 <div class="fw-semibold small">{{ $jc->nama_cuti }}</div>
-                                @if($jc->maks_hari)
-                                    <small class="text-muted">Maks. {{ $jc->maks_hari }} hari</small>
-                                @else
-                                    <small class="text-muted">Tidak terbatas</small>
-                                @endif
                             </div>
                             @if($jc->potong_kuota)
                                 <span class="badge bg-warning text-dark small">Potong Kuota</span>

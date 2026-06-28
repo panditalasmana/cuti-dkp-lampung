@@ -38,6 +38,10 @@
                         <div class="detail-value">{{ $pegawai->bidang->nama_bidang ?? '-' }}</div>
                     </div>
                     <div class="col-sm-6">
+                        <label class="detail-label">Sub Bagian / Seksi</label>
+                        <div class="detail-value">{{ $pegawai->sub_bagian ?? '-' }}</div>
+                    </div>
+                    <div class="col-sm-6">
                         <label class="detail-label">Jabatan</label>
                         <div class="detail-value">{{ $pegawai->jabatan->nama_jabatan ?? '-' }}</div>
                     </div>
@@ -52,14 +56,6 @@
                     <div class="col-sm-6">
                         <label class="detail-label">Tempat, Tanggal Lahir</label>
                         <div class="detail-value">{{ $pegawai->tempat_lahir }}, {{ $pegawai->tanggal_lahir ? \Carbon\Carbon::parse($pegawai->tanggal_lahir)->translatedFormat('d F Y'): '-' }}</div>
-                    </div>
-                    <div class="col-sm-6">
-                        <label class="detail-label">Agama</label>
-                        <div class="detail-value">{{ $pegawai->agama }}</div>
-                    </div>
-                    <div class="col-sm-6">
-                        <label class="detail-label">Status Pernikahan</label>
-                        <div class="detail-value">{{ $pegawai->status_pernikahan }}</div>
                     </div>
                     <div class="col-sm-6">
                         <label class="detail-label">Tanggal Masuk (TMT)</label>
@@ -169,7 +165,10 @@
                 </div>
                 <h5 class="fw-bold mb-1">{{ $pegawai->nama_lengkap }}</h5>
                 <p class="text-muted small mb-2">{{ $pegawai->jabatan->nama_jabatan ?? '-' }}</p>
-                <span class="badge bg-primary">{{ $pegawai->bidang->nama_bidang ?? '-' }}</span>
+                <span class="badge bg-primary mb-1 d-inline-block">{{ $pegawai->bidang->nama_bidang ?? '-' }}</span>
+                @if($pegawai->sub_bagian)
+                    <span class="badge bg-secondary mb-1 d-inline-block">{{ $pegawai->sub_bagian }}</span>
+                @endif
                 <hr>
                 <div class="text-start">
                     <div class="d-flex justify-content-between py-1 border-bottom">

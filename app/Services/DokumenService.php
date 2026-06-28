@@ -57,25 +57,7 @@ class DokumenService
                 'ukuran_file'       => $file->getSize(),
                 'keterangan'        => $keterangan,
             ]);
-
-            // Jika jenis cuti memotong kuota, kurangi sisa cuti
-            $jenisCuti = $pengajuan->jenisCuti;
-            if ($jenisCuti->potong_kuota) {
-                $pegawai = $pengajuan->pegawai;
-                if ($pegawai->sisa_cuti_tahunan < $pengajuan->lama_cuti) {
-                    throw ValidationException::withMessages(['file' => 'Sisa cuti tahunan pegawai tidak mencukupi untuk pengajuan ini.']);
-                }
-                $this->pegawaiRepo->kurangiSisaCuti($pegawai, $pengajuan->lama_cuti);
-            }
-
-            // Update status pengajuan menjadi Disetujui
-            $this->pengajuanRepo->updateStatus(
-                $pengajuan,
-                PengajuanCuti::STATUS_DISETUJUI,
-                'Scan surat telah diunggah dan diverifikasi oleh admin.',
-                Auth::id()
-            );
-
+            // Log upload activity
             $this->logService->logUpload(
                 'dokumen',
                 "Upload scan surat pengajuan {$pengajuan->nomor_surat} oleh Admin",

@@ -9,7 +9,7 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">Selamat Datang, {{ explode(',', $pegawai->nama_lengkap)[0] }}!</h1>
-        <p class="page-subtitle">{{ $pegawai->jabatan->nama_jabatan ?? '-' }} — {{ $pegawai->bidang->nama_bidang ?? '-' }}</p>
+        <p class="page-subtitle">{{ $pegawai->jabatan->nama_jabatan ?? '-' }} — {{ $pegawai->bidang->nama_bidang ?? '-' }} @if($pegawai->sub_bagian) ({{ $pegawai->sub_bagian }}) @endif</p>
     </div>
     <a href="{{ route('pegawai.pengajuan.create') }}" class="btn btn-primary">
         <i class="bi bi-plus-circle me-1"></i>Ajukan Cuti
@@ -105,7 +105,7 @@
             <table class="table table-hover mb-0">
                 <thead class="table-head">
                     <tr>
-                        <th>Nomor Surat</th>
+                        <th>Tanggal</th>
                         <th>Jenis Cuti</th>
                         <th>Periode</th>
                         <th>Lama</th>
@@ -116,7 +116,7 @@
                 <tbody>
                     @forelse($pengajuanList as $item)
                         <tr>
-                            <td><code class="text-primary small">{{ $item->nomor_surat }}</code></td>
+                            <td>{{ $item->tanggal_pengajuan->isoFormat('D MMM Y') }}</td>
                             <td>{{ $item->jenisCuti->nama_cuti }}</td>
                             <td>
                                 <div class="small">{{ \Illuminate\Support\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M Y') }}</div>

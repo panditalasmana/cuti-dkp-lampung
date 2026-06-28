@@ -63,7 +63,7 @@
                 <thead class="table-head">
                     <tr>
                         <th>No</th>
-                        <th>Nomor Surat</th>
+                        <th>Tanggal</th>
                         <th>Jenis Cuti</th>
                         <th>Periode</th>
                         <th>Lama</th>
@@ -77,8 +77,7 @@
                         <tr>
                             <td class="text-muted">{{ $riwayat->firstItem() + $i }}</td>
                             <td>
-                                <code class="text-primary small">{{ $item->nomor_surat }}</code>
-                                <div class="small text-muted">{{ $item->tanggal_pengajuan->isoFormat('D MMM Y') }}</div>
+                                <div>{{ $item->tanggal_pengajuan->isoFormat('D MMM Y') }}</div>
                             </td>
                             <td class="small">{{ $item->jenisCuti->nama_cuti }}</td>
                             <td>
