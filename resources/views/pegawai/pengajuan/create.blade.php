@@ -95,19 +95,19 @@
 
                             <div class="col-sm-6">
                                 <label class="form-label fw-semibold">Tanggal Mulai <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_mulai" id="tanggalMulai"
+                                <input type="text" name="tanggal_mulai" id="tanggalMulai"
                                        class="form-control @error('tanggal_mulai') is-invalid @enderror"
                                        value="{{ old('tanggal_mulai') }}"
-                                       min="{{ now()->addDay()->format('Y-m-d') }}" required>
+                                       placeholder="Pilih Tanggal Mulai" required>
                                 @error('tanggal_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
                             <div class="col-sm-6">
                                 <label class="form-label fw-semibold">Tanggal Selesai <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_selesai" id="tanggalSelesai"
+                                <input type="text" name="tanggal_selesai" id="tanggalSelesai"
                                        class="form-control @error('tanggal_selesai') is-invalid @enderror"
                                        value="{{ old('tanggal_selesai') }}"
-                                       min="{{ now()->addDay()->format('Y-m-d') }}" required>
+                                       placeholder="Pilih Tanggal Selesai" required>
                                 @error('tanggal_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
@@ -268,10 +268,104 @@
 </div>
 @endsection
 
+<style>
+    /* Styling Flatpickr disabled days to be red and clearly marked */
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover {
+        background-color: #f8d7da !important;
+        color: #dc3545 !important;
+        cursor: not-allowed !important;
+        text-decoration: line-through;
+        opacity: 0.8;
+    }
+</style>
+
 @push('scripts')
 <script>
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 const sisaCuti  = {{ $pegawai->sisa_cuti_tahunan }};
+const usedDates = @json($usedDates);
+
+// Inisialisasi Flatpickr dengan daftar tanggal terpakai
+const fpMulai = flatpickr("#tanggalMulai", {
+    locale: "id",
+    dateFormat: "Y-m-d",
+    altInput: true,
+    altFormat: "d F Y",
+    minDate: "today",
+    disable: usedDates,
+    onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length > 0) {
+            fpSelesai.set("minDate", dateStr);
+            if (checkDateConflict()) return;
+            hitungLamaCuti();
+        }
+    }
+});
+
+const fpSelesai = flatpickr("#tanggalSelesai", {
+    locale: "id",
+    dateFormat: "Y-m-d",
+    altInput: true,
+    altFormat: "d F Y",
+    minDate: "today",
+    disable: usedDates,
+    onChange: function(selectedDates, dateStr, instance) {
+        if (checkDateConflict()) return;
+        hitungLamaCuti();
+    }
+});
+
+// Periksa apakah rentang tanggal yang dipilih menabrak hari yang sudah terpakai
+function checkDateConflict() {
+    const mulaiVal = document.getElementById('tanggalMulai').value;
+    const selesaiVal = document.getElementById('tanggalSelesai').value;
+
+    if (!mulaiVal || !selesaiVal) return false;
+
+    const start = new Date(mulaiVal);
+    const end = new Date(selesaiVal);
+    
+    let hasConflict = false;
+    let conflictDateStr = "";
+
+    let current = new Date(start);
+    while (current <= end) {
+        const yyyy = current.getFullYear();
+        const mm = String(current.getMonth() + 1).padStart(2, '0');
+        const dd = String(current.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+
+        if (usedDates.includes(dateStr)) {
+            hasConflict = true;
+            conflictDateStr = dateStr;
+            break;
+        }
+        current.setDate(current.getDate() + 1);
+    }
+
+    if (hasConflict) {
+        const formattedConflictDate = new Date(conflictDateStr).toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        Swal.fire({
+            title: 'Hari Sudah Terpakai!',
+            text: `Rentang tanggal yang Anda pilih menabrak tanggal cuti yang sudah Anda ajukan sebelumnya (${formattedConflictDate}). Silakan pilih tanggal lain.`,
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#dc3545',
+        });
+
+        fpMulai.clear();
+        fpSelesai.clear();
+        document.getElementById('lamaCutiPreview').classList.add('d-none');
+        return true;
+    }
+    return false;
+}
 
 // Hitung lama cuti otomatis via AJAX
 let hitungTimer = null;
@@ -320,12 +414,6 @@ function hitungLamaCuti() {
         });
     }, 500);
 }
-
-document.getElementById('tanggalMulai').addEventListener('change', function() {
-    document.getElementById('tanggalSelesai').min = this.value;
-    hitungLamaCuti();
-});
-document.getElementById('tanggalSelesai').addEventListener('change', hitungLamaCuti);
 
 // Jenis Cuti Info
 document.getElementById('jenisCutiSelect').addEventListener('change', function() {

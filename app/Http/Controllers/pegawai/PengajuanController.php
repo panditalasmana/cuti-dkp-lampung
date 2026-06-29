@@ -32,7 +32,9 @@ class PengajuanController extends Controller
         $pegawai   = $this->getPegawai();
         $filters   = $request->only(['status', 'tahun']);
         $riwayat   = $this->service->paginateForPegawai($pegawai->id, 10, $filters);
-        $tahunList = range(now()->year, now()->year - 5);
+        $startYear = 2026;
+        $currentYear = max($startYear, now()->year);
+        $tahunList = range($currentYear, $startYear);
 
         return view('pegawai.riwayat.index', compact('pegawai', 'riwayat', 'filters', 'tahunList'));
     }
@@ -42,7 +44,23 @@ class PengajuanController extends Controller
         $pegawai   = $this->getPegawai();
         $jenisCuti = JenisCuti::active()->orderBy('nama_cuti')->get();
 
-        return view('pegawai.pengajuan.create', compact('pegawai', 'jenisCuti'));
+        // Ambil semua tanggal yang sudah terpakai oleh pengajuan cuti pegawai (status disetujui & menunggu)
+        $usedDates = [];
+        $activePengajuans = $pegawai->pengajuanCuti()
+            ->where('status', '!=', \App\Models\PengajuanCuti::STATUS_DITOLAK)
+            ->get(['tanggal_mulai', 'tanggal_selesai']);
+
+        foreach ($activePengajuans as $p) {
+            $current = $p->tanggal_mulai->clone();
+            $end = $p->tanggal_selesai;
+            while ($current->lte($end)) {
+                $usedDates[] = $current->format('Y-m-d');
+                $current->addDay();
+            }
+        }
+        $usedDates = array_values(array_unique($usedDates));
+
+        return view('pegawai.pengajuan.create', compact('pegawai', 'jenisCuti', 'usedDates'));
     }
 
     public function store(Request $request): RedirectResponse

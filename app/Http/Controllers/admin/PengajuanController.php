@@ -30,7 +30,9 @@ class PengajuanController extends Controller
         $filters   = $request->only(['search', 'status', 'jenis_cuti_id', 'bidang_id', 'bulan', 'tahun']);
         $pengajuan = $this->service->paginateForAdmin(15, $filters);
         $bidang    = $this->bidangRepo->all();
-        $tahunList = range(now()->year, now()->year - 5);
+        $startYear = 2026;
+        $currentYear = max($startYear, now()->year);
+        $tahunList = range($currentYear, $startYear);
 
         return view('admin.pengajuan.index', compact('pengajuan', 'bidang', 'filters', 'tahunList'));
     }
@@ -96,7 +98,9 @@ class PengajuanController extends Controller
         $statistik = $this->service->getStatistik();
         $perBulan  = $this->service->statistikBulanan($tahun);
         $perBidang = $this->service->statistikPerBidang($tahun);
-        $tahunList = range(now()->year, now()->year - 5);
+        $startYear = 2026;
+        $currentYear = max($startYear, now()->year);
+        $tahunList = range($currentYear, $startYear);
 
         return view('admin.laporan.index', compact('statistik', 'perBulan', 'perBidang', 'tahun', 'tahunList'));
     }

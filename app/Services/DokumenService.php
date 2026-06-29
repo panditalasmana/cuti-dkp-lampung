@@ -38,13 +38,13 @@ class DokumenService
             // Hapus scan lama jika ada
             $scanLama = $this->repo->getScanByPengajuan($pengajuan->id);
             if ($scanLama) {
-                Storage::disk('public')->delete($scanLama->path_file);
+                Storage::disk(config('filesystems.upload_disk', 'public'))->delete($scanLama->path_file);
                 $this->repo->delete($scanLama);
             }
 
             // Simpan file baru
             $folder   = "pengajuan/{$pengajuan->id}/scan";
-            $path     = $file->store($folder, 'public');
+            $path     = $file->store($folder, config('filesystems.upload_disk', 'public'));
             $namaFile = $file->getClientOriginalName();
 
             $dokumen = $this->repo->create([
@@ -73,7 +73,7 @@ class DokumenService
         $this->validasiFile($file);
 
         $folder  = "pengajuan/{$pengajuan->id}/lampiran";
-        $path    = $file->store($folder, 'public');
+        $path    = $file->store($folder, config('filesystems.upload_disk', 'public'));
 
         return $this->repo->create([
             'pengajuan_cuti_id' => $pengajuan->id,
@@ -89,7 +89,7 @@ class DokumenService
 
     public function delete(Dokumen $dokumen): void
     {
-        Storage::disk('public')->delete($dokumen->path_file);
+        Storage::disk(config('filesystems.upload_disk', 'public'))->delete($dokumen->path_file);
         $this->repo->delete($dokumen);
         $this->logService->logDelete('dokumen', "Menghapus file: {$dokumen->nama_file}");
     }

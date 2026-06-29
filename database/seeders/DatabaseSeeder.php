@@ -15,5 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,      // 4. User admin
             PegawaiSeeder::class,   // 5. Pegawai terakhir (butuh semua di atas)
         ]);
+
+        @file_put_contents(storage_path('app/last_reset_year.txt'), date('Y'));
     }
 }
