@@ -26,12 +26,22 @@ class ResetAnnualLeave extends Command
      */
     public function handle()
     {
-        $this->info('Memulai reset sisa cuti tahunan pegawai...');
+        $this->info('Memulai reset sisa cuti tahunan pegawai dengan akumulasi (BKN)...');
         
-        // Reset all active pegawai to 12
-        $count = Pegawai::where('is_active', true)->update(['sisa_cuti_tahunan' => 12]);
+        $pegawais = Pegawai::where('is_active', true)->get();
+        $count = 0;
         
-        $this->info("Berhasil mereset sisa cuti tahunan untuk {$count} pegawai.");
+        foreach ($pegawais as $pegawai) {
+            $sisaLama = $pegawai->sisa_cuti_tahunan;
+            // Maksimal akumulasi sisa cuti tahun lalu adalah 6 hari kerja
+            $carryOver = min(max($sisaLama, 0), 6);
+            $sisaBaru = 12 + $carryOver;
+            
+            $pegawai->update(['sisa_cuti_tahunan' => $sisaBaru]);
+            $count++;
+        }
+        
+        $this->info("Berhasil mereset jatah cuti dengan akumulasi untuk {$count} pegawai.");
         
         return Command::SUCCESS;
     }

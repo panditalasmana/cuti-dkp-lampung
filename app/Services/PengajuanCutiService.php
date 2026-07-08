@@ -186,6 +186,11 @@ class PengajuanCutiService
             throw ValidationException::withMessages(['tanggal_mulai' => 'Tanggal mulai tidak boleh di masa lalu.']);
         }
 
+        // Cuti melahirkan hanya dapat diajukan oleh pegawai perempuan
+        if ($jenisCuti->kode_cuti === 'CM' && $pegawai->jenis_kelamin !== 'P') {
+            throw ValidationException::withMessages(['jenis_cuti_id' => 'Cuti melahirkan hanya dapat diajukan oleh pegawai perempuan.']);
+        }
+
         // Validasi sisa cuti tahunan jika memotong kuota
         if ($jenisCuti->potong_kuota && $pegawai->sisa_cuti_tahunan < $lamaCuti) {
             throw ValidationException::withMessages(['lama_cuti' => "Sisa cuti tahunan Anda ({$pegawai->sisa_cuti_tahunan} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);

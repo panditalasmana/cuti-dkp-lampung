@@ -38,13 +38,13 @@ class DokumenService
             // Hapus scan lama jika ada
             $scanLama = $this->repo->getScanByPengajuan($pengajuan->id);
             if ($scanLama) {
-                Storage::disk(config('filesystems.upload_disk', 'public'))->delete($scanLama->path_file);
+                $this->deleteFile($scanLama->path_file);
                 $this->repo->delete($scanLama);
             }
 
             // Simpan file baru
             $folder   = "pengajuan/{$pengajuan->id}/scan";
-            $path     = $file->store($folder, config('filesystems.upload_disk', 'public'));
+            $path     = $this->saveFile($file, $folder);
             $namaFile = $file->getClientOriginalName();
 
             $dokumen = $this->repo->create([
@@ -73,7 +73,7 @@ class DokumenService
         $this->validasiFile($file);
 
         $folder  = "pengajuan/{$pengajuan->id}/lampiran";
-        $path    = $file->store($folder, config('filesystems.upload_disk', 'public'));
+        $path    = $this->saveFile($file, $folder);
 
         return $this->repo->create([
             'pengajuan_cuti_id' => $pengajuan->id,
@@ -89,9 +89,95 @@ class DokumenService
 
     public function delete(Dokumen $dokumen): void
     {
-        Storage::disk(config('filesystems.upload_disk', 'public'))->delete($dokumen->path_file);
+        $this->deleteFile($dokumen->path_file);
         $this->repo->delete($dokumen);
         $this->logService->logDelete('dokumen', "Menghapus file: {$dokumen->nama_file}");
+    }
+
+    private function saveFile(UploadedFile $file, string $folder): string
+    {
+        $disk = config('filesystems.upload_disk', 'public');
+        if ($disk === 'google') {
+            return $this->uploadToGoogleDrive($file, $folder);
+        }
+        return $file->store($folder, 'public');
+    }
+
+    private function deleteFile(string $path): void
+    {
+        $disk = config('filesystems.upload_disk', 'public');
+        if ($disk === 'google') {
+            $this->deleteFromGoogleDrive($path);
+        } else {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    private function uploadToGoogleDrive(UploadedFile $file, string $folderName): string
+    {
+        $client = new \Google\Client();
+        
+        $serviceAccountJson = config('filesystems.disks.google.serviceAccountJson');
+        if (!empty($serviceAccountJson)) {
+            $client->setAuthConfig(base_path($serviceAccountJson));
+        } else {
+            $client->setClientId(config('filesystems.disks.google.clientId'));
+            $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
+            $client->refreshToken(config('filesystems.disks.google.refreshToken'));
+        }
+        
+        $client->addScope(\Google\Service\Drive::DRIVE);
+        $service = new \Google\Service\Drive($client);
+        
+        $parentFolderId = config('filesystems.disks.google.folderId') ?: 'root';
+        
+        $fileMetadata = new \Google\Service\Drive\DriveFile([
+            'name' => time() . '_' . $file->getClientOriginalName(),
+            'parents' => [$parentFolderId]
+        ]);
+        
+        $content = file_get_contents($file->getRealPath());
+        $mimeType = $file->getClientMimeType();
+        
+        $uploadedFile = $service->files->create($fileMetadata, [
+            'data' => $content,
+            'mimeType' => $mimeType,
+            'uploadType' => 'multipart',
+            'fields' => 'id'
+        ]);
+        
+        try {
+            $permission = new \Google\Service\Drive\Permission([
+                'type' => 'anyone',
+                'role' => 'reader'
+            ]);
+            $service->permissions->create($uploadedFile->id, $permission);
+        } catch (\Exception $e) {
+            // Abaikan jika gagal membagikan secara publik, yang penting file terupload
+        }
+        
+        return $uploadedFile->id;
+    }
+
+    private function deleteFromGoogleDrive(string $fileId): void
+    {
+        try {
+            $client = new \Google\Client();
+            $serviceAccountJson = config('filesystems.disks.google.serviceAccountJson');
+            if (!empty($serviceAccountJson)) {
+                $client->setAuthConfig(base_path($serviceAccountJson));
+            } else {
+                $client->setClientId(config('filesystems.disks.google.clientId'));
+                $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
+                $client->refreshToken(config('filesystems.disks.google.refreshToken'));
+            }
+            $client->addScope(\Google\Service\Drive::DRIVE);
+            $service = new \Google\Service\Drive($client);
+            
+            $service->files->delete($fileId);
+        } catch (\Exception $e) {
+            // Abaikan jika gagal hapus
+        }
     }
 
     private function validasiFile(UploadedFile $file): void

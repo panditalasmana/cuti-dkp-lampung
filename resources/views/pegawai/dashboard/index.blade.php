@@ -17,7 +17,7 @@
 </div>
 
 <!-- Profil Singkat -->
-<div class="card card-custom mb-4" style="background: linear-gradient(135deg, #0B5FA5, #1976D2); color:white; border:none;">
+<div class="card card-custom mb-4" style="background: linear-gradient(135deg, #0B5FA5, #1976D2); color:white; border:none; overflow: visible !important;">
     <div class="card-body">
         <div class="row align-items-center">
             <div class="col-auto">
@@ -30,8 +30,8 @@
                 </div>
             </div>
             
-            <div class="col">
-                <h4 class="mb-1 text-white fw-bold">{{ $pegawai->nama_lengkap }}</h4>
+            <div class="col-12 col-sm">
+                <h4 class="mb-1 text-white fw-bold mt-2 mt-sm-0">{{ $pegawai->nama_lengkap }}</h4>
                 <div class="d-flex flex-wrap gap-3 text-white-50 small">
                     <span><i class="bi bi-person-badge me-1"></i>{{ $pegawai->nip }}</span>
                     <span><i class="bi bi-briefcase me-1"></i>{{ $pegawai->pangkat ?? '-' }}</span>
@@ -42,9 +42,25 @@
 </span>
                 </div>
             </div>
-            <div class="col-auto text-end">
-                <div class="text-white-50 small mb-1">Sisa Cuti Tahunan</div>
-                <div class="display-6 fw-bold text-white">{{ $pegawai->sisa_cuti_tahunan }}</div>
+            <div class="col-12 col-md-auto text-start text-md-end mt-3 mt-md-0 pt-3 pt-md-0 profile-sisa-cuti" style="min-width: 220px;">
+                <div class="d-flex align-items-center justify-content-start justify-content-md-end gap-2 mb-2">
+                    <span class="text-white-50 small">Sisa Kuota:</span>
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-sm dropdown-toggle text-white p-0 border-0 fw-semibold quota-select-btn" type="button" id="quotaDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            Cuti Tahunan
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="quotaDropdownMenu" style="font-size: 0.85rem; font-family: 'Poppins', sans-serif; max-height: 220px; overflow-y: auto;">
+                            @foreach($quotas as $q)
+                                <li>
+                                    <a class="dropdown-item quota-option {{ $q['kode'] === 'CT' ? 'active' : '' }}" href="#" data-value="{{ $q['sisa'] }}" data-name="{{ $q['nama'] }}">
+                                        {{ $q['nama'] }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                <div class="display-4 fw-bold text-white mb-1" id="quotaValue">{{ $pegawai->sisa_cuti_tahunan }}</div>
                 <div class="text-white-50 small">hari tersisa</div>
             </div>
         </div>
@@ -145,3 +161,31 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const valueDisplay = document.getElementById('quotaValue');
+    const dropdownBtn = document.getElementById('quotaDropdownMenu');
+    const options = document.querySelectorAll('.quota-option');
+    
+    if (dropdownBtn && valueDisplay && options.length > 0) {
+        options.forEach(opt => {
+            opt.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Hapus kelas active dari opsi lain, tambahkan ke yang di-klik
+                options.forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Ubah teks tombol dropdown
+                dropdownBtn.textContent = this.dataset.name;
+                
+                // Ubah angka kuota
+                valueDisplay.textContent = this.dataset.value;
+            });
+        });
+    }
+});
+</script>
+@endpush

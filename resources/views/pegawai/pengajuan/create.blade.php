@@ -75,6 +75,9 @@
                                         class="form-select @error('jenis_cuti_id') is-invalid @enderror" required>
                                     <option value="">-- Pilih Jenis Cuti --</option>
                                     @foreach($jenisCuti as $jc)
+                                        @if($jc->kode_cuti === 'CM' && $pegawai->jenis_kelamin !== 'P')
+                                            @continue
+                                        @endif
                                         <option value="{{ $jc->id }}"
                                                 data-potong="{{ $jc->potong_kuota ? 1 : 0 }}"
                                                 data-keterangan="{{ $jc->keterangan }}"
@@ -168,14 +171,41 @@
                                 <label class="form-label fw-semibold">Tanda Tangan Atasan Langsung <span class="text-danger">*</span></label>
                                 <select name="atasan_langsung_select" class="form-select @error('atasan_langsung_select') is-invalid @enderror" required>
                                     <option value="">-- Pilih Atasan Langsung --</option>
+                                   <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('atasan_langsung_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
+                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
+                                    </option>
                                     <option value="A. FAISAL, A.Pi.|197402031999031006|Sekretaris Dinas" {{ old('atasan_langsung_select') == 'A. FAISAL, A.Pi.|197402031999031006|Sekretaris Dinas' ? 'selected' : '' }}>
                                         A. FAISAL, A.Pi. (Sekretaris Dinas - NIP. 197402031999031006)
                                     </option>
-                                    <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('atasan_langsung_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
-                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
+                                    <option value="Imam Komarita S.Pi. M.Si.|198601302011011004|Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas" {{ old('atasan_langsung_select') == ' Imam Komarita S.Pi. M.Si.|198601302011011004|Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas' ? 'selected' : '' }}>
+                                        Imam Komarita S.Pi. M.Si. (Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas - NIP. 198601302011011004) 
                                     </option>
-                                    <option value="DUMMY KEPALA BIDANG, S.Pi.|198501012010011002|Kepala Bidang Perikanan Tangkap" {{ old('atasan_langsung_select') == 'DUMMY KEPALA BIDANG, S.Pi.|198501012010011002|Kepala Bidang Perikanan Tangkap' ? 'selected' : '' }}>
-                                        DUMMY KEPALA BIDANG, S.Pi. (Kepala Bidang - NIP. 198501012010011002) [Dummy]
+                                    <option value="Sri Hartati S.Pi. M.Ling.|197704132010012004|Kepala Sub Bagian Keuangan dan Aset Sekretariat Dinas" {{ old('atasan_langsung_select') == ' Sri Hartati S.Pi. M.Ling.|197704132010012004|Kepala Sub Bagian Keuangan dan Aset Sekretariat Dinas' ? 'selected' : '' }}>
+                                        Sri Hartati S.Pi. M.Ling. (Kepala Sub Bagian Keuangan dan Aset Sekretariat Dinas - NIP. 197704132010012004) 
+                                    </option>
+                                    <option value="Hardian Sylvanandra Prayitno S.Pi. MM.|198503222008041001|Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan" {{ old('atasan_langsung_select') == ' Hardian Sylvanandra Prayitno S.Pi. MM|198503222008041001|Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan' ? 'selected' : '' }}>
+                                        Hardian Sylvanandra Prayitno S.Pi. MM (Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan - NIP. 198503222008041001) 
+                                    </option>
+                                    <option value="Sadariah S.P M.M.|197009301996022001|Kepala Bidang Pengelolaan Ruang Laut" {{ old('atasan_langsung_select') == ' Sadariah S.P M.M.|197009301996022001|Kepala Bidang Pengelolaan Ruang Laut' ? 'selected' : '' }}>
+                                        Sadariah S.P M.M. (Kepala Bidang Pengelolaan Ruang Laut - NIP. 197009301996022001) 
+                                    </option>
+                                    <option value="Nazdan S.Pi. MP.|197306102002121002|Kepala Bidang Perikanan Budidaya dan Penguatan Daya Saing" {{ old('atasan_langsung_select') == ' Nazdan S.Pi. MP.|197306102002121002|Kepala Bidang Perikanan Budidaya dan Penguatan Daya Saing' ? 'selected' : '' }}>
+                                        Nazdan S.Pi. MP. (Kepala Bidang Perikanan Budidaya dan Penguatan Daya Saing - NIP. 197306102002121002) 
+                                    </option>
+                                    <option value="Sri Rihatun Dhamayanti S.Pi. M.M.|197307172000032004|Kepala UPTD Penerapan Mutu Hasil Perikanan" {{ old('atasan_langsung_select') == ' Sri Rihatun Dhamayanti S.Pi. M.M.|197307172000032004|Kepala UPTD Penerapan Mutu Hasil Perikanan' ? 'selected' : '' }}>
+                                        Sri Rihatun Dhamayanti S.Pi. M.M. (Kepala UPTD Penerapan Mutu Hasil Perikanan - NIP. 197307172000032004) 
+                                    </option>
+                                    <option value="Zainal K S.Pi M.Ling.|197104051997031007|Kepala UPTD Pelabuhan Perikanan Labuhan Maringgai" {{ old('atasan_langsung_select') == ' Zainal K S.Pi M.Ling.|197104051997031007|Kepala UPTD Pelabuhan Perikanan Labuhan Maringgai' ? 'selected' : '' }}>
+                                        Zainal K S.Pi M.Ling. (Kepala UPTD Pelabuhan Perikanan Labuhan Maringgai - NIP. 197104051997031007) 
+                                    </option>
+                                    <option value="Ahmad Darma Habibillah S.Pi M.E.|198006182005011007|Kepala UPTD Pelabuhan Perikanan Lempasing" {{ old('atasan_langsung_select') == ' Ahmad Darma Habibillah S.Pi M.E.|198006182005011007|Kepala UPTD Pelabuhan Perikanan Lempasing' ? 'selected' : '' }}>
+                                        Ahmad Darma Habibillah S.Pi M.E. (Kepala UPTD Pelabuhan Perikanan Lempasing - NIP. 198006182005011007) 
+                                    </option>
+                                    <option value="Sukarsono S.Pi.|197111081999031004|Kepala UPTD Pelabuhan Perikanan Kota Agung" {{ old('atasan_langsung_select') == ' Sukarsono S.Pi.|197111081999031004|Kepala UPTD Pelabuhan Perikanan Kota Agung' ? 'selected' : '' }}>
+                                        Sukarsono S.Pi. (Kepala UPTD Pelabuhan Perikanan Kota Agung - NIP. 197111081999031004) 
+                                    </option>
+                                    <option value="Zulhaidir SP M.Si.|197204292000031003|Kepala UPTD Pelabuhan Perikanan Kalianda" {{ old('atasan_langsung_select') == ' Ahmad Darma Habibillah S.Pi M.E.|197204292000031003|Kepala UPTD Pelabuhan Perikanan Kalianda' ? 'selected' : '' }}>
+                                        Zulhaidir SP M.Si. (Kepala UPTD Pelabuhan Perikanan Kalianda - NIP. 197204292000031003) 
                                     </option>
                                 </select>
                                 @error('atasan_langsung_select')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -258,6 +288,8 @@
                             </div>
                             @if($jc->potong_kuota)
                                 <span class="badge bg-warning text-dark small">Potong Kuota</span>
+                            @else
+                                <span class="badge bg-success text-white small">Tidak Potong Kuota</span>
                             @endif
                         </li>
                     @endforeach
@@ -297,6 +329,13 @@ const fpMulai = flatpickr("#tanggalMulai", {
     onChange: function(selectedDates, dateStr, instance) {
         if (selectedDates.length > 0) {
             fpSelesai.set("minDate", dateStr);
+            
+            // Otomatis isi tanggal selesai jika kosong
+            const selesaiVal = document.getElementById('tanggalSelesai').value;
+            if (!selesaiVal) {
+                fpSelesai.setDate(selectedDates[0]);
+            }
+            
             if (checkDateConflict()) return;
             hitungLamaCuti();
         }

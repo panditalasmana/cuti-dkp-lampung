@@ -20,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Paksa HTTPS jika diakses melalui Ngrok
+        if (str_contains(request()->url(), 'ngrok-free.dev') || str_contains(request()->url(), 'ngrok-free.app')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         Paginator::useBootstrapFive();
 
         // Auto-reset jatah cuti tahunan pegawai jika terdeteksi pergantian tahun baru (fallback jika cron scheduler tidak aktif)
@@ -55,7 +60,8 @@ class AppServiceProvider extends ServiceProvider
                 $client->addScope(\Google\Service\Drive::DRIVE);
                 
                 $service = new \Google\Service\Drive($client);
-                $adapter = new \Masbug\Flysystem\GoogleDriveAdapter($service, $config['folderId'] ?? '/');
+                $folderId = !empty($config['folderId']) ? $config['folderId'] : 'root';
+                $adapter = new \Masbug\Flysystem\GoogleDriveAdapter($service, $folderId);
                 $driver = new \League\Flysystem\Filesystem($adapter);
                 
                 return new \Illuminate\Filesystem\FilesystemAdapter($driver, $adapter, $config);

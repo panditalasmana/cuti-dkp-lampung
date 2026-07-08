@@ -4,7 +4,7 @@
     <div class="col-sm-6">
         <label class="form-label fw-semibold">NIP <span class="text-danger">*</span></label>
         <input type="text" name="nip" class="form-control @error('nip') is-invalid @enderror"
-               value="{{ old('nip') }}" placeholder="18 digit NIP" maxlength="18" inputmode="numeric" required>
+               value="{{ old('nip') }}" placeholder="18 digit NIP" maxlength="18" inputmode="numeric" autocomplete="new-username" required>
         @error('nip')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
     @else
@@ -25,7 +25,7 @@
     <div class="col-sm-6">
         <label class="form-label fw-semibold">Email</label>
         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-               value="{{ old('email', $pegawai->email ?? '') }}" placeholder="email@dkp.lampungprov.go.id">
+               value="{{ old('email', $pegawai->email ?? '') }}" placeholder="email@dkp.lampungprov.go.id" autocomplete="new-username">
         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
@@ -33,7 +33,7 @@
         <label class="form-label fw-semibold">Password {{ isset($pegawai) ? '(Kosongkan jika tidak diubah)' : '' }}</label>
         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
                placeholder="{{ isset($pegawai) ? 'Isi untuk mengubah password' : 'Default: Pegawai@123' }}"
-               {{ !isset($pegawai) ? '' : '' }}>
+               autocomplete="new-password">
         @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
@@ -53,9 +53,11 @@
     </div>
 
     <div class="col-sm-6">
-        <label class="form-label fw-semibold">Sub Bagian / Seksi <span class="text-danger">*</span></label>
-        <select name="sub_bagian" id="subBagianSelect" class="form-select @error('sub_bagian') is-invalid @enderror" required>
-            <option value="">-- Pilih Sub Bagian / Seksi --</option>
+        <label class="form-label fw-semibold">Sub Bagian</label>
+        <select name="sub_bagian" id="subBagianSelect" class="form-select @error('sub_bagian') is-invalid @enderror">
+            <option value="">-- Pilih Sub Bagian (Opsional) --</option>
+            <option value="Sub Bagian Keuangan dan Aset" {{ old('sub_bagian', $pegawai->sub_bagian ?? '') === 'Sub Bagian Keuangan dan Aset' ? 'selected' : '' }}>Sub Bagian Keuangan dan Aset</option>
+            <option value="Sub Bagian Umum dan Kepegawaian" {{ old('sub_bagian', $pegawai->sub_bagian ?? '') === 'Sub Bagian Umum dan Kepegawaian' ? 'selected' : '' }}>Sub Bagian Umum dan Kepegawaian</option>
         </select>
         @error('sub_bagian')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
@@ -77,7 +79,7 @@
         <label class="form-label fw-semibold">Jenis Pegawai <span class="text-danger">*</span></label>
         <select name="jenis_pegawai" class="form-select @error('jenis_pegawai') is-invalid @enderror" required>
             <option value="">-- Pilih --</option>
-            @foreach(['PNS','PPPK','Honorer'] as $j)
+            @foreach(['PNS','PPPK'] as $j)
                 <option value="{{ $j }}" {{ old('jenis_pegawai', $pegawai->jenis_pegawai ?? '') === $j ? 'selected' : '' }}>{{ $j }}</option>
             @endforeach
         </select>
@@ -157,88 +159,3 @@
     </div>
     @endisset
 </div>
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const bidangSelect = document.getElementById('bidangSelect');
-    const subSelect = document.getElementById('subBagianSelect');
-    const currentSub = "{{ old('sub_bagian', $pegawai->sub_bagian ?? '') }}";
-
-    const subBagianMap = {
-        'SEKRETARIAT': [
-            'Sub Bagian Umum dan Kepegawaian',
-            'Sub Bagian Keuangan dan Aset',
-            'Sub Bagian Perencanaan'
-        ],
-        'PERIKANAN_TANGKAP': [
-            'Seksi Perizinan dan Syahbandar Perikanan',
-            'Seksi Sarana dan Prasarana Perikanan Tangkap',
-            'Seksi Pengembangan Usaha Perikanan Tangkap'
-        ],
-        'PERIKANAN_BUDIDAYA': [
-            'Seksi Perikanan Budidaya',
-            'Seksi Penguatan Daya Saing Produk Kelautan dan Perikanan',
-            'Seksi Sarana dan Prasarana Perikanan Budidaya'
-        ],
-        'PENGELOLAAN_RUANG_LAUT': [
-            'Seksi Pengelolaan Ruang Pesisir dan Pulau-Pulau Kecil',
-            'Seksi Konservasi Kelautan',
-            'Seksi Pendayagunaan Pesisir dan Laut'
-        ],
-        'PSDKP': [
-            'Seksi Pengawasan Sumber Daya Kelautan',
-            'Seksi Pengawasan Sumber Daya Perikanan',
-            'Seksi Penanganan Pelanggaran'
-        ],
-        'UPTD_LEMPASING': [
-            'Sub Bagian Tata Usaha UPTD Lempasing',
-            'Seksi Operasional dan Pelayanan Pelabuhan'
-        ],
-        'UPTD_KALIANDA': [
-            'Sub Bagian Tata Usaha UPTD Kalianda',
-            'Seksi Operasional dan Pelayanan Pelabuhan'
-        ],
-        'UPTD_KOTA_AGUNG': [
-            'Sub Bagian Tata Usaha UPTD Kota Agung',
-            'Seksi Operasional dan Pelayanan Pelabuhan'
-        ],
-        'UPTD_LABUHAN_MARINGGAI': [
-            'Sub Bagian Tata Usaha UPTD Labuhan Maringgai',
-            'Seksi Operasional dan Pelayanan Pelabuhan'
-        ],
-        'UPTD_MUTU': [
-            'Sub Bagian Tata Usaha UPTD Penerapan Mutu',
-            'Seksi Sertifikasi dan Pelayanan Teknis'
-        ],
-        'UPTD_BALAI_BUDIDAYA': [
-            'Sub Bagian Tata Usaha UPTD Balai Budidaya',
-            'Seksi Teknis dan Produksi Budidaya'
-        ]
-    };
-
-    function updateSubBagian() {
-        const selectedOption = bidangSelect.options[bidangSelect.selectedIndex];
-        const kodeBidang = selectedOption ? selectedOption.getAttribute('data-kode') : '';
-        
-        // Clear options
-        subSelect.innerHTML = '<option value="">-- Pilih Sub Bagian / Seksi --</option>';
-        
-        if (kodeBidang && subBagianMap[kodeBidang]) {
-            subBagianMap[kodeBidang].forEach(sub => {
-                const opt = document.createElement('option');
-                opt.value = sub;
-                opt.textContent = sub;
-                if (sub === currentSub) {
-                    opt.selected = true;
-                }
-                subSelect.appendChild(opt);
-            });
-        }
-    }
-
-    bidangSelect.addEventListener('change', updateSubBagian);
-    updateSubBagian(); // initial run
-});
-</script>
-@endpushgit 

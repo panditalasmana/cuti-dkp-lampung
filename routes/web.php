@@ -31,14 +31,20 @@ Route::post('/logout', [AuthController::class, 'logout'])
      ->middleware('auth')
      ->name('logout');
 
+// Shared Auth Routes (Admin & Pegawai)
+Route::middleware('auth')->group(function () {
+    Route::get('/kalender/events', [Admin\DashboardController::class, 'calendarEvents'])->name('calendar.events');
+});
+
 // ─── Admin Routes ──────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:admin'])
      ->prefix('admin')
      ->name('admin.')
      ->group(function () {
 
-    // Dashboard
+    // Dashboard & Kalender
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/kalender',  [Admin\DashboardController::class, 'calendar'])->name('calendar');
 
     // Master: Bidang
     Route::resource('bidang', Admin\BidangController::class);
@@ -78,8 +84,9 @@ Route::middleware(['auth', 'role:pegawai'])
      ->name('pegawai.')
      ->group(function () {
 
-    // Dashboard
+    // Dashboard & Kalender
     Route::get('/dashboard', [Pegawai\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/kalender',  [Pegawai\DashboardController::class, 'calendar'])->name('calendar');
 
     // Pengajuan Cuti
     Route::prefix('pengajuan')->name('pengajuan.')->group(function () {

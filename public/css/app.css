@@ -814,10 +814,64 @@ a:hover { color: var(--primary-dark); }
     .page-content { padding: 16px; }
 
     .login-panel-left { display: none !important; }
+
+    .sidebar-footer {
+        padding-bottom: calc(30px + env(safe-area-inset-bottom));
+    }
 }
 
 @media (max-width: 575.98px) {
     .page-header { flex-direction: column; align-items: flex-start; }
     .page-title  { font-size: 1.25rem; }
     .stat-card__value { font-size: 1.6rem; }
+}
+
+.profile-sisa-cuti {
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+}
+@media (min-width: 768px) {
+    .profile-sisa-cuti {
+        border-top: none !important;
+    }
+}
+
+.quota-select {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 30px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    padding: 6px 32px 6px 16px !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-position: right 12px center !important;
+    background-size: 10px 10px !important;
+}
+.quota-select:hover, .quota-select:focus {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.quota-select-btn {
+    background: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.6) !important;
+    border-radius: 0 !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    padding: 0 0 2px 0 !important;
+    box-shadow: none !important;
+    display: inline-flex;
+    align-items: center;
+}
+.quota-select-btn:hover, .quota-select-btn:focus, .quota-select-btn:active {
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-bottom-color: #ffffff !important;
+    box-shadow: none !important;
+    outline: none !important;
 }

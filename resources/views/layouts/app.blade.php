@@ -79,6 +79,13 @@
             </li>
 
             <li class="nav-item">
+                <a href="{{ route('admin.calendar') }}" class="nav-link {{ request()->routeIs('admin.calendar') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-week"></i>
+                    <span>Kalender Cuti</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a href="{{ route('admin.pengajuan.index') }}" class="nav-link {{ request()->routeIs('admin.pengajuan.*') ? 'active' : '' }}">
                     <i class="bi bi-file-earmark-text"></i>
                     <span>Pengajuan Cuti</span>
@@ -143,6 +150,13 @@
                 <a href="{{ route('pegawai.dashboard') }}" class="nav-link {{ request()->routeIs('pegawai.dashboard') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i>
                     <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ route('pegawai.calendar') }}" class="nav-link {{ request()->routeIs('pegawai.calendar') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-week"></i>
+                    <span>Kalender Cuti</span>
                 </a>
             </li>
 
@@ -251,7 +265,7 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="{{ asset('js/app.js') }}"></script>
 
 @stack('scripts')
 </body>
