@@ -105,7 +105,10 @@ class DashboardController extends Controller
         $client = new \Google\Client();
         $client->setClientId(config('filesystems.disks.google.clientId'));
         $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
-        $client->setRedirectUri(route('admin.gdrive.callback'));
+        
+        $redirectUri = config('filesystems.disks.google.redirectUri') ?: route('admin.gdrive.callback');
+        $client->setRedirectUri($redirectUri);
+        
         $client->addScope(\Google\Service\Drive::DRIVE);
         $client->setAccessType('offline');
         $client->setPrompt('select_account consent');
@@ -124,7 +127,9 @@ class DashboardController extends Controller
             $client = new \Google\Client();
             $client->setClientId(config('filesystems.disks.google.clientId'));
             $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
-            $client->setRedirectUri(route('admin.gdrive.callback'));
+            
+            $redirectUri = config('filesystems.disks.google.redirectUri') ?: route('admin.gdrive.callback');
+            $client->setRedirectUri($redirectUri);
 
             $token = $client->fetchAccessTokenWithAuthCode($code);
 

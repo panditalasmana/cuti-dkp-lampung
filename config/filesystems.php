@@ -65,6 +65,7 @@ return [
             'refreshToken' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
             'serviceAccountJson' => env('GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON'),
             'folderId' => env('GOOGLE_DRIVE_FOLDER_ID'),
+            'redirectUri' => env('GOOGLE_DRIVE_REDIRECT_URI'),
         ],
 
     ],
