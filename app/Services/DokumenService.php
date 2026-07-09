@@ -124,6 +124,9 @@ class DokumenService
             $client->setClientId(config('filesystems.disks.google.clientId'));
             $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
             $tokenArray = $client->fetchAccessTokenWithRefreshToken(config('filesystems.disks.google.refreshToken'));
+            if (!isset($tokenArray['access_token'])) {
+                throw new \Exception("Koneksi Google Drive terputus. Token kedaluwarsa atau dicabut. Silakan login kembali di browser menggunakan tautan berikut untuk menyambungkannya: " . route('admin.gdrive.auth'));
+            }
             $client->setAccessToken($tokenArray);
         }
         
@@ -171,6 +174,9 @@ class DokumenService
                 $client->setClientId(config('filesystems.disks.google.clientId'));
                 $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
                 $tokenArray = $client->fetchAccessTokenWithRefreshToken(config('filesystems.disks.google.refreshToken'));
+                if (!isset($tokenArray['access_token'])) {
+                    throw new \Exception("Koneksi Google Drive terputus. Token kedaluwarsa atau dicabut. Silakan login kembali di browser menggunakan tautan berikut untuk menyambungkannya: " . route('admin.gdrive.auth'));
+                }
                 $client->setAccessToken($tokenArray);
             }
             $client->addScope(\Google\Service\Drive::DRIVE);
