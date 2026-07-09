@@ -78,9 +78,19 @@ class PengajuanCutiRepository
     {
         $tahun  = now()->year;
         $bulan  = str_pad(now()->month, 2, '0', STR_PAD_LEFT);
-        $count  = $this->model->whereYear('tanggal_pengajuan', $tahun)->count() + 1;
-        $urutan = str_pad($count, 4, '0', STR_PAD_LEFT);
-        return "DKP.800/{$urutan}/CUTI/{$bulan}/{$tahun}";
+        
+        $count = $this->model->withTrashed()->whereYear('tanggal_pengajuan', $tahun)->count() + 1;
+        do {
+            $urutan = str_pad($count, 4, '0', STR_PAD_LEFT);
+            $nomorSurat = "DKP.800/{$urutan}/CUTI/{$bulan}/{$tahun}";
+            $exists = $this->model->withTrashed()->where('nomor_surat', $nomorSurat)->exists();
+            if (!$exists) {
+                break;
+            }
+            $count++;
+        } while (true);
+
+        return $nomorSurat;
     }
 
     public function countByStatus(string $status): int

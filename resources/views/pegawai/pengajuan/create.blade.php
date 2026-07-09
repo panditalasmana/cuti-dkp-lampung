@@ -330,12 +330,6 @@ const fpMulai = flatpickr("#tanggalMulai", {
         if (selectedDates.length > 0) {
             fpSelesai.set("minDate", dateStr);
             
-            // Otomatis isi tanggal selesai jika kosong
-            const selesaiVal = document.getElementById('tanggalSelesai').value;
-            if (!selesaiVal) {
-                fpSelesai.setDate(selectedDates[0]);
-            }
-            
             if (checkDateConflict()) return;
             hitungLamaCuti();
         }
