@@ -40,7 +40,7 @@ class DashboardController extends Controller
             if (!isset($usedDays[$kode])) {
                 $usedDays[$kode] = 0;
             }
-            $usedDays[$kode] += $cuti->jumlah_hari;
+            $usedDays[$kode] += $cuti->lama_cuti;
         }
 
         // Ambil semua jenis cuti untuk list dropdown kuota di dashboard
@@ -48,6 +48,12 @@ class DashboardController extends Controller
         $quotas = [];
         foreach ($jenisCutiList as $jc) {
             $kode = $jc->kode_cuti;
+            
+            // Skip Cuti Melahirkan jika bukan perempuan
+            if ($kode === 'CM' && $pegawai->jenis_kelamin !== 'P') {
+                continue;
+            }
+            
             $used = $usedDays[$kode] ?? 0;
             
             if ($kode === 'CT') {

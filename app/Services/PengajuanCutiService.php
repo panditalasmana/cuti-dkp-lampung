@@ -191,9 +191,25 @@ class PengajuanCutiService
             throw ValidationException::withMessages(['jenis_cuti_id' => 'Cuti melahirkan hanya dapat diajukan oleh pegawai perempuan.']);
         }
 
-        // Validasi sisa cuti tahunan jika memotong kuota
-        if ($jenisCuti->potong_kuota && $pegawai->sisa_cuti_tahunan < $lamaCuti) {
-            throw ValidationException::withMessages(['lama_cuti' => "Sisa cuti tahunan Anda ({$pegawai->sisa_cuti_tahunan} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);
+        if ($jenisCuti->kode_cuti !== 'CT') {
+            $tahunIni = now()->year;
+            $usedDays = $pegawai->pengajuanCuti()
+                ->where('status', '!=', PengajuanCuti::STATUS_DITOLAK)
+                ->where('jenis_cuti_id', $jenisCuti->id)
+                ->whereYear('tanggal_mulai', $tahunIni)
+                ->sum('lama_cuti');
+
+            $maksHari = $jenisCuti->maks_hari ?? 0;
+            $sisaKuota = max($maksHari - $usedDays, 0);
+
+            if ($sisaKuota < $lamaCuti) {
+                throw ValidationException::withMessages(['lama_cuti' => "Sisa kuota untuk {$jenisCuti->nama_cuti} Anda ({$sisaKuota} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);
+            }
+        } else {
+            // Validasi sisa cuti tahunan jika memotong kuota
+            if ($jenisCuti->potong_kuota && $pegawai->sisa_cuti_tahunan < $lamaCuti) {
+                throw ValidationException::withMessages(['lama_cuti' => "Sisa cuti tahunan Anda ({$pegawai->sisa_cuti_tahunan} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);
+            }
         }
 
         // Cek tidak ada pengajuan aktif yang bertabrakan

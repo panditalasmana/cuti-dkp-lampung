@@ -92,7 +92,7 @@ class DashboardController extends Controller
                         'jenis_cuti' => $item->jenisCuti->nama_cuti ?? '-',
                         'tanggal_mulai' => $item->tanggal_mulai->isoFormat('D MMMM Y'),
                         'tanggal_selesai' => $item->tanggal_selesai->isoFormat('D MMMM Y'),
-                        'jumlah_hari' => $item->jumlah_hari,
+                        'jumlah_hari' => $item->lama_cuti,
                     ]
                 ];
             });
