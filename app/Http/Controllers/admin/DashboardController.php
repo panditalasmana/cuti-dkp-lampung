@@ -99,4 +99,74 @@ class DashboardController extends Controller
 
         return response()->json($events);
     }
+
+    public function gdriveAuth()
+    {
+        $client = new \Google\Client();
+        $client->setClientId(config('filesystems.disks.google.clientId'));
+        $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
+        $client->setRedirectUri(route('admin.gdrive.callback'));
+        $client->addScope(\Google\Service\Drive::DRIVE);
+        $client->setAccessType('offline');
+        $client->setPrompt('select_account consent');
+
+        return redirect()->away($client->createAuthUrl());
+    }
+
+    public function gdriveCallback(\Illuminate\Http\Request $request)
+    {
+        $code = $request->get('code');
+        if (!$code) {
+            return "Error: Authorization code not found.";
+        }
+
+        try {
+            $client = new \Google\Client();
+            $client->setClientId(config('filesystems.disks.google.clientId'));
+            $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
+            $client->setRedirectUri(route('admin.gdrive.callback'));
+
+            $token = $client->fetchAccessTokenWithAuthCode($code);
+
+            if (isset($token['refresh_token'])) {
+                $refreshToken = $token['refresh_token'];
+                
+                // Update .env file
+                $envPath = base_path('.env');
+                if (file_exists($envPath)) {
+                    $envContent = file_get_contents($envPath);
+                    
+                    // Replace GOOGLE_DRIVE_REFRESH_TOKEN
+                    $pattern = '/^GOOGLE_DRIVE_REFRESH_TOKEN=.*$/m';
+                    if (preg_match($pattern, $envContent)) {
+                        $envContent = preg_replace($pattern, 'GOOGLE_DRIVE_REFRESH_TOKEN="' . $refreshToken . '"', $envContent);
+                    } else {
+                        $envContent .= "\nGOOGLE_DRIVE_REFRESH_TOKEN=\"" . $refreshToken . "\"";
+                    }
+                    
+                    // Remove GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON if exists
+                    $patternSA = '/^GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON=.*$/m';
+                    if (preg_match($patternSA, $envContent)) {
+                        $envContent = preg_replace($patternSA, 'GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON=""', $envContent);
+                    }
+                    
+                    file_put_contents($envPath, $envContent);
+                    
+                    // Clear config cache
+                    \Illuminate\Support\Facades\Artisan::call('config:clear');
+                    
+                    return "<h1>🎉 Refresh Token Berhasil Diperbarui!</h1>
+                            <p>Refresh token baru Anda telah disimpan di file <code>.env</code>.</p>
+                            <p>Silakan uji kembali fitur upload berkas/bukti scan cuti Anda.</p>
+                            <p><a href='" . route('admin.dashboard') . "'>Kembali ke Dashboard Admin</a></p>";
+                }
+                
+                return "File .env tidak ditemukan, silakan salin token ini ke .env Anda secara manual:<br><br><code>" . $refreshToken . "</code>";
+            } else {
+                return "Gagal mendapatkan Refresh Token. Silakan coba kembali atau pastikan Anda memberikan semua izin (centang izin Google Drive).<br><br>Response:<pre>" . print_r($token, true) . "</pre>";
+            }
+        } catch (\Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
+    }
 }

@@ -78,4 +78,49 @@ class DashboardController extends Controller
     {
         return view('pegawai.calendar');
     }
+
+    public function calendarEvents(): \Illuminate\Http\JsonResponse
+    {
+        $pegawai = $this->pegawaiService->findByUserId(Auth::id());
+        $events = \App\Models\PengajuanCuti::where('status', 'disetujui')
+            ->where('pegawai_id', $pegawai->id)
+            ->with(['pegawai.bidang', 'jenisCuti'])
+            ->get()
+            ->map(function ($item) {
+                $namaCuti = strtolower($item->jenisCuti->nama_cuti ?? '');
+                $color = '#14b8a6'; // default: teal
+                
+                if (str_contains($namaCuti, 'tahunan')) {
+                    $color = '#0d6efd'; // blue
+                } elseif (str_contains($namaCuti, 'sakit')) {
+                    $color = '#dc3545'; // red
+                } elseif (str_contains($namaCuti, 'melahirkan')) {
+                    $color = '#ec4899'; // pink
+                } elseif (str_contains($namaCuti, 'besar')) {
+                    $color = '#6f42c1'; // purple
+                } elseif (str_contains($namaCuti, 'penting')) {
+                    $color = '#fd7e14'; // orange
+                }
+
+                return [
+                    'id' => $item->id,
+                    'title' => ($item->pegawai->nama_lengkap ?? 'Pegawai') . ' - ' . ($item->jenisCuti->nama_cuti ?? 'Cuti'),
+                    'start' => $item->tanggal_mulai->format('Y-m-d'),
+                    'end' => $item->tanggal_selesai->copy()->addDay()->format('Y-m-d'),
+                    'backgroundColor' => $color,
+                    'borderColor' => $color,
+                    'extendedProps' => [
+                        'nama' => $item->pegawai->nama_lengkap ?? '-',
+                        'nip' => $item->pegawai->nip ?? '-',
+                        'bidang' => $item->pegawai->bidang->nama_bidang ?? '-',
+                        'jenis_cuti' => $item->jenisCuti->nama_cuti ?? '-',
+                        'tanggal_mulai' => $item->tanggal_mulai->isoFormat('D MMMM Y'),
+                        'tanggal_selesai' => $item->tanggal_selesai->isoFormat('D MMMM Y'),
+                        'jumlah_hari' => $item->lama_cuti,
+                    ]
+                ];
+            });
+
+        return response()->json($events);
+    }
 }

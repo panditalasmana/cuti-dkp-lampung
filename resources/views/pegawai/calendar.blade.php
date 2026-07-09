@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,listMonth'
         },
-        events: '{{ route('calendar.events') }}',
+        events: '{{ route('pegawai.calendar.events') }}',
         eventClick: function(info) {
             const props = info.event.extendedProps;
             

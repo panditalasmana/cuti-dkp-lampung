@@ -45,6 +45,8 @@ Route::middleware(['auth', 'role:admin'])
     // Dashboard & Kalender
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/kalender',  [Admin\DashboardController::class, 'calendar'])->name('calendar');
+    Route::get('/gdrive/auth',     [Admin\DashboardController::class, 'gdriveAuth'])->name('gdrive.auth');
+    Route::get('/gdrive/callback', [Admin\DashboardController::class, 'gdriveCallback'])->name('gdrive.callback');
 
     // Master: Bidang
     Route::resource('bidang', Admin\BidangController::class);
@@ -87,6 +89,7 @@ Route::middleware(['auth', 'role:pegawai'])
     // Dashboard & Kalender
     Route::get('/dashboard', [Pegawai\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/kalender',  [Pegawai\DashboardController::class, 'calendar'])->name('calendar');
+    Route::get('/kalender/events', [Pegawai\DashboardController::class, 'calendarEvents'])->name('calendar.events');
 
     // Pengajuan Cuti
     Route::prefix('pengajuan')->name('pengajuan.')->group(function () {

@@ -77,45 +77,6 @@
             </div>
         </div>
 
-        <!-- Form Update Profil (yang boleh diubah pegawai) -->
-        <div class="card card-custom mb-4">
-            <div class="card-header-custom">
-                <h5 class="card-title-custom"><i class="bi bi-pencil-square me-2"></i>Perbarui Kontak & Foto</h5>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{{ route('pegawai.profil.update') }}" enctype="multipart/form-data">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Alamat Lengkap</label>
-                            <textarea name="alamat" class="form-control @error('alamat') is-invalid @enderror"
-                                      rows="2">{{ old('alamat', $pegawai->alamat) }}</textarea>
-                            @error('alamat')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="form-label fw-semibold">No. Telepon</label>
-                            <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror"
-                                   value="{{ old('no_telepon', $pegawai->no_telepon) }}" maxlength="15">
-                            @error('no_telepon')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="form-label fw-semibold">Email</label>
-                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                                   value="{{ old('email', $pegawai->email) }}">
-                            @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Foto Profil</label>
-                            <input type="file" name="foto" class="form-control" accept="image/jpg,image/jpeg,image/png">
-                            <div class="form-text">Format JPG/PNG, maks. 2MB.</div>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-3">
-                        <i class="bi bi-save me-1"></i>Simpan Perubahan
-                    </button>
-                </form>
-            </div>
-        </div>
 
         <!-- Ganti Password -->
         <div class="card card-custom">

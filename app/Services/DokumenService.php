@@ -123,7 +123,8 @@ class DokumenService
         } else {
             $client->setClientId(config('filesystems.disks.google.clientId'));
             $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
-            $client->refreshToken(config('filesystems.disks.google.refreshToken'));
+            $tokenArray = $client->fetchAccessTokenWithRefreshToken(config('filesystems.disks.google.refreshToken'));
+            $client->setAccessToken($tokenArray);
         }
         
         $client->addScope(\Google\Service\Drive::DRIVE);
@@ -169,7 +170,8 @@ class DokumenService
             } else {
                 $client->setClientId(config('filesystems.disks.google.clientId'));
                 $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
-                $client->refreshToken(config('filesystems.disks.google.refreshToken'));
+                $tokenArray = $client->fetchAccessTokenWithRefreshToken(config('filesystems.disks.google.refreshToken'));
+                $client->setAccessToken($tokenArray);
             }
             $client->addScope(\Google\Service\Drive::DRIVE);
             $service = new \Google\Service\Drive($client);
