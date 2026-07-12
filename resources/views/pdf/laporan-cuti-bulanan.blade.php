@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Rekapitulasi Cuti Pegawai</title>
+    <title>Laporan Bulanan Rekapitulasi Cuti Pegawai</title>
     <style>
         @page {
             margin: 20px;
@@ -67,11 +67,9 @@
 </head>
 <body>
     <div class="header">
-        <h2>Laporan Rekapitulasi Cuti Pegawai</h2>
+        <h2>Laporan Bulanan Rekapitulasi Cuti Pegawai</h2>
         <p>Dinas Kelautan dan Perikanan Provinsi Lampung</p>
-        @if(!empty($filters['tahun']))
-            <p>Tahun: {{ $filters['tahun'] }} @if(!empty($filters['bulan'])) | Bulan: {{ \Carbon\Carbon::create()->month($filters['bulan'])->translatedFormat('F') }} @endif</p>
-        @endif
+        <p>Tahun: {{ $filters['tahun'] }} | Bulan: {{ \Carbon\Carbon::create()->month($filters['bulan'])->translatedFormat('F') }}</p>
     </div>
 
     <table>
@@ -84,7 +82,7 @@
                 <th width="12%">Bidang</th>
                 <th width="10%">Jenis Cuti</th>
                 <th width="15%">Tanggal Cuti</th>
-                <th width="5%">Lama</th>
+                <th width="12%">Lama Cuti</th>
                 <th width="8%">Status</th>
             </tr>
         </thead>
@@ -94,7 +92,7 @@
                     <td class="center">{{ $index + 1 }}</td>
                     <td>{{ $item->tanggal_pengajuan?->format('d/m/Y') ?? '-' }}</td>
                     <td>{{ $item->pegawai->nip ?? '-' }}</td>
-                    <td>{{ $item->pegawai->nama_lengkap ?? '-' }}</td>
+                    <td style="font-weight: bold;">{{ $item->pegawai->nama_lengkap ?? '-' }}</td>
                     <td>
                         {{ $item->pegawai->bidang->nama_bidang ?? '-' }}
                         @if($item->pegawai->sub_bagian)
@@ -125,7 +123,7 @@
     </table>
 
     <div class="footer">
-        Dicetak otomatis oleh Cuti DKP Lampung pada: {{ $generated }}
+        Dicetak otomatis oleh SIPENCUTI pada: {{ $generated }}
     </div>
 </body>
 </html>

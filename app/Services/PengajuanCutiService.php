@@ -50,8 +50,8 @@ class PengajuanCutiService
         return DB::transaction(function () use ($pegawai, $data) {
             $jenisCuti = \App\Models\JenisCuti::findOrFail($data['jenis_cuti_id']);
 
-            // Hitung lama cuti (hari kerja, tidak termasuk weekend)
-            $lamaCuti = $this->hitungHariKerja($data['tanggal_mulai'], $data['tanggal_selesai']);
+            // Hitung lama cuti sesuai jenis cuti (hari kerja, bulan, atau tahun)
+            $lamaCuti = $this->hitungLamaCuti($jenisCuti, $data['tanggal_mulai'], $data['tanggal_selesai']);
 
             // Validasi bisnis
             $this->validasiPengajuan($pegawai, $jenisCuti, $data, $lamaCuti);
@@ -149,6 +149,27 @@ class PengajuanCutiService
     }
 
     /**
+     * Hitung lama cuti berdasarkan jenis cuti (hari kerja, bulan, atau tahun)
+     */
+    public function hitungLamaCuti($jenisCuti, string $mulai, string $selesai): int
+    {
+        $kode = $jenisCuti->kode_cuti ?? '';
+        if ($kode === 'CM') {
+            $start = \Carbon\Carbon::parse($mulai);
+            $end   = \Carbon\Carbon::parse($selesai);
+            $days  = $start->diffInDays($end) + 1;
+            return (int) max(1, round($days / 30));
+        }
+        if ($kode === 'CLN') {
+            $start = \Carbon\Carbon::parse($mulai);
+            $end   = \Carbon\Carbon::parse($selesai);
+            $days  = $start->diffInDays($end) + 1;
+            return (int) max(1, round($days / 365));
+        }
+        return $this->hitungHariKerja($mulai, $selesai);
+    }
+
+    /**
      * Hitung hari kerja (Senin - Jumat)
      */
     public function hitungHariKerja(string $mulai, string $selesai): int
@@ -203,7 +224,7 @@ class PengajuanCutiService
             $sisaKuota = max($maksHari - $usedDays, 0);
 
             if ($sisaKuota < $lamaCuti) {
-                throw ValidationException::withMessages(['lama_cuti' => "Sisa kuota untuk {$jenisCuti->nama_cuti} Anda ({$sisaKuota} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);
+                throw ValidationException::withMessages(['lama_cuti' => "Sisa kuota untuk {$jenisCuti->nama_cuti} Anda ({$sisaKuota} {$jenisCuti->satuan}) tidak mencukupi untuk pengajuan ini ({$lamaCuti} {$jenisCuti->satuan})."]);
             }
         } else {
             // Validasi sisa cuti tahunan jika memotong kuota

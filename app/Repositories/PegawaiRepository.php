@@ -20,6 +20,13 @@ class PegawaiRepository
                            ->when(!empty($filters['bidang_id']), fn($q) => $q->where('bidang_id', $filters['bidang_id']))
                            ->when(!empty($filters['jabatan_id']), fn($q) => $q->where('jabatan_id', $filters['jabatan_id']))
                            ->when(!empty($filters['jenis_pegawai']), fn($q) => $q->where('jenis_pegawai', $filters['jenis_pegawai']))
+                           ->when(isset($filters['status']) && $filters['status'] !== '', function ($q) use ($filters) {
+                               if ($filters['status'] === 'aktif') {
+                                   $q->where('is_active', true);
+                               } elseif ($filters['status'] === 'nonaktif') {
+                                   $q->where('is_active', false);
+                               }
+                           })
                            ->orderBy('nama_lengkap')
                            ->paginate($perPage)
                            ->withQueryString();

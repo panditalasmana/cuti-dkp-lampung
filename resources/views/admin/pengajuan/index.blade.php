@@ -109,7 +109,7 @@
                                 <div class="small">{{ $item->tanggal_mulai->isoFormat('D MMM Y') }}</div>
                                 <div class="small text-muted">s.d. {{ $item->tanggal_selesai->isoFormat('D MMM Y') }}</div>
                             </td>
-                            <td class="text-center fw-semibold">{{ $item->lama_cuti }} hr</td>
+                            <td class="text-center fw-semibold">{{ $item->lama_cuti_display }}</td>
                             <td>
                                 @include('components.status-badge', ['status' => $item->status])
                             </td>

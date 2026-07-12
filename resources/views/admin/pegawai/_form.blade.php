@@ -58,6 +58,7 @@
             <option value="">-- Pilih Sub Bagian (Opsional) --</option>
             <option value="Sub Bagian Keuangan dan Aset" {{ old('sub_bagian', $pegawai->sub_bagian ?? '') === 'Sub Bagian Keuangan dan Aset' ? 'selected' : '' }}>Sub Bagian Keuangan dan Aset</option>
             <option value="Sub Bagian Umum dan Kepegawaian" {{ old('sub_bagian', $pegawai->sub_bagian ?? '') === 'Sub Bagian Umum dan Kepegawaian' ? 'selected' : '' }}>Sub Bagian Umum dan Kepegawaian</option>
+            <option value="Sub Bagian Tata Usaha" {{ old('sub_bagian', $pegawai->sub_bagian ?? '') === 'Sub Bagian Tata Usaha' ? 'selected' : '' }}>Sub Bagian Tata Usaha</option>
         </select>
         @error('sub_bagian')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
@@ -137,7 +138,7 @@
         <input type="text" name="no_telepon" class="form-control" value="{{ old('no_telepon', $pegawai->no_telepon ?? '') }}" maxlength="15">
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-8">
         <label class="form-label fw-semibold">Foto Pegawai</label>
         <input type="file" name="foto" class="form-control" accept="image/jpg,image/jpeg,image/png">
         <div class="form-text">Format JPG/PNG, maks. 2MB.</div>
@@ -148,14 +149,12 @@
         @endif
     </div>
 
-    @isset($pegawai)
-    <div class="col-sm-6">
-        <label class="form-label fw-semibold">Status Akun</label>
-        <div class="form-check form-switch mt-2">
-            <input class="form-check-input" type="checkbox" name="is_active" id="isActive" value="1"
-                   {{ old('is_active', $pegawai->is_active) ? 'checked' : '' }}>
-            <label class="form-check-label" for="isActive">Akun Pegawai Aktif</label>
-        </div>
+    <div class="col-sm-4">
+        <label class="form-label fw-semibold">Status Pegawai <span class="text-danger">*</span></label>
+        <select name="is_active" class="form-select @error('is_active') is-invalid @enderror" required>
+            <option value="1" {{ old('is_active', isset($pegawai) ? ($pegawai->is_active ? '1' : '0') : '1') == '1' ? 'selected' : '' }}>Aktif</option>
+            <option value="0" {{ old('is_active', isset($pegawai) ? ($pegawai->is_active ? '1' : '0') : '1') == '0' ? 'selected' : '' }}>Non-Aktif</option>
+        </select>
+        @error('is_active')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
-    @endisset
 </div>

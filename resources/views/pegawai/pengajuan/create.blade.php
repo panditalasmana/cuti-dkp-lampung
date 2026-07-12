@@ -46,7 +46,7 @@
                                 <input type="text" class="form-control bg-light" value="{{ $pegawai->jabatan->nama_jabatan ?? '-' }}" readonly>
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label text-muted small">Bidang</label>
+                                <label class="form-label text-muted small">Bidang / UPTD</label>
                                 <input type="text" class="form-control bg-light" value="{{ $pegawai->bidang->nama_bidang ?? '-' }}" readonly>
                             </div>
                             <div class="col-sm-6">
@@ -118,8 +118,8 @@
                             <div class="col-12">
                                 <div id="lamaCutiPreview" class="lama-cuti-box d-none">
                                     <i class="bi bi-calendar2-week me-2"></i>
-                                    Lama Cuti: <strong id="lamaCutiValue">0</strong> Hari Kerja
-                                    <span class="text-muted small">(Senin–Jumat, tidak termasuk weekend)</span>
+                                    Lama Cuti: <strong id="lamaCutiValue">0</strong> <span id="lamaCutiSatuan">Hari Kerja</span>
+                                    <span id="lamaCutiNote" class="text-muted small">(Senin–Jumat, tidak termasuk weekend)</span>
                                 </div>
                                 <div id="lamaCutiLoading" class="text-muted small d-none">
                                     <div class="spinner-border spinner-border-sm me-1"></div>Menghitung hari kerja...
@@ -177,12 +177,6 @@
                                     <option value="A. FAISAL, A.Pi.|197402031999031006|Sekretaris Dinas" {{ old('atasan_langsung_select') == 'A. FAISAL, A.Pi.|197402031999031006|Sekretaris Dinas' ? 'selected' : '' }}>
                                         A. FAISAL, A.Pi. (Sekretaris Dinas - NIP. 197402031999031006)
                                     </option>
-                                    <option value="Imam Komarita S.Pi. M.Si.|198601302011011004|Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas" {{ old('atasan_langsung_select') == ' Imam Komarita S.Pi. M.Si.|198601302011011004|Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas' ? 'selected' : '' }}>
-                                        Imam Komarita S.Pi. M.Si. (Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas - NIP. 198601302011011004) 
-                                    </option>
-                                    <option value="Sri Hartati S.Pi. M.Ling.|197704132010012004|Kepala Sub Bagian Keuangan dan Aset Sekretariat Dinas" {{ old('atasan_langsung_select') == ' Sri Hartati S.Pi. M.Ling.|197704132010012004|Kepala Sub Bagian Keuangan dan Aset Sekretariat Dinas' ? 'selected' : '' }}>
-                                        Sri Hartati S.Pi. M.Ling. (Kepala Sub Bagian Keuangan dan Aset Sekretariat Dinas - NIP. 197704132010012004) 
-                                    </option>
                                     <option value="Hardian Sylvanandra Prayitno S.Pi. MM.|198503222008041001|Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan" {{ old('atasan_langsung_select') == ' Hardian Sylvanandra Prayitno S.Pi. MM|198503222008041001|Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan' ? 'selected' : '' }}>
                                         Hardian Sylvanandra Prayitno S.Pi. MM (Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan - NIP. 198503222008041001) 
                                     </option>
@@ -214,12 +208,19 @@
                                 <label class="form-label fw-semibold">Tanda Tangan Pejabat yang Berwenang <span class="text-danger">*</span></label>
                                 <select name="pejabat_wenang_select" class="form-select @error('pejabat_wenang_select') is-invalid @enderror" required>
                                     <option value="">-- Pilih Pejabat yang Berwenang --</option>
-                                    <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('pejabat_wenang_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
-                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
+                                    <option value="RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung" {{ old('pejabat_wenang_select') == 'RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung' ? 'selected' : '' }}>
+                                        RAHMAT MIRZANI DJAUSAL, S.T., M.M. (Gubernur Lampung)
+                                    </option>
+                                    <option value="Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung" {{ old('pejabat_wenang_select') == 'Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung' ? 'selected' : '' }}>
+                                        Dr. MARINDO KURNIAWAN, S.T., M.M. (Sekretaris Daerah Provinsi Lampung - NIP. 198012062002121010)
                                     </option>
                                     <option value="RENDY RISWANDI.S.STP, M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah" {{ old('pejabat_wenang_select') == 'RENDY RISWANDI.S.STP, M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah' ? 'selected' : '' }}>
                                         RENDY RISWANDI.S.STP, M.Si (Kepala BKD - NIP. 197705261997121001)
                                     </option>
+                                    <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('pejabat_wenang_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
+                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
+                                    </option>
+                                    
                                 </select>
                                 @error('pejabat_wenang_select')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
@@ -407,7 +408,9 @@ function hitungLamaCuti() {
     const mulai   = document.getElementById('tanggalMulai').value;
     const selesai = document.getElementById('tanggalSelesai').value;
 
-    if (!mulai || !selesai || selesai < mulai) {
+    const jenisCutiId = document.getElementById('jenisCutiSelect').value;
+
+    if (!mulai || !selesai || selesai < mulai || !jenisCutiId) {
         document.getElementById('lamaCutiPreview').classList.add('d-none');
         return;
     }
@@ -423,12 +426,23 @@ function hitungLamaCuti() {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
             },
-            body: JSON.stringify({ tanggal_mulai: mulai, tanggal_selesai: selesai }),
+            body: JSON.stringify({ tanggal_mulai: mulai, tanggal_selesai: selesai, jenis_cuti_id: jenisCutiId }),
         })
         .then(r => r.json())
         .then(data => {
             document.getElementById('lamaCutiLoading').classList.add('d-none');
             document.getElementById('lamaCutiValue').textContent = data.lama_cuti;
+            document.getElementById('lamaCutiSatuan').textContent = data.satuan_display;
+            
+            const noteDisplay = document.getElementById('lamaCutiNote');
+            if (noteDisplay) {
+                if (data.satuan_display === 'Hari Kerja') {
+                    noteDisplay.textContent = '(Senin–Jumat, tidak termasuk weekend)';
+                } else {
+                    noteDisplay.textContent = '(Termasuk akhir pekan dan hari libur)';
+                }
+            }
+            
             document.getElementById('lamaCutiPreview').classList.remove('d-none');
 
             // Cek jenis cuti potong kuota

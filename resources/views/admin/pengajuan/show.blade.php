@@ -54,7 +54,7 @@
                     <div class="col-sm-6">
                         <label class="detail-label">Lama Cuti</label>
                         <div class="detail-value">
-                            <span class="badge bg-primary fs-6">{{ $pengajuan->lama_cuti }} Hari Kerja</span>
+                            <span class="badge bg-primary fs-6">{{ $pengajuan->lama_cuti_display }}</span>
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -113,7 +113,7 @@
                         <div class="detail-value">{{ $pengajuan->pegawai->jabatan->nama_jabatan ?? '-' }}</div>
                     </div>
                     <div class="col-sm-6">
-                        <label class="detail-label">Bidang</label>
+                        <label class="detail-label">Bidang / UPTD</label>
                         <div class="detail-value">{{ $pengajuan->pegawai->bidang->nama_bidang ?? '-' }}</div>
                     </div>
                     <div class="col-sm-6">

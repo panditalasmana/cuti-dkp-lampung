@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </tr>
                                 <tr>
                                     <th class="bg-light">Durasi Cuti</th>
-                                    <td><strong class="text-primary">${props.jumlah_hari} Hari Kerja</strong></td>
+                                    <td><strong class="text-primary">${props.jumlah_hari}</strong></td>
                                 </tr>
                             </tbody>
                         </table>

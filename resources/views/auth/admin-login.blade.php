@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Administrator — Cuti DKP Lampung</title>
+    <title>Login Administrator — SIPENCUTI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -68,7 +68,7 @@
                 <div class="login-brand-icon-sm mx-auto mb-2" style="background: transparent;">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
-                <h4 class="fw-bold" style="color: var(--primary)">Cuti DKP Lampung</h4>
+                <h4 class="fw-bold" style="color: var(--primary)">SIPENCUTI</h4>
                 <p class="text-muted small">DKP Provinsi Lampung</p>
             </div>
 
@@ -150,7 +150,7 @@
 
             <p class="text-center text-muted" style="font-size: 0.75rem; margin-top: 3rem;">
                 © {{ date('Y') }} Dinas Kelautan dan Perikanan Provinsi Lampung<br>
-                Cuti DKP Lampung v1.0 — Hak Cipta Dilindungi
+                SIPENCUTI v1.0 — Hak Cipta Dilindungi
             </p>
         </div>
     </div>

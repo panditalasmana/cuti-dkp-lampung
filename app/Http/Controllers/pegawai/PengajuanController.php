@@ -112,13 +112,29 @@ class PengajuanController extends Controller
         $request->validate([
             'tanggal_mulai'   => ['required', 'date'],
             'tanggal_selesai' => ['required', 'date', 'after_or_equal:tanggal_mulai'],
+            'jenis_cuti_id'   => ['required', 'exists:jenis_cuti,id'],
         ]);
 
-        $hari = $this->service->hitungHariKerja(
+        $jenisCuti = \App\Models\JenisCuti::findOrFail($request->jenis_cuti_id);
+
+        $durasi = $this->service->hitungLamaCuti(
+            $jenisCuti,
             $request->tanggal_mulai,
             $request->tanggal_selesai
         );
 
-        return response()->json(['lama_cuti' => $hari]);
+        $satuan = $jenisCuti->satuan;
+        if ($satuan === 'hari') {
+            $satuanDisplay = 'Hari Kerja';
+        } elseif ($satuan === 'bulan') {
+            $satuanDisplay = 'Bulan';
+        } else {
+            $satuanDisplay = 'Tahun';
+        }
+
+        return response()->json([
+            'lama_cuti' => $durasi,
+            'satuan_display' => $satuanDisplay
+        ]);
     }
 }

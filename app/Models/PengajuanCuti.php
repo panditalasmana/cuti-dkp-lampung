@@ -82,6 +82,21 @@ class PengajuanCuti extends Model
         return null;
     }
 
+    public function getLamaCutiDisplayAttribute(): string
+    {
+        $satuan = $this->jenisCuti->satuan ?? 'hari';
+        if ($satuan === 'hari') {
+            return $this->lama_cuti . ' Hari Kerja';
+        }
+        if ($satuan === 'bulan') {
+            return $this->lama_cuti . ' Bulan';
+        }
+        if ($satuan === 'tahun') {
+            return $this->lama_cuti . ' Tahun';
+        }
+        return $this->lama_cuti . ' Hari Kerja';
+    }
+
     // ─── Scopes ────────────────────────────────────────────────────
     public function scopeMenunggu($query)
     {

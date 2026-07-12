@@ -312,7 +312,7 @@
                             <td><span class="text-muted">{{ $item->pegawai->bidang->nama_bidang ?? '-' }}</span></td>
                             <td><span class="badge badge-cuti">{{ $item->jenisCuti->nama_cuti }}</span></td>
                             <td>{{ $item->tanggal_mulai->isoFormat('D MMM Y') }}</td>
-                            <td><span class="fw-semibold">{{ $item->lama_cuti }} hari</span></td>
+                            <td><span class="fw-semibold">{{ $item->lama_cuti_display }}</span></td>
                             <td>
                                 <a href="{{ route('admin.pengajuan.show', $item) }}" class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i> Proses

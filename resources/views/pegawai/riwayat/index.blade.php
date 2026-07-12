@@ -84,7 +84,7 @@
                                 <div class="small">{{ $item->tanggal_mulai->isoFormat('D MMM Y') }}</div>
                                 <div class="small text-muted">s.d. {{ $item->tanggal_selesai->isoFormat('D MMM Y') }}</div>
                             </td>
-                            <td class="fw-semibold text-center">{{ $item->lama_cuti }} hr</td>
+                            <td class="fw-semibold text-center">{{ $item->lama_cuti_display }}</td>
                             <td>@include('components.status-badge', ['status' => $item->status])</td>
                             <td>
                                 @if($item->scanSurat)

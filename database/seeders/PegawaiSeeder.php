@@ -60,6 +60,19 @@ class PegawaiSeeder extends Seeder
                 $pangkat      = trim($row[7]  ?? '-');
                 $namaBidang   = trim($row[8]  ?? '');
                 $namaJabatan  = trim($row[9]  ?? '');
+                
+                $subBagian = null;
+                if ($namaBidang === 'Sub Bagian Umum dan Kepegawaian') {
+                    $namaBidang = 'Sekretariat';
+                    $subBagian = 'Sub Bagian Umum dan Kepegawaian';
+                } elseif ($namaBidang === 'Sub Bagian Keuangan dan Aset') {
+                    $namaBidang = 'Sekretariat';
+                    $subBagian = 'Sub Bagian Keuangan dan Aset';
+                }
+                
+                if (str_contains($namaBidang, 'UPTD') && str_contains($namaJabatan, 'Tata Usaha')) {
+                    $subBagian = 'Sub Bagian Tata Usaha';
+                }
                 $sisaCuti     = isset($row[10]) && $row[10] !== '' ? (int) trim($row[10]) : 12;
 
                 if (strlen($nip) < 10) {
@@ -121,6 +134,7 @@ class PegawaiSeeder extends Seeder
                     'nip'               => $nip,
                     'user_id'           => $user->id,
                     'bidang_id'         => $bidangId,
+                    'sub_bagian'        => $subBagian,
                     'jabatan_id'        => $jabatanId,
                     'nama_lengkap'      => $namaLengkap,
                     'jenis_kelamin'     => in_array($jenisKelamin, ['L', 'P']) ? $jenisKelamin : 'L',

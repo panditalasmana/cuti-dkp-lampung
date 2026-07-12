@@ -21,7 +21,7 @@ class PegawaiController extends Controller
 
     public function index(Request $request): View
     {
-        $filters = $request->only(['search', 'bidang_id', 'jabatan_id', 'jenis_pegawai']);
+        $filters = $request->only(['search', 'bidang_id', 'jabatan_id', 'jenis_pegawai', 'status']);
         $pegawai = $this->service->paginate(15, $filters);
         $bidang  = $this->bidangRepo->all();
         $jabatan = $this->jabatanRepo->all();
@@ -54,7 +54,10 @@ class PegawaiController extends Controller
             'pangkat'           => ['nullable', 'string', 'max:100'],
             'sisa_cuti_tahunan' => ['required', 'integer', 'min:0', 'max:72'],
             'foto'              => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'is_active'         => ['nullable', 'boolean'],
         ]);
+
+        $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
 
         $this->service->create($data);
 

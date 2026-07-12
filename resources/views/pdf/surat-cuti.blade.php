@@ -105,7 +105,7 @@
     <tr><td colspan="6" class="section">IV. LAMANYA CUTI</td></tr>
     <tr>
         <td width="18%">Selama</td>
-        <td width="15%"><b>{{ $pengajuan->lama_cuti }}</b> Hari</td>
+        <td width="15%"><b>{{ $pengajuan->lama_cuti_display }}</b></td>
         <td width="12%">Mulai</td>
         <td width="20%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_mulai)->translatedFormat('d F Y') }}</td>
         <td width="12%">Sampai</td>
@@ -178,8 +178,10 @@
         <td></td>
         <td></td>
         <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
-            <span style="font-weight:bold; text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'A. FAISAL, A.Pi.' }}</span><br>
-            NIP. {{ $pengajuan->atasan_nip ?? '197402031999031006' }}
+            <span style="font-weight:bold; text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'A. FAISAL, A.Pi.' }}</span>
+            @if(!empty($pengajuan->atasan_nip) && $pengajuan->atasan_nip !== '-')
+                <br>NIP. {{ $pengajuan->atasan_nip }}
+            @endif
         </td>
     </tr>
 </table>
@@ -206,8 +208,10 @@
         <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:6px;">
             <span style="font-weight:bold; text-decoration:underline;">
                 {{ $pengajuan->pejabat_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}
-            </span><br>
-            NIP. {{ $pengajuan->pejabat_nip ?? '196904101995031002' }}
+            </span>
+            @if(!empty($pengajuan->pejabat_nip) && $pengajuan->pejabat_nip !== '-')
+                <br>NIP. {{ $pengajuan->pejabat_nip }}
+            @endif
         </td>
     </tr>
 </table>

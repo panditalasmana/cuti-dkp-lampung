@@ -23,7 +23,7 @@
     <div class="card-body">
         <form method="GET">
             <div class="row g-3">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <input type="text" name="search" class="form-control" placeholder="Cari nama atau NIP..." value="{{ request('search') }}">
                 </div>
                 <div class="col-6 col-md-3">
@@ -34,11 +34,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-2">
                     <select name="jenis_pegawai" class="form-select">
                         <option value="">Semua Jenis</option>
                         <option value="PNS"    {{ request('jenis_pegawai') === 'PNS'    ? 'selected' : '' }}>PNS</option>
                         <option value="PPPK"   {{ request('jenis_pegawai') === 'PPPK'   ? 'selected' : '' }}>PPPK</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <select name="status" class="form-select">
+                        <option value="">Semua Status</option>
+                        <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
+                        <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
                     </select>
                 </div>
                 <div class="col-auto d-flex gap-2">
@@ -106,8 +113,8 @@
                                 </span>
                             </td>
                             <td>
-                                <span class="badge {{ $p->is_active ? 'bg-success' : 'bg-secondary' }}">
-                                    {{ $p->is_active ? 'Aktif' : 'Nonaktif' }}
+                                <span class="badge {{ $p->is_active ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $p->is_active ? 'Aktif' : 'Non-Aktif' }}
                                 </span>
                             </td>
                             <td>

@@ -34,7 +34,7 @@
                         <div class="detail-value"><code>{{ $pegawai->nip }}</code></div>
                     </div>
                     <div class="col-sm-6">
-                        <label class="detail-label">Bidang</label>
+                        <label class="detail-label">Bidang / UPTD</label>
                         <div class="detail-value">{{ $pegawai->bidang->nama_bidang ?? '-' }}</div>
                     </div>
                     <div class="col-sm-6">

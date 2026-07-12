@@ -52,7 +52,7 @@
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="quotaDropdownMenu" style="font-size: 0.85rem; font-family: 'Poppins', sans-serif; max-height: 220px; overflow-y: auto;">
                             @foreach($quotas as $q)
                                 <li>
-                                    <a class="dropdown-item quota-option {{ $q['kode'] === 'CT' ? 'active' : '' }}" href="#" data-value="{{ $q['sisa'] }}" data-name="{{ $q['nama'] }}">
+                                    <a class="dropdown-item quota-option {{ $q['kode'] === 'CT' ? 'active' : '' }}" href="#" data-value="{{ $q['sisa'] }}" data-name="{{ $q['nama'] }}" data-satuan="{{ $q['satuan'] }}">
                                         {{ $q['nama'] }}
                                     </a>
                                 </li>
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="display-4 fw-bold text-white mb-1" id="quotaValue">{{ $pegawai->sisa_cuti_tahunan }}</div>
-                <div class="text-white-50 small">hari tersisa</div>
+                <div class="text-white-50 small" id="quotaUnit">hari tersisa</div>
             </div>
         </div>
     </div>
@@ -138,7 +138,7 @@
                                 <div class="small">{{ \Illuminate\Support\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M Y') }}</div>
                                 <div class="small text-muted">s.d. {{ $item->tanggal_selesai->isoFormat('D MMM Y') }}</div>
                             </td>
-                            <td class="fw-semibold">{{ $item->lama_cuti }} hr</td>
+                            <td class="fw-semibold">{{ $item->lama_cuti_display }}</td>
                             <td>@include('components.status-badge', ['status' => $item->status])</td>
                             <td>
                                 <a href="{{ route('pegawai.pengajuan.show', $item) }}" class="btn btn-sm btn-primary">
@@ -183,6 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Ubah angka kuota
                 valueDisplay.textContent = this.dataset.value;
+
+                // Ubah satuan kuota
+                const unitDisplay = document.getElementById('quotaUnit');
+                if (unitDisplay) {
+                    unitDisplay.textContent = this.dataset.satuan + ' tersisa';
+                }
             });
         });
     }

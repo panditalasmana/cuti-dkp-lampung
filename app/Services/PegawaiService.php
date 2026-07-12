@@ -48,6 +48,7 @@ class PegawaiService
                 'email'    => $data['email'] ?? null,
                 'password' => Hash::make($data['password'] ?? 'Pegawai@123'),
                 'role'     => 'pegawai',
+                'is_active'=> $data['is_active'] ?? true,
             ]);
 
             // Handle foto upload
@@ -88,6 +89,7 @@ class PegawaiService
             $pegawai->user->update([
                 'name'  => $data['nama_lengkap'],
                 'email' => $data['email'] ?? null,
+                'is_active' => $data['is_active'] ?? true,
             ]);
 
             // Update password jika diisi

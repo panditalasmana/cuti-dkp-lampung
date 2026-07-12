@@ -39,6 +39,25 @@ class JenisCuti extends Model
         return $query->where('is_active', true);
     }
 
+    public function getSatuanAttribute(): string
+    {
+        if ($this->kode_cuti === 'CM') {
+            return 'bulan';
+        }
+        if ($this->kode_cuti === 'CLN') {
+            return 'tahun';
+        }
+        return 'hari';
+    }
+
+    public function getMaksDisplayAttribute(): string
+    {
+        if (is_null($this->maks_hari)) {
+            return 'Tidak terbatas';
+        }
+        return $this->maks_hari . ' ' . $this->satuan;
+    }
+
     public function pengajuanCuti(): HasMany
     {
         return $this->hasMany(PengajuanCuti::class);

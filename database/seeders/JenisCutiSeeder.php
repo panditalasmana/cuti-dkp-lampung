@@ -40,7 +40,7 @@ class JenisCutiSeeder extends Seeder
             [
                 'kode_cuti'     => 'CM',
                 'nama_cuti'     => 'Cuti Melahirkan',
-                'maks_hari'     => 90,
+                'maks_hari'     => 3,
                 'potong_kuota'  => false,
                 'perlu_lampiran'=> true,
                 'keterangan'    => 'Cuti melahirkan untuk pegawai wanita, maks 3 kali kelahiran',
@@ -58,7 +58,7 @@ class JenisCutiSeeder extends Seeder
             [
                 'kode_cuti'     => 'CLN',
                 'nama_cuti'     => 'Cuti di Luar Tanggungan Negara',
-                'maks_hari'     => 730,
+                'maks_hari'     => 2,
                 'potong_kuota'  => false,
                 'perlu_lampiran'=> true,
                 'keterangan'    => 'Cuti di luar tanggungan negara untuk alasan pribadi penting',

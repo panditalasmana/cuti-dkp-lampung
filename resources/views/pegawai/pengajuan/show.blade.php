@@ -57,7 +57,7 @@
                     <div class="col-sm-6">
                         <label class="detail-label">Lama Cuti</label>
                         <div class="detail-value">
-                            <span class="badge bg-primary fs-6">{{ $pengajuan->lama_cuti }} Hari Kerja</span>
+                            <span class="badge bg-primary fs-6">{{ $pengajuan->lama_cuti_display }}</span>
                         </div>
                     </div>
                     <div class="col-sm-6">
