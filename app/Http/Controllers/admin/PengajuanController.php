@@ -99,6 +99,7 @@ class PengajuanController extends Controller
         
         $perBulan  = $this->service->statistikBulanan($tahun);
         $perBidang = $this->service->statistikPerBidang($tahun);
+        $perJenisCuti = $this->service->statistikPerJenisCuti($tahun);
         
         $startYear = 2026;
         $currentYear = max($startYear, now()->year);
@@ -142,8 +143,15 @@ class PengajuanController extends Controller
                 $sum = ['CT' => 0, 'CB' => 0, 'CS' => 0, 'CM' => 0, 'CAK' => 0, 'CLN' => 0];
                 foreach ($p->pengajuanCuti as $c) {
                     $kode = $c->jenisCuti->kode_cuti ?? '';
+                    $lamaCuti = $c->lama_cuti;
+                    if ($kode === 'CB_HAJI') {
+                        $lamaCuti = $lamaCuti * 30; // 3 bulan = 90 hari
+                    }
+                    if ($kode === 'CB_UMROH' || $kode === 'CB_HAJI') {
+                        $kode = 'CB';
+                    }
                     if (array_key_exists($kode, $sum)) {
-                        $sum[$kode] += $c->lama_cuti;
+                        $sum[$kode] += $lamaCuti;
                     }
                 }
                 $reportData[] = [
@@ -160,6 +168,6 @@ class PengajuanController extends Controller
                 ->get();
         }
 
-        return view('admin.laporan.index', compact('statistik', 'perBulan', 'perBidang', 'tahun', 'bulan', 'tahunList', 'reportData', 'periodeLabel'));
+        return view('admin.laporan.index', compact('statistik', 'perBulan', 'perBidang', 'perJenisCuti', 'tahun', 'bulan', 'tahunList', 'reportData', 'periodeLabel'));
     }
 }

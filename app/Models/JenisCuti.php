@@ -41,7 +41,7 @@ class JenisCuti extends Model
 
     public function getSatuanAttribute(): string
     {
-        if ($this->kode_cuti === 'CM') {
+        if ($this->kode_cuti === 'CM' || $this->kode_cuti === 'CB_HAJI') {
             return 'bulan';
         }
         if ($this->kode_cuti === 'CLN') {
@@ -52,6 +52,9 @@ class JenisCuti extends Model
 
     public function getMaksDisplayAttribute(): string
     {
+        if ($this->kode_cuti === 'CB_UMROH' || $this->kode_cuti === 'CB_HAJI') {
+            return '90 hari';
+        }
         if (is_null($this->maks_hari)) {
             return 'Tidak terbatas';
         }

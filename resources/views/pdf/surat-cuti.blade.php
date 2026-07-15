@@ -80,7 +80,7 @@
         <td width="20%">Cuti Tahunan</td>
         <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '✓' : '' }}</span></td>
         <td width="20%">Cuti Besar</td>
-        <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CB'  ? '✓' : '' }}</span></td>
+        <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '✓' : '' }}</span></td>
         <td width="20%">Cuti Sakit</td>
         <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CS'  ? '✓' : '' }}</span></td>
         <td width="20%">Cuti Melahirkan</td>

@@ -13,9 +13,14 @@
         <h1 class="page-title">Data Pegawai</h1>
         <p class="page-subtitle">Kelola data seluruh pegawai DKP Provinsi Lampung</p>
     </div>
-    <a href="{{ route('admin.pegawai.create') }}" class="btn btn-primary">
-        <i class="bi bi-person-plus me-1"></i>Tambah Pegawai
-    </a>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importModal">
+            <i class="bi bi-file-earmark-excel me-1"></i>Import CSV / Excel
+        </button>
+        <a href="{{ route('admin.pegawai.create') }}" class="btn btn-primary">
+            <i class="bi bi-person-plus me-1"></i>Tambah Pegawai
+        </a>
+    </div>
 </div>
 
 <!-- Filter -->
@@ -149,6 +154,48 @@
     @if($pegawai->hasPages())
         <div class="card-footer bg-transparent">{{ $pegawai->links() }}</div>
     @endif
+</div>
+
+<!-- Modal Import -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importModalLabel"><i class="bi bi-file-earmark-excel me-2"></i>Import Pegawai dari CSV</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.pegawai.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="alert alert-info py-2" style="font-size: 0.85rem;">
+                        <i class="bi bi-info-circle me-1"></i><strong>Informasi Akun:</strong><br>
+                        * ID/Username login pegawai baru adalah <strong>NIP</strong>.<br>
+                        * Password default otomatis diatur ke <strong>4 digit pertama NIP</strong>.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="file_csv" class="form-label fw-semibold">Pilih Berkas CSV</label>
+                        <input class="form-control" type="file" id="file_csv" name="file_csv" accept=".csv,.txt" required>
+                        <div class="form-text small mt-1">Gunakan pemisah titik koma (;) atau koma (,). Ukuran berkas maks. 2MB.</div>
+                    </div>
+
+                    <div class="bg-light p-3 rounded mb-2">
+                        <h6 class="fw-bold mb-2" style="font-size: 0.85rem;"><i class="bi bi-download me-1"></i>Unduh Panduan & Template</h6>
+                        <p class="text-muted small mb-2">Untuk menghindari kegagalan import, silakan unduh berkas template di bawah ini sebagai acuan pengisian data Excel.</p>
+                        <a href="{{ route('admin.pegawai.download-template') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-download me-1"></i>Unduh Template CSV
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-upload me-1"></i>Mulai Import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection
 

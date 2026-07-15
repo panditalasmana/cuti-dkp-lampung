@@ -22,6 +22,14 @@
         <a href="{{ route('pegawai.pengajuan.cetak', $pengajuan) }}" class="btn btn-outline-primary">
             <i class="bi bi-download me-1"></i>Unduh/Cetak PDF
         </a>
+        @if($pengajuan->status === \App\Models\PengajuanCuti::STATUS_MENUNGGU)
+            <form action="{{ route('pegawai.pengajuan.batal', $pengajuan) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan cuti ini?')" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-x-circle me-1"></i>Batalkan Pengajuan
+                </button>
+            </form>
+        @endif
         <a href="{{ route('pegawai.riwayat.index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i>Kembali
         </a>
@@ -76,6 +84,21 @@
                         <label class="detail-label">No. Telepon Selama Cuti</label>
                         <div class="detail-value">{{ $pengajuan->no_telp_selama_cuti ?? '-' }}</div>
                     </div>
+                    @if($pengajuan->eselon_3)
+                        <div class="col-12">
+                            <label class="detail-label">Paraf Eselon 4</label>
+                            <div class="detail-value">
+                                @if(str_contains($pengajuan->eselon_3, '|'))
+                                    @php
+                                        $eselonParts = explode('|', $pengajuan->eselon_3);
+                                    @endphp
+                                    {{ $eselonParts[0] }} ({{ $eselonParts[2] }} - NIP. {{ $eselonParts[1] }})
+                                @else
+                                    {{ $pengajuan->eselon_3 }}
+                                @endif
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 @if($pengajuan->catatan_admin)

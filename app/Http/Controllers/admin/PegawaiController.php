@@ -112,4 +112,219 @@ class PegawaiController extends Controller
         return redirect()->route('admin.pegawai.index')
                          ->with('success', 'Pegawai berhasil dihapus.');
     }
+
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="template_import_pegawai.csv"',
+        ];
+
+        $callback = function() {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, [
+                'nip',
+                'nama_lengkap',
+                'email',
+                'bidang',
+                'sub_bagian',
+                'jabatan',
+                'jenis_pegawai',
+                'pangkat',
+                'tempat_lahir',
+                'tanggal_lahir',
+                'no_telepon',
+                'tanggal_masuk',
+                'sisa_cuti_tahunan',
+                'jenis_kelamin'
+            ], ';');
+
+            fputcsv($file, [
+                '199203102022031002',
+                'Budiman Santoso',
+                'budiman@mail.com',
+                'Sekretariat Dinas',
+                'Sub Bagian Umum dan Kepegawaian',
+                'Kepala Dinas',
+                'PNS',
+                'Penata Muda / IIIa',
+                'Bandar Lampung',
+                '10/03/1992',
+                '081234567890',
+                '01/03/2022',
+                '12',
+                'L'
+            ], ';');
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file_csv' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
+        ]);
+
+        $file = $request->file('file_csv');
+        $filePath = $file->getRealPath();
+
+        $handle = fopen($filePath, 'r');
+        if (!$handle) {
+            return redirect()->back()->with('error', 'Gagal membuka file CSV.');
+        }
+
+        $header = fgetcsv($handle, 0, ';');
+        if (!$header || count($header) < 5) {
+            rewind($handle);
+            $header = fgetcsv($handle, 0, ',');
+            $delimiter = ',';
+        } else {
+            $delimiter = ';';
+        }
+
+        if (!$header) {
+            fclose($handle);
+            return redirect()->back()->with('error', 'Format CSV tidak valid atau kosong.');
+        }
+
+        $header = array_map(function($h) {
+            return trim(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $h));
+        }, $header);
+
+        $fieldMap = array_flip($header);
+
+        $requiredFields = ['nip', 'nama_lengkap', 'bidang', 'jabatan', 'jenis_pegawai', 'tempat_lahir', 'tanggal_lahir', 'tanggal_masuk', 'sisa_cuti_tahunan'];
+        foreach ($requiredFields as $field) {
+            if (!isset($fieldMap[$field])) {
+                fclose($handle);
+                return redirect()->back()->with('error', "Kolom wajib '{$field}' tidak ditemukan dalam CSV.");
+            }
+        }
+
+        $successCount = 0;
+        $errorCount = 0;
+        $errors = [];
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+                if (empty($row) || count($row) < count($header)) {
+                    continue;
+                }
+
+                $nip = trim($row[$fieldMap['nip']]);
+                if (empty($nip)) continue;
+
+                if (Pegawai::where('nip', $nip)->exists()) {
+                    $errors[] = "NIP {$nip} sudah terdaftar.";
+                    $errorCount++;
+                    continue;
+                }
+
+                $nama = trim($row[$fieldMap['nama_lengkap']]);
+                $email = isset($fieldMap['email']) ? trim($row[$fieldMap['email']]) : null;
+                $bidangNama = trim($row[$fieldMap['bidang']]);
+                $jabatanNama = trim($row[$fieldMap['jabatan']]);
+                $subBagian = isset($fieldMap['sub_bagian']) ? trim($row[$fieldMap['sub_bagian']]) : null;
+                $jenisPegawai = strtoupper(trim($row[$fieldMap['jenis_pegawai']]));
+                $pangkat = isset($fieldMap['pangkat']) ? trim($row[$fieldMap['pangkat']]) : null;
+                $tempatLahir = trim($row[$fieldMap['tempat_lahir']]);
+                $tanggalLahir = trim($row[$fieldMap['tanggal_lahir']]);
+                $noTelepon = isset($fieldMap['no_telepon']) ? trim($row[$fieldMap['no_telepon']]) : null;
+                $tanggalMasuk = trim($row[$fieldMap['tanggal_masuk']]);
+                $sisaCuti = intval(trim($row[$fieldMap['sisa_cuti_tahunan']]));
+                $jenisKelamin = isset($fieldMap['jenis_kelamin']) ? strtoupper(trim($row[$fieldMap['jenis_kelamin']])) : 'L';
+
+                $bidang = \App\Models\Bidang::where('nama_bidang', 'LIKE', "%{$bidangNama}%")->first();
+                if (!$bidang) {
+                    $errors[] = "Baris NIP {$nip}: Bidang '{$bidangNama}' tidak ditemukan.";
+                    $errorCount++;
+                    continue;
+                }
+
+                $jabatan = \App\Models\Jabatan::where('nama_jabatan', 'LIKE', "%{$jabatanNama}%")->first();
+                if (!$jabatan) {
+                    $errors[] = "Baris NIP {$nip}: Jabatan '{$jabatanNama}' tidak ditemukan.";
+                    $errorCount++;
+                    continue;
+                }
+
+                try {
+                    $tglLahirParsed = $this->parseDate($tanggalLahir);
+                    $tglMasukParsed = $this->parseDate($tanggalMasuk);
+                } catch (\Exception $e) {
+                    $errors[] = "Baris NIP {$nip}: Format tanggal lahir/masuk salah. Gunakan YYYY-MM-DD atau DD/MM/YYYY.";
+                    $errorCount++;
+                    continue;
+                }
+
+                try {
+                    $this->service->create([
+                        'nip' => $nip,
+                        'nama_lengkap' => $nama,
+                        'email' => $email,
+                        'bidang_id' => $bidang->id,
+                        'sub_bagian' => $subBagian,
+                        'jabatan_id' => $jabatan->id,
+                        'jenis_pegawai' => $jenisPegawai,
+                        'pangkat' => $pangkat,
+                        'tempat_lahir' => $tempatLahir,
+                        'tanggal_lahir' => $tglLahirParsed,
+                        'no_telepon' => $noTelepon,
+                        'tanggal_masuk' => $tglMasukParsed,
+                        'sisa_cuti_tahunan' => $sisaCuti,
+                        'jenis_kelamin' => in_array($jenisKelamin, ['L', 'P']) ? $jenisKelamin : 'L',
+                        'is_active' => true,
+                    ]);
+                    $successCount++;
+                } catch (\Exception $e) {
+                    $errors[] = "Baris NIP {$nip}: Gagal menyimpan pegawai. " . $e->getMessage();
+                    $errorCount++;
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            fclose($handle);
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat melakukan import: ' . $e->getMessage());
+        }
+
+        fclose($handle);
+
+        $msg = "Import selesai. {$successCount} pegawai berhasil di-import.";
+        if ($errorCount > 0) {
+            $msg .= " {$errorCount} baris gagal. Detail kesalahan: " . implode(', ', array_slice($errors, 0, 5));
+            return redirect()->back()->with('warning', $msg);
+        }
+
+        return redirect()->back()->with('success', $msg);
+    }
+
+    private function parseDate(string $dateStr): string
+    {
+        $dateStr = trim($dateStr);
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateStr)) {
+            return $dateStr;
+        }
+
+        try {
+            $date = \Carbon\Carbon::createFromFormat('d/m/Y', $dateStr);
+            if ($date) {
+                return $date->format('Y-m-d');
+            }
+        } catch (\Exception $e) {}
+
+        try {
+            $date = \Carbon\Carbon::createFromFormat('d-m-Y', $dateStr);
+            if ($date) {
+                return $date->format('Y-m-d');
+            }
+        } catch (\Exception $e) {}
+
+        throw new \Exception("Invalid date format");
+    }
 }

@@ -1,4 +1,4 @@
-anti@extends('layouts.app')
+@extends('layouts.app')
 @section('title', 'Tambah Pegawai')
 
 @section('breadcrumb')

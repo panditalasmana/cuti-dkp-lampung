@@ -77,6 +77,46 @@
             </div>
         </div>
 
+        <!-- Edit Profil -->
+        <div class="card card-custom mb-4">
+            <div class="card-header-custom">
+                <h5 class="card-title-custom"><i class="bi bi-person-gear me-2"></i>Edit Profil</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ route('pegawai.profil.update') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Nomor Telepon</label>
+                            <input type="text" name="no_telepon" value="{{ old('no_telepon', $pegawai->no_telepon) }}"
+                                   class="form-control @error('no_telepon') is-invalid @enderror" placeholder="cth: 081234567890">
+                            @error('no_telepon')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" name="email" value="{{ old('email', $pegawai->user->email ?? '') }}"
+                                   class="form-control @error('email') is-invalid @enderror" placeholder="cth: email@domain.com">
+                            @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Alamat Tempat Tinggal</label>
+                            <textarea name="alamat" rows="3" class="form-control @error('alamat') is-invalid @enderror" 
+                                      placeholder="Alamat lengkap tempat tinggal saat ini (Opsional)">{{ old('alamat', $pegawai->alamat) }}</textarea>
+                            @error('alamat')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Unggah / Update Foto Profil</label>
+                            <input type="file" name="foto" class="form-control @error('foto') is-invalid @enderror" accept="image/png, image/jpeg, image/jpg">
+                            <div class="form-text text-muted small">Format: PNG, JPG, JPEG (Maks. 2MB)</div>
+                            @error('foto')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">
+                        <i class="bi bi-save me-1"></i>Simpan Perubahan
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <!-- Ganti Password -->
         <div class="card card-custom">
@@ -124,6 +164,14 @@
                         <span class="avatar-initial-xl">{{ substr($pegawai->nama_lengkap, 0, 1) }}</span>
                     @endif
                 </div>
+                @if($pegawai->foto)
+                    <form method="POST" action="{{ route('pegawai.profil.hapus-foto') }}" class="mb-3">
+                        @csrf
+                        <button type="submit" class="btn btn-xs btn-outline-danger py-1 px-2" style="font-size: 0.75rem;" onclick="return confirm('Apakah Anda yakin ingin menghapus foto profil ini?')">
+                            <i class="bi bi-trash3 me-1"></i>Hapus Foto
+                        </button>
+                    </form>
+                @endif
                 <h5 class="fw-bold mb-1">{{ $pegawai->nama_lengkap }}</h5>
                 <p class="text-muted small mb-2">{{ $pegawai->jabatan->nama_jabatan ?? '-' }}</p>
                 <span class="badge bg-primary mb-1 d-inline-block">{{ $pegawai->bidang->nama_bidang ?? '-' }}</span>

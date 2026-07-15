@@ -23,16 +23,27 @@ class ProfilController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $request->validate([
-            'alamat'     => ['required', 'string', 'max:500'],
+            'alamat'     => ['nullable', 'string', 'max:500'],
             'no_telepon' => ['nullable', 'string', 'max:15'],
             'email'      => ['nullable', 'email', 'max:100'],
             'foto'       => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'hapus_foto' => ['nullable', 'boolean'],
         ]);
 
         $pegawai = $this->service->findByUserId(Auth::id());
         $this->service->updateProfil($pegawai, $request->all());
 
         return back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    public function hapusFoto(): RedirectResponse
+    {
+        $pegawai = $this->service->findByUserId(Auth::id());
+        if ($pegawai->foto) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($pegawai->foto);
+            $pegawai->update(['foto' => null]);
+        }
+        return back()->with('success', 'Foto profil berhasil dihapus.');
     }
 
     public function gantiPassword(Request $request): RedirectResponse

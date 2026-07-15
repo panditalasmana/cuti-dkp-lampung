@@ -101,6 +101,7 @@ class PengajuanCutiService
                 'pejabat_nama'        => $pejabatNama,
                 'pejabat_nip'         => $pejabatNip,
                 'pejabat_jabatan'     => $pejabatJabatan,
+                'eselon_3'            => $data['eselon_3'] ?? null,
             ]);
 
             // Generate PDF surat cuti otomatis
@@ -154,7 +155,7 @@ class PengajuanCutiService
     public function hitungLamaCuti($jenisCuti, string $mulai, string $selesai): int
     {
         $kode = $jenisCuti->kode_cuti ?? '';
-        if ($kode === 'CM') {
+        if ($kode === 'CM' || $kode === 'CB_HAJI') {
             $start = \Carbon\Carbon::parse($mulai);
             $end   = \Carbon\Carbon::parse($selesai);
             $days  = $start->diffInDays($end) + 1;
@@ -212,7 +213,42 @@ class PengajuanCutiService
             throw ValidationException::withMessages(['jenis_cuti_id' => 'Cuti melahirkan hanya dapat diajukan oleh pegawai perempuan.']);
         }
 
-        if ($jenisCuti->kode_cuti !== 'CT') {
+        // Validasi Cuti Besar Haji (Maks 1 kali pengajuan, maksimal 3 bulan)
+        if ($jenisCuti->kode_cuti === 'CB_HAJI') {
+            $hajiList = $pegawai->pengajuanCuti()
+                ->whereNotIn('status', [PengajuanCuti::STATUS_DITOLAK, PengajuanCuti::STATUS_DIBATALKAN])
+                ->where('jenis_cuti_id', $jenisCuti->id)
+                ->get();
+
+            if ($hajiList->count() >= 1) {
+                throw ValidationException::withMessages(['jenis_cuti_id' => 'Cuti Besar Haji maksimal hanya dapat diajukan sebanyak 1 kali.']);
+            }
+
+            if ($lamaCuti > 3) {
+                throw ValidationException::withMessages(['lama_cuti' => "Pengajuan Cuti Besar Haji ({$lamaCuti} Bulan) melebihi batas maksimal 3 Bulan."]);
+            }
+        }
+
+        // Validasi Cuti Besar Umroh (Maks 2 kali pengajuan, total 30 hari)
+        if ($jenisCuti->kode_cuti === 'CB_UMROH') {
+            $umrohList = $pegawai->pengajuanCuti()
+                ->whereNotIn('status', [PengajuanCuti::STATUS_DITOLAK, PengajuanCuti::STATUS_DIBATALKAN])
+                ->where('jenis_cuti_id', $jenisCuti->id)
+                ->get();
+
+            if ($umrohList->count() >= 2) {
+                throw ValidationException::withMessages(['jenis_cuti_id' => 'Cuti Besar Umroh maksimal hanya dapat diajukan sebanyak 2 kali.']);
+            }
+
+            $usedDays = $umrohList->sum('lama_cuti');
+            $sisaHari = max(30 - $usedDays, 0);
+
+            if ($lamaCuti > $sisaHari) {
+                throw ValidationException::withMessages(['lama_cuti' => "Sisa kuota Cuti Besar Umroh Anda adalah {$sisaHari} hari. Pengajuan ini ({$lamaCuti} hari) melebihi sisa kuota."]);
+            }
+        }
+
+        if ($jenisCuti->kode_cuti !== 'CT' && $jenisCuti->kode_cuti !== 'CB_UMROH' && $jenisCuti->kode_cuti !== 'CB_HAJI') {
             $tahunIni = now()->year;
             $usedDays = $pegawai->pengajuanCuti()
                 ->where('status', '!=', PengajuanCuti::STATUS_DITOLAK)
@@ -278,8 +314,33 @@ class PengajuanCutiService
         return $this->repo->statistikPerBidang($tahun);
     }
 
+    public function statistikPerJenisCuti(int $tahun): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->repo->statistikPerJenisCuti($tahun);
+    }
+
     public function getForExport(array $filters = []): \Illuminate\Database\Eloquent\Collection
     {
         return $this->repo->getForExport($filters);
+    }
+
+    /**
+     * Pegawai: membatalkan pengajuan cuti yang masih menunggu verifikasi
+     */
+    public function batalkan(PengajuanCuti $pengajuan): PengajuanCuti
+    {
+        return DB::transaction(function () use ($pengajuan) {
+            if ($pengajuan->status !== PengajuanCuti::STATUS_MENUNGGU) {
+                throw new \Exception('Hanya pengajuan dengan status Menunggu Verifikasi yang dapat dibatalkan.');
+            }
+
+            $pengajuan->update([
+                'status' => PengajuanCuti::STATUS_DIBATALKAN
+            ]);
+
+            $this->logService->logStatus('pengajuan', "Pengajuan cuti {$pengajuan->nomor_surat} dibatalkan oleh pegawai.", $pengajuan);
+
+            return $pengajuan;
+        });
     }
 }

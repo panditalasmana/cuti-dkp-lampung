@@ -58,6 +58,18 @@ class DashboardController extends Controller
             
             if ($kode === 'CT') {
                 $sisa = $pegawai->sisa_cuti_tahunan;
+            } elseif ($kode === 'CB_HAJI') {
+                $usedHajiCount = $pegawai->pengajuanCuti()
+                    ->whereNotIn('status', ['ditolak', 'dibatalkan'])
+                    ->where('jenis_cuti_id', $jc->id)
+                    ->count();
+                $sisa = max(3 - ($usedHajiCount * 3), 0);
+            } elseif ($kode === 'CB_UMROH') {
+                $usedUmrohDays = $pegawai->pengajuanCuti()
+                    ->whereNotIn('status', ['ditolak', 'dibatalkan'])
+                    ->where('jenis_cuti_id', $jc->id)
+                    ->sum('lama_cuti');
+                $sisa = max(30 - $usedUmrohDays, 0);
             } else {
                 $maks = $jc->maks_hari ?? 0;
                 $sisa = max($maks - $used, 0);

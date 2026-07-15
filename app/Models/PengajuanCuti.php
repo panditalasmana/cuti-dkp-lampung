@@ -37,6 +37,7 @@ class PengajuanCuti extends Model
         'pejabat_nama',
         'pejabat_nip',
         'pejabat_jabatan',
+        'eselon_3',
     ];
 
     protected $casts = [
@@ -49,28 +50,31 @@ class PengajuanCuti extends Model
 
     
     // ─── Status Constants ──────────────────────────────────────────
-    const STATUS_MENUNGGU  = 'menunggu';
-    const STATUS_DISETUJUI = 'disetujui';
-    const STATUS_DITOLAK   = 'ditolak';
+    const STATUS_MENUNGGU    = 'menunggu';
+    const STATUS_DISETUJUI   = 'disetujui';
+    const STATUS_DITOLAK     = 'ditolak';
+    const STATUS_DIBATALKAN  = 'dibatalkan';
 
     // ─── Accessors ─────────────────────────────────────────────────
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
-            self::STATUS_MENUNGGU  => 'Menunggu Verifikasi',
-            self::STATUS_DISETUJUI => 'Disetujui',
-            self::STATUS_DITOLAK   => 'Ditolak',
-            default                => ucfirst($this->status),
+            self::STATUS_MENUNGGU    => 'Menunggu Verifikasi',
+            self::STATUS_DISETUJUI   => 'Disetujui',
+            self::STATUS_DITOLAK     => 'Ditolak',
+            self::STATUS_DIBATALKAN  => 'Dibatalkan',
+            default                  => ucfirst($this->status),
         };
     }
 
     public function getStatusBadgeAttribute(): string
     {
         return match ($this->status) {
-            self::STATUS_MENUNGGU  => 'badge-warning',
-            self::STATUS_DISETUJUI => 'badge-success',
-            self::STATUS_DITOLAK   => 'badge-danger',
-            default                => 'badge-secondary',
+            self::STATUS_MENUNGGU    => 'badge-warning',
+            self::STATUS_DISETUJUI   => 'badge-success',
+            self::STATUS_DITOLAK     => 'badge-danger',
+            self::STATUS_DIBATALKAN  => 'badge-secondary',
+            default                  => 'badge-secondary',
         };
     }
 

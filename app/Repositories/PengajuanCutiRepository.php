@@ -123,6 +123,16 @@ class PengajuanCutiRepository
                            ->get();
     }
 
+    public function statistikPerJenisCuti(int $tahun): Collection
+    {
+        return $this->model->selectRaw('jenis_cuti.nama_cuti, COUNT(pengajuan_cuti.id) as total')
+                           ->join('jenis_cuti', 'pengajuan_cuti.jenis_cuti_id', '=', 'jenis_cuti.id')
+                           ->whereYear('pengajuan_cuti.tanggal_pengajuan', $tahun)
+                           ->groupBy('jenis_cuti.nama_cuti')
+                           ->orderByDesc('total')
+                           ->get();
+    }
+
     public function getForExport(array $filters = []): Collection
     {
         return $this->model->with(['pegawai.bidang', 'pegawai.jabatan', 'jenisCuti', 'verifikator'])

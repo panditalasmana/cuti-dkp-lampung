@@ -55,6 +55,8 @@ Route::middleware(['auth', 'role:admin'])
     Route::resource('jabatan', Admin\JabatanController::class)->except(['show']);
 
     // Master: Pegawai
+    Route::post('pegawai/import', [Admin\PegawaiController::class, 'import'])->name('pegawai.import');
+    Route::get('pegawai/download-template', [Admin\PegawaiController::class, 'downloadTemplate'])->name('pegawai.download-template');
     Route::resource('pegawai', Admin\PegawaiController::class);
 
     // Master: Jenis Cuti
@@ -98,6 +100,7 @@ Route::middleware(['auth', 'role:pegawai'])
         Route::get('/{pengajuan}',               [Pegawai\PengajuanController::class, 'show'])->name('show');
         Route::get('/{pengajuan}/preview',       [Pegawai\PengajuanController::class, 'preview'])->name('preview');
         Route::get('/{pengajuan}/cetak',         [Pegawai\PengajuanController::class, 'cetak'])->name('cetak');
+        Route::post('/{pengajuan}/batal',         [Pegawai\PengajuanController::class, 'batal'])->name('batal');
         Route::post('/hitung-hari',              [Pegawai\PengajuanController::class, 'hitungHari'])->name('hitung-hari');
     });
 
@@ -107,5 +110,6 @@ Route::middleware(['auth', 'role:pegawai'])
     // Profil
     Route::get('/profil',         [Pegawai\ProfilController::class, 'index'])->name('profil.index');
     Route::post('/profil',        [Pegawai\ProfilController::class, 'update'])->name('profil.update');
+    Route::post('/profil/hapus-foto', [Pegawai\ProfilController::class, 'hapusFoto'])->name('profil.hapus-foto');
     Route::post('/ganti-password',[Pegawai\ProfilController::class, 'gantiPassword'])->name('profil.ganti-password');
 });

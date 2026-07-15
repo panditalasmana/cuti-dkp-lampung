@@ -22,6 +22,7 @@ class DashboardController extends Controller
         $statistik    = $this->pengajuanService->getStatistik();
         $perBulan     = $this->pengajuanService->statistikBulanan($tahun);
         $perBidang    = $this->pengajuanService->statistikPerBidang($tahun);
+        $perJenisCuti = $this->pengajuanService->statistikPerJenisCuti($tahun);
         $pengajuanBaru= $this->pengajuanRepo->paginateForAdmin(5, ['status' => 'menunggu']);
         $totalPegawai = $this->pegawaiService->countAll();
 
@@ -45,6 +46,7 @@ class DashboardController extends Controller
             'statistik',
             'perBulan',
             'perBidang',
+            'perJenisCuti',
             'pengajuanBaru',
             'totalPegawai',
             'tahun',

@@ -73,6 +73,21 @@
                         <label class="detail-label">No. Telepon Selama Cuti</label>
                         <div class="detail-value">{{ $pengajuan->no_telp_selama_cuti ?? '-' }}</div>
                     </div>
+                    @if($pengajuan->eselon_3)
+                        <div class="col-12">
+                            <label class="detail-label">Paraf Eselon 4</label>
+                            <div class="detail-value">
+                                @if(str_contains($pengajuan->eselon_3, '|'))
+                                    @php
+                                        $eselonParts = explode('|', $pengajuan->eselon_3);
+                                    @endphp
+                                    {{ $eselonParts[0] }} ({{ $eselonParts[2] }} - NIP. {{ $eselonParts[1] }})
+                                @else
+                                    {{ $pengajuan->eselon_3 }}
+                                @endif
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 @if($pengajuan->catatan_admin)

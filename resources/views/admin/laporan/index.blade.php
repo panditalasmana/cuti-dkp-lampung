@@ -105,33 +105,74 @@
 
 <!-- Charts -->
 <div class="row g-4">
-    <div class="col-12 col-xl-8">
-        <div class="card card-custom">
+    <!-- 1. Grafik Bulanan (Lebar 50%) -->
+    <div class="col-12 col-xl-6">
+        <div class="card card-custom h-100">
             <div class="card-header-custom">
                 <div>
                     <h5 class="card-title-custom">Grafik Bulanan {{ $tahun }}</h5>
                     <p class="card-subtitle-custom">Status pengajuan per bulan</p>
                 </div>
             </div>
-            <div class="card-body">
-                <canvas id="chartBulanan" height="90"></canvas>
+            <div class="card-body d-flex align-items-center" style="min-height: 250px;">
+                <canvas id="chartBulanan"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-12 col-xl-4">
-        <div class="card card-custom">
+    
+    <!-- 2. Grafik Per Jenis Cuti (Lebar 25%) -->
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card card-custom h-100">
             <div class="card-header-custom">
                 <div>
-                    <h5 class="card-title-custom">Per Bidang {{ $tahun }}</h5>
+                    <h5 class="card-title-custom">Per Jenis Cuti</h5>
                 </div>
             </div>
-            <div class="card-body">
-                <canvas id="chartBidang"></canvas>
-                <div class="mt-3">
-                    @foreach($perBidang as $b)
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div style="height: 140px;" class="mx-auto position-relative w-100">
+                    <canvas id="chartJenisCuti"></canvas>
+                </div>
+                <div class="mt-3" style="max-height: 120px; overflow-y: auto;">
+                    @php
+                        $jenisColors = ['#0d6efd','#fd7e14','#dc3545','#ec4899','#6f42c1','#14b8a6'];
+                    @endphp
+                    @foreach($perJenisCuti as $index => $jc)
+                        @php
+                            $color = $jenisColors[$index % count($jenisColors)];
+                        @endphp
                         <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
-                            <span class="small text-truncate" style="max-width:160px">{{ $b->nama_bidang }}</span>
-                            <span class="badge bg-primary">{{ $b->total }}</span>
+                            <span class="small text-truncate" style="max-width:110px; font-size: 11px;">{{ $jc->nama_cuti }}</span>
+                            <span class="badge" style="font-size: 10px; background-color: {{ $color }}; color: #fff;">{{ $jc->total }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Grafik Per Bidang (Lebar 25%) -->
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card card-custom h-100">
+            <div class="card-header-custom">
+                <div>
+                    <h5 class="card-title-custom">Per Bidang</h5>
+                </div>
+            </div>
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div style="height: 140px;" class="mx-auto position-relative w-100">
+                    <canvas id="chartBidang"></canvas>
+                </div>
+                <div class="mt-3" style="max-height: 120px; overflow-y: auto;">
+                    @php
+                        $bidangColors = ['#0B5FA5','#1976D2','#4FC3F7','#0288D1','#01579B','#29B6F6'];
+                    @endphp
+                    @foreach($perBidang as $index => $b)
+                        @php
+                            $color = $bidangColors[$index % count($bidangColors)];
+                        @endphp
+                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                            <span class="small text-truncate" style="max-width:110px; font-size: 11px;">{{ $b->nama_bidang }}</span>
+                            <span class="badge" style="font-size: 10px; background-color: {{ $color }}; color: #fff;">{{ $b->total }}</span>
                         </div>
                     @endforeach
                 </div>
@@ -258,6 +299,7 @@
 @push('scripts')
 <script>
 const perBulan  = @json($perBulan);
+const perJenisCuti = @json($perJenisCuti);
 const perBidang = @json($perBidang);
 const labels    = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 
@@ -273,10 +315,26 @@ new Chart(document.getElementById('chartBulanan'), {
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: { legend: { position: 'top' } },
         scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
     },
 });
+
+if (perJenisCuti.length > 0) {
+    new Chart(document.getElementById('chartJenisCuti'), {
+        type: 'doughnut',
+        data: {
+            labels: perJenisCuti.map(jc => jc.nama_cuti),
+            datasets: [{
+                data: perJenisCuti.map(jc => jc.total),
+                backgroundColor: ['#0d6efd','#fd7e14','#dc3545','#ec4899','#6f42c1','#14b8a6'],
+                borderWidth: 2, borderColor: '#fff',
+            }],
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } },
+    });
+}
 
 if (perBidang.length > 0) {
     new Chart(document.getElementById('chartBidang'), {
@@ -289,7 +347,7 @@ if (perBidang.length > 0) {
                 borderWidth: 2, borderColor: '#fff',
             }],
         },
-        options: { responsive: true, plugins: { legend: { display: false } } },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } },
     });
 }
 </script>

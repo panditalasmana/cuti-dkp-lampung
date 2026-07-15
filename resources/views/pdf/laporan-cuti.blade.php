@@ -101,7 +101,7 @@
                             <div style="font-size: 8px; color: #666; margin-top: 2px;">{{ $item->pegawai->sub_bagian }}</div>
                         @endif
                     </td>
-                    <td>{{ $item->jenisCuti->nama_cuti ?? '-' }}</td>
+                    <td>{{ in_array($item->jenisCuti->kode_cuti ?? '', ['CB_UMROH', 'CB_HAJI']) ? 'Cuti Besar' : ($item->jenisCuti->nama_cuti ?? '-') }}</td>
                     <td>
                         {{ $item->tanggal_mulai?->format('d/m/Y') }} s.d. {{ $item->tanggal_selesai?->format('d/m/Y') }}
                     </td>

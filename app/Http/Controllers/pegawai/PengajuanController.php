@@ -74,6 +74,7 @@ class PengajuanController extends Controller
             'no_telp_selama_cuti'     => ['nullable', 'string', 'max:15'],
             'atasan_langsung_select'  => ['required', 'string'],
             'pejabat_wenang_select'   => ['required', 'string'],
+            'eselon_3'                => ['nullable', 'string', 'max:255'],
         ]);
 
         $pegawai   = $this->getPegawai();
@@ -136,5 +137,26 @@ class PengajuanController extends Controller
             'lama_cuti' => $durasi,
             'satuan_display' => $satuanDisplay
         ]);
+    }
+
+    public function batal(PengajuanCuti $pengajuan): RedirectResponse
+    {
+        $pegawai = $this->getPegawai();
+        
+        // Pastikan pengajuan ini milik pegawai yang sedang login
+        if ($pengajuan->pegawai_id !== $pegawai->id) {
+            abort(403, 'Aksi tidak diizinkan.');
+        }
+
+        try {
+            $this->service->batalkan($pengajuan);
+            return redirect()
+                ->route('pegawai.pengajuan.show', $pengajuan)
+                ->with('success', 'Pengajuan cuti berhasil dibatalkan.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
+        }
     }
 }

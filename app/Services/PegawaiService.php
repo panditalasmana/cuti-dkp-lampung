@@ -46,7 +46,7 @@ class PegawaiService
                 'nip'      => $data['nip'],
                 'name'     => $data['nama_lengkap'],
                 'email'    => $data['email'] ?? null,
-                'password' => Hash::make($data['password'] ?? 'Pegawai@123'),
+                'password' => Hash::make($data['password'] ?? substr($data['nip'], 0, 4)),
                 'role'     => 'pegawai',
                 'is_active'=> $data['is_active'] ?? true,
             ]);
@@ -139,6 +139,12 @@ class PegawaiService
                 $filtered['foto'] = $filtered['foto']->store('pegawai/foto', 'public');
             } else {
                 unset($filtered['foto']);
+                if (isset($data['hapus_foto']) && $data['hapus_foto'] == '1') {
+                    if ($pegawai->foto) {
+                        Storage::disk('public')->delete($pegawai->foto);
+                    }
+                    $filtered['foto'] = null;
+                }
             }
 
             if (!empty($data['email'])) {
