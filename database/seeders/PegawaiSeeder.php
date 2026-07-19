@@ -123,7 +123,7 @@ class PegawaiSeeder extends Seeder
                 $user = User::create([
                     'nip'       => $nip,
                     'name'      => $namaLengkap,
-                    'email'     => $nip . '@dkplampung.id',
+                    'email'     => null,
                     'password'  => $passwordDefault,
                     'role'      => 'pegawai',
                     'is_active' => true,

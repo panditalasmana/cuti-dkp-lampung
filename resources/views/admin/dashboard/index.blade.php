@@ -381,6 +381,12 @@ const allCuti = @json($allCuti);
 let currentDate = new Date();
 let selectedDate = new Date();
 
+function parseLocalDate(dateStr) {
+    if (!dateStr) return new Date();
+    const parts = dateStr.split('-');
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
 function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -427,8 +433,8 @@ function renderCalendar() {
 
         // Find active leaves on this day
         const activeLeaves = allCuti.filter(cuti => {
-            const start = new Date(cuti.tanggal_mulai);
-            const end = new Date(cuti.tanggal_selesai);
+            const start = parseLocalDate(cuti.tanggal_mulai);
+            const end = parseLocalDate(cuti.tanggal_selesai);
             start.setHours(0,0,0,0);
             end.setHours(0,0,0,0);
             const current = new Date(year, month, day);
@@ -483,8 +489,8 @@ function updateMonitoringList(dateStr) {
     document.getElementById('monitoring-title').innerText = `Pegawai Cuti — ${formattedDate}`;
 
     const activeLeaves = allCuti.filter(cuti => {
-        const start = new Date(cuti.tanggal_mulai);
-        const end = new Date(cuti.tanggal_selesai);
+        const start = parseLocalDate(cuti.tanggal_mulai);
+        const end = parseLocalDate(cuti.tanggal_selesai);
         start.setHours(0,0,0,0);
         end.setHours(0,0,0,0);
         const current = new Date(year, month - 1, day);

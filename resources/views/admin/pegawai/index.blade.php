@@ -13,7 +13,10 @@
         <h1 class="page-title">Data Pegawai</h1>
         <p class="page-subtitle">Kelola data seluruh pegawai DKP Provinsi Lampung</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ route('admin.pegawai.export') }}" class="btn btn-outline-primary">
+            <i class="bi bi-download me-1"></i>Export CSV / Excel
+        </a>
         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importModal">
             <i class="bi bi-file-earmark-excel me-1"></i>Import CSV / Excel
         </button>
@@ -24,12 +27,13 @@
 </div>
 
 <!-- Filter -->
-<div class="card card-custom mb-4">
-    <div class="card-body">
+<div class="card card-custom mb-4" style="overflow: visible;">
+    <div class="card-body" style="overflow: visible;">
         <form method="GET">
             <div class="row g-3">
-                <div class="col-12 col-md-3">
-                    <input type="text" name="search" class="form-control" placeholder="Cari nama atau NIP..." value="{{ request('search') }}">
+                <div class="col-12 col-md-3 position-relative">
+                    <input type="text" name="search" id="searchInput" class="form-control" placeholder="Cari nama atau NIP..." value="{{ request('search') }}" autocomplete="off">
+                    <div id="autocompleteSuggestions" class="list-group position-absolute w-100 shadow-lg d-none" style="z-index: 1050; max-height: 250px; overflow-y: auto; top: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px;"></div>
                 </div>
                 <div class="col-6 col-md-3">
                     <select name="bidang_id" class="form-select">
@@ -201,6 +205,56 @@
 
 @push('scripts')
 <script>
+// Autocomplete Live Search
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const suggestionBox = document.getElementById('autocompleteSuggestions');
+    const list = @json($autocompleteList ?? []);
+
+    if (searchInput && suggestionBox && list.length > 0) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim().toLowerCase();
+            suggestionBox.innerHTML = '';
+
+            if (query.length < 2) {
+                suggestionBox.classList.add('d-none');
+                return;
+            }
+
+            const matches = list.filter(item => 
+                item.nama.toLowerCase().includes(query) || 
+                item.nip.includes(query)
+            ).slice(0, 8); // Batasi maks 8 hasil
+
+            if (matches.length === 0) {
+                suggestionBox.classList.add('d-none');
+                return;
+            }
+
+            matches.forEach(item => {
+                const row = document.createElement('a');
+                row.href = item.url;
+                row.className = 'list-group-item list-group-item-action py-2';
+                row.style.cursor = 'pointer';
+                row.innerHTML = `
+                    <div class="fw-semibold text-dark" style="font-size: 0.85rem;">${item.nama}</div>
+                    <div class="text-muted small" style="font-size: 0.75rem;">NIP: ${item.nip}</div>
+                `;
+                suggestionBox.appendChild(row);
+            });
+
+            suggestionBox.classList.remove('d-none');
+        });
+
+        // Sembunyikan sugesti saat mengklik di luar area input
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionBox.contains(e.target)) {
+                suggestionBox.classList.add('d-none');
+            }
+        });
+    }
+});
+
 function konfirmasiHapus(form, nama) {
     Swal.fire({
         title: 'Hapus Pegawai?',

@@ -44,7 +44,7 @@ class DashboardController extends Controller
         }
 
         // Ambil semua jenis cuti untuk list dropdown kuota di dashboard
-        $jenisCutiList = \App\Models\JenisCuti::all();
+        $jenisCutiList = \App\Models\JenisCuti::active()->get();
         $quotas = [];
         foreach ($jenisCutiList as $jc) {
             $kode = $jc->kode_cuti;

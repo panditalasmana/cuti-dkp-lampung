@@ -32,7 +32,7 @@
     <div class="col-sm-6">
         <label class="form-label fw-semibold">Password {{ isset($pegawai) ? '(Kosongkan jika tidak diubah)' : '' }}</label>
         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-               placeholder="{{ isset($pegawai) ? 'Isi untuk mengubah password' : 'Default: Pegawai@123' }}"
+               placeholder="{{ isset($pegawai) ? 'Isi untuk mengubah password' : 'Default: 4 digit depan NIP' }}"
                autocomplete="new-password">
         @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>

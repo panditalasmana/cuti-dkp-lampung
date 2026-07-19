@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'      => 'Gerry Gahara S.Kom.',
-                'email'     => '199111152025211022@dkplampung.id',
+                'email'     => null,
                 'password'  => Hash::make('password123'),
                 'role'      => 'pegawai',
                 'is_active' => true,

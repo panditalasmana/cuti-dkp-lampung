@@ -25,7 +25,18 @@ class PegawaiController extends Controller
         $pegawai = $this->service->paginate(15, $filters);
         $bidang  = $this->bidangRepo->all();
         $jabatan = $this->jabatanRepo->all();
-        return view('admin.pegawai.index', compact('pegawai', 'bidang', 'jabatan'));
+        
+        $autocompleteList = Pegawai::where('is_active', true)
+            ->get(['id', 'nip', 'nama_lengkap'])
+            ->map(function ($p) {
+                return [
+                    'nip'  => $p->nip,
+                    'nama' => $p->nama_lengkap,
+                    'url'  => route('admin.pegawai.show', $p),
+                ];
+            });
+
+        return view('admin.pegawai.index', compact('pegawai', 'bidang', 'jabatan', 'autocompleteList'));
     }
 
     public function create(): View
@@ -68,7 +79,60 @@ class PegawaiController extends Controller
     public function show(Pegawai $pegawai): View
     {
         $pegawai = $this->service->findById($pegawai->id);
-        return view('admin.pegawai.show', compact('pegawai'));
+        
+        // Ambil semua jenis cuti aktif
+        $jenisCutiList = \App\Models\JenisCuti::active()->get();
+        
+        // Hitung akumulasi hari cuti yang sudah disetujui/menunggu di tahun ini
+        $tahunIni = now()->year;
+        $usedDays = $pegawai->pengajuanCuti()
+            ->whereNotIn('status', [\App\Models\PengajuanCuti::STATUS_DITOLAK, \App\Models\PengajuanCuti::STATUS_DIBATALKAN])
+            ->whereYear('tanggal_mulai', $tahunIni)
+            ->get()
+            ->groupBy('jenisCuti.kode_cuti')
+            ->map(function ($group) {
+                return $group->sum('lama_cuti');
+            });
+
+        $quotas = [];
+        foreach ($jenisCutiList as $jc) {
+            $kode = $jc->kode_cuti;
+            $used = $usedDays[$kode] ?? 0;
+            
+            if ($kode === 'CT') {
+                $sisa = $pegawai->sisa_cuti_tahunan;
+            } elseif ($kode === 'CB_HAJI') {
+                $usedHajiCount = $pegawai->pengajuanCuti()
+                    ->whereNotIn('status', [\App\Models\PengajuanCuti::STATUS_DITOLAK, \App\Models\PengajuanCuti::STATUS_DIBATALKAN])
+                    ->where('jenis_cuti_id', $jc->id)
+                    ->count();
+                $sisa = max(3 - ($usedHajiCount * 3), 0);
+            } elseif ($kode === 'CB_UMROH') {
+                $usedUmrohDays = $pegawai->pengajuanCuti()
+                    ->whereNotIn('status', [\App\Models\PengajuanCuti::STATUS_DITOLAK, \App\Models\PengajuanCuti::STATUS_DIBATALKAN])
+                    ->where('jenis_cuti_id', $jc->id)
+                    ->sum('lama_cuti');
+                $sisa = max(30 - $usedUmrohDays, 0);
+            } else {
+                $maks = $jc->maks_hari ?? 0;
+                $sisa = max($maks - $used, 0);
+            }
+            
+            $quotas[] = [
+                'nama' => $jc->nama_cuti,
+                'sisa' => $sisa,
+                'satuan' => $jc->satuan,
+                'maks' => $jc->maks_hari,
+            ];
+        }
+
+        // Ambil semua riwayat pengajuan cuti pegawai tersebut
+        $riwayatCuti = $pegawai->pengajuanCuti()
+            ->with('jenisCuti')
+            ->orderBy('tanggal_pengajuan', 'desc')
+            ->get();
+
+        return view('admin.pegawai.show', compact('pegawai', 'quotas', 'riwayatCuti'));
     }
 
     public function edit(Pegawai $pegawai): View
@@ -218,12 +282,6 @@ class PegawaiController extends Controller
                 $nip = trim($row[$fieldMap['nip']]);
                 if (empty($nip)) continue;
 
-                if (Pegawai::where('nip', $nip)->exists()) {
-                    $errors[] = "NIP {$nip} sudah terdaftar.";
-                    $errorCount++;
-                    continue;
-                }
-
                 $nama = trim($row[$fieldMap['nama_lengkap']]);
                 $email = isset($fieldMap['email']) ? trim($row[$fieldMap['email']]) : null;
                 $bidangNama = trim($row[$fieldMap['bidang']]);
@@ -262,26 +320,52 @@ class PegawaiController extends Controller
                 }
 
                 try {
-                    $this->service->create([
-                        'nip' => $nip,
-                        'nama_lengkap' => $nama,
-                        'email' => $email,
-                        'bidang_id' => $bidang->id,
-                        'sub_bagian' => $subBagian,
-                        'jabatan_id' => $jabatan->id,
-                        'jenis_pegawai' => $jenisPegawai,
-                        'pangkat' => $pangkat,
-                        'tempat_lahir' => $tempatLahir,
-                        'tanggal_lahir' => $tglLahirParsed,
-                        'no_telepon' => $noTelepon,
-                        'tanggal_masuk' => $tglMasukParsed,
-                        'sisa_cuti_tahunan' => $sisaCuti,
-                        'jenis_kelamin' => in_array($jenisKelamin, ['L', 'P']) ? $jenisKelamin : 'L',
-                        'is_active' => true,
-                    ]);
+                    $existingPegawai = Pegawai::where('nip', $nip)->first();
+                    if ($existingPegawai) {
+                        // Update pegawai
+                        $user = $existingPegawai->user;
+                        if ($user) {
+                            $user->update([
+                                'name' => $nama,
+                                'email' => $email,
+                            ]);
+                        }
+                        $existingPegawai->update([
+                            'bidang_id' => $bidang->id,
+                            'sub_bagian' => $subBagian,
+                            'jabatan_id' => $jabatan->id,
+                            'jenis_pegawai' => $jenisPegawai,
+                            'pangkat' => $pangkat,
+                            'tempat_lahir' => $tempatLahir,
+                            'tanggal_lahir' => $tglLahirParsed,
+                            'no_telepon' => $noTelepon,
+                            'tanggal_masuk' => $tglMasukParsed,
+                            'sisa_cuti_tahunan' => $sisaCuti,
+                            'jenis_kelamin' => in_array($jenisKelamin, ['L', 'P']) ? $jenisKelamin : 'L',
+                        ]);
+                    } else {
+                        // Create pegawai baru
+                        $this->service->create([
+                            'nip' => $nip,
+                            'nama_lengkap' => $nama,
+                            'email' => $email,
+                            'bidang_id' => $bidang->id,
+                            'sub_bagian' => $subBagian,
+                            'jabatan_id' => $jabatan->id,
+                            'jenis_pegawai' => $jenisPegawai,
+                            'pangkat' => $pangkat,
+                            'tempat_lahir' => $tempatLahir,
+                            'tanggal_lahir' => $tglLahirParsed,
+                            'no_telepon' => $noTelepon,
+                            'tanggal_masuk' => $tglMasukParsed,
+                            'sisa_cuti_tahunan' => $sisaCuti,
+                            'jenis_kelamin' => in_array($jenisKelamin, ['L', 'P']) ? $jenisKelamin : 'L',
+                            'is_active' => true,
+                        ]);
+                    }
                     $successCount++;
                 } catch (\Exception $e) {
-                    $errors[] = "Baris NIP {$nip}: Gagal menyimpan pegawai. " . $e->getMessage();
+                    $errors[] = "Baris NIP {$nip}: Gagal menyimpan data. " . $e->getMessage();
                     $errorCount++;
                 }
             }
@@ -326,5 +410,61 @@ class PegawaiController extends Controller
         } catch (\Exception $e) {}
 
         throw new \Exception("Invalid date format");
+    }
+
+    public function export()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="data_pegawai_dkp.csv"',
+        ];
+
+        $callback = function() {
+            $file = fopen('php://output', 'w');
+            // Tulis UTF-8 BOM untuk kompatibilitas dengan Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, [
+                'nip',
+                'nama_lengkap',
+                'email',
+                'bidang',
+                'sub_bagian',
+                'jabatan',
+                'jenis_pegawai',
+                'pangkat',
+                'tempat_lahir',
+                'tanggal_lahir',
+                'no_telepon',
+                'tanggal_masuk',
+                'sisa_cuti_tahunan',
+                'jenis_kelamin'
+            ], ';');
+
+            $pegawais = Pegawai::with(['user', 'bidang', 'jabatan'])->get();
+
+            foreach ($pegawais as $p) {
+                fputcsv($file, [
+                    $p->nip,
+                    $p->nama_lengkap,
+                    $p->user->email ?? '',
+                    $p->bidang->nama_bidang ?? '',
+                    $p->sub_bagian ?? '',
+                    $p->jabatan->nama_jabatan ?? '',
+                    $p->jenis_pegawai,
+                    $p->pangkat ?? '',
+                    $p->tempat_lahir ?? '',
+                    $p->tanggal_lahir ? $p->tanggal_lahir->format('d/m/Y') : '',
+                    $p->no_telepon ?? '',
+                    $p->tanggal_masuk ? $p->tanggal_masuk->format('d/m/Y') : '',
+                    $p->sisa_cuti_tahunan,
+                    $p->jenis_kelamin
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
