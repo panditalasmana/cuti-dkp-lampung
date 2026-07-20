@@ -15,12 +15,12 @@
         <h1 class="page-title">Detail Pengajuan</h1>
         <p class="page-subtitle">Tanggal Pengajuan: {{ $pengajuan->tanggal_pengajuan->isoFormat('D MMMM Y') }}</p>
     </div>
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.pengajuan.preview-pdf', $pengajuan) }}" class="btn btn-outline-danger" target="_blank">
-            <i class="bi bi-file-pdf me-1"></i>Preview PDF
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+        <a href="{{ route('admin.pengajuan.preview-pdf', $pengajuan) }}" class="btn btn-outline-danger" target="_blank" title="Preview PDF">
+            <i class="bi bi-file-pdf me-1"></i><span class="d-none d-sm-inline">Preview PDF</span><span class="d-inline d-sm-none">Preview</span>
         </a>
-        <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Kembali
+        <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-outline-secondary px-2 px-sm-3" title="Kembali">
+            <i class="bi bi-arrow-left"></i><span class="d-none d-sm-inline ms-1">Kembali</span>
         </a>
     </div>
 </div>

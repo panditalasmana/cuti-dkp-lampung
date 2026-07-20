@@ -36,12 +36,12 @@
         <h1 class="page-title">Detail Pegawai</h1>
         <p class="page-subtitle">{{ $pegawai->nama_lengkap }}</p>
     </div>
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.pegawai.edit', $pegawai) }}" class="btn btn-warning">
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+        <a href="{{ route('admin.pegawai.edit', $pegawai) }}" class="btn btn-warning" title="Edit">
             <i class="bi bi-pencil me-1"></i>Edit
         </a>
-        <a href="{{ route('admin.pegawai.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Kembali
+        <a href="{{ route('admin.pegawai.index') }}" class="btn btn-outline-secondary px-2 px-sm-3" title="Kembali">
+            <i class="bi bi-arrow-left"></i><span class="d-none d-sm-inline ms-1">Kembali</span>
         </a>
     </div>
 </div>

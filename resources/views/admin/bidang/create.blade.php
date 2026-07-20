@@ -15,8 +15,8 @@
         <h1 class="page-title">Tambah Bidang</h1>
         <p class="page-subtitle">Tambahkan data bidang baru</p>
     </div>
-    <a href="{{ route('admin.bidang.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i>Kembali
+    <a href="{{ route('admin.bidang.index') }}" class="btn btn-outline-secondary px-2 px-sm-3" title="Kembali">
+        <i class="bi bi-arrow-left"></i><span class="d-none d-sm-inline ms-1">Kembali</span>
     </a>
 </div>
 

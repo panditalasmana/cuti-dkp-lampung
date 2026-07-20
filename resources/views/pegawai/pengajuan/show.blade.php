@@ -15,23 +15,23 @@
         <h1 class="page-title">Detail Pengajuan</h1>
         <p class="page-subtitle">Tanggal Pengajuan: {{ $pengajuan->tanggal_pengajuan->isoFormat('D MMMM Y') }}</p>
     </div>
-    <div class="d-flex gap-2">
-        <a href="{{ route('pegawai.pengajuan.preview', $pengajuan) }}" class="btn btn-outline-danger" target="_blank">
-            <i class="bi bi-file-pdf me-1"></i>Preview PDF
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+        <a href="{{ route('pegawai.pengajuan.preview', $pengajuan) }}" class="btn btn-outline-danger" target="_blank" title="Preview PDF">
+            <i class="bi bi-file-pdf me-1"></i><span class="d-none d-sm-inline">Preview PDF</span><span class="d-inline d-sm-none">Preview</span>
         </a>
-        <a href="{{ route('pegawai.pengajuan.cetak', $pengajuan) }}" class="btn btn-outline-primary">
-            <i class="bi bi-download me-1"></i>Unduh/Cetak PDF
+        <a href="{{ route('pegawai.pengajuan.cetak', $pengajuan) }}" class="btn btn-outline-primary" title="Unduh/Cetak PDF">
+            <i class="bi bi-download me-1"></i><span class="d-none d-sm-inline">Unduh/Cetak PDF</span><span class="d-inline d-sm-none">Cetak</span>
         </a>
         @if($pengajuan->status === \App\Models\PengajuanCuti::STATUS_MENUNGGU)
             <form action="{{ route('pegawai.pengajuan.batal', $pengajuan) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan cuti ini?')" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-danger">
-                    <i class="bi bi-x-circle me-1"></i>Batalkan Pengajuan
+                <button type="submit" class="btn btn-danger" title="Batalkan Pengajuan">
+                    <i class="bi bi-x-circle me-1"></i><span class="d-none d-sm-inline">Batalkan Pengajuan</span><span class="d-inline d-sm-none">Batal</span>
                 </button>
             </form>
         @endif
-        <a href="{{ route('pegawai.riwayat.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Kembali
+        <a href="{{ route('pegawai.riwayat.index') }}" class="btn btn-outline-secondary px-2 px-sm-3" title="Kembali">
+            <i class="bi bi-arrow-left"></i><span class="d-none d-sm-inline ms-1">Kembali</span>
         </a>
     </div>
 </div>

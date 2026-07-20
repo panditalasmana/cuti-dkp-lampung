@@ -69,10 +69,10 @@
                             <td class="text-center">
                                 @if($item->potong_kuota)
                                     <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-check"></i> Ya
+                                        <i class="bi bi-check"></i> Potong Cuti Tahunan
                                     </span>
                                 @else
-                                    <span class="badge bg-light text-muted">Tidak</span>
+                                    <span class="badge bg-success text-white">Kuota Terpisah</span>
                                 @endif
                             </td>
                             <td class="text-center">

@@ -42,9 +42,9 @@ class DokumenService
                 $this->repo->delete($scanLama);
             }
 
-            // Simpan file baru
+            // Simpan file baru ke subfolder 'SCAN SURAT'
             $folder   = "pengajuan/{$pengajuan->id}/scan";
-            $path     = $this->saveFile($file, $folder);
+            $path     = $this->saveFile($file, $folder, 'SCAN SURAT');
             $namaFile = $file->getClientOriginalName();
 
             $dokumen = $this->repo->create([
@@ -73,7 +73,7 @@ class DokumenService
         $this->validasiFile($file);
 
         $folder  = "pengajuan/{$pengajuan->id}/lampiran";
-        $path    = $this->saveFile($file, $folder);
+        $path    = $this->saveFile($file, $folder, 'LAMPIRAN');
 
         return $this->repo->create([
             'pengajuan_cuti_id' => $pengajuan->id,
@@ -94,11 +94,11 @@ class DokumenService
         $this->logService->logDelete('dokumen', "Menghapus file: {$dokumen->nama_file}");
     }
 
-    private function saveFile(UploadedFile $file, string $folder): string
+    private function saveFile(UploadedFile $file, string $folder, ?string $subfolderName = null): string
     {
         $disk = config('filesystems.upload_disk', 'public');
         if ($disk === 'google') {
-            return $this->uploadToGoogleDrive($file, $folder);
+            return $this->uploadToGoogleDrive($file, $subfolderName);
         }
         return $file->store($folder, 'public');
     }
@@ -113,7 +113,7 @@ class DokumenService
         }
     }
 
-    private function uploadToGoogleDrive(UploadedFile $file, string $folderName): string
+    private function uploadToGoogleDrive(UploadedFile $file, ?string $subfolderName = null): string
     {
         $client = new \Google\Client();
         
@@ -133,11 +133,16 @@ class DokumenService
         $client->addScope(\Google\Service\Drive::DRIVE);
         $service = new \Google\Service\Drive($client);
         
-        $parentFolderId = config('filesystems.disks.google.folderId') ?: 'root';
+        $rootFolderId = config('filesystems.disks.google.folderId') ?: 'root';
+        $targetFolderId = $rootFolderId;
+
+        if (!empty($subfolderName)) {
+            $targetFolderId = $this->getOrCreateSubfolderId($service, $rootFolderId, $subfolderName);
+        }
         
         $fileMetadata = new \Google\Service\Drive\DriveFile([
             'name' => time() . '_' . $file->getClientOriginalName(),
-            'parents' => [$parentFolderId]
+            'parents' => [$targetFolderId]
         ]);
         
         $content = file_get_contents($file->getRealPath());
@@ -161,6 +166,32 @@ class DokumenService
         }
         
         return $uploadedFile->id;
+    }
+
+    private function getOrCreateSubfolderId(\Google\Service\Drive $service, string $parentFolderId, string $subfolderName): string
+    {
+        try {
+            $query = "'" . $parentFolderId . "' in parents and name = '" . addslashes($subfolderName) . "' and mimeType = 'application/vnd.google-apps.folder' and trashed = false";
+            $results = $service->files->listFiles([
+                'q' => $query,
+                'fields' => 'files(id, name)'
+            ]);
+
+            if (count($results->getFiles()) > 0) {
+                return $results->getFiles()[0]->getId();
+            }
+
+            // Buat subfolder baru jika belum ditemukan
+            $folderMetadata = new \Google\Service\Drive\DriveFile([
+                'name' => $subfolderName,
+                'mimeType' => 'application/vnd.google-apps.folder',
+                'parents' => [$parentFolderId]
+            ]);
+            $folder = $service->files->create($folderMetadata, ['fields' => 'id']);
+            return $folder->getId();
+        } catch (\Exception $e) {
+            return $parentFolderId;
+        }
     }
 
     private function deleteFromGoogleDrive(string $fileId): void

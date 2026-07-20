@@ -355,9 +355,9 @@
                                 <div class="fw-semibold small">{{ $jc->nama_cuti }}</div>
                             </div>
                             @if($jc->potong_kuota)
-                                <span class="badge bg-warning text-dark small">Potong Kuota</span>
+                                <span class="badge bg-warning text-dark small">Potong Cuti Tahunan</span>
                             @else
-                                <span class="badge bg-success text-white small">Tidak Potong Kuota</span>
+                                <span class="badge bg-success text-white small">Kuota Terpisah</span>
                             @endif
                         </li>
                     @endforeach

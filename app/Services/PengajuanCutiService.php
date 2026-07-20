@@ -128,10 +128,10 @@ class PengajuanCutiService
                 throw ValidationException::withMessages(['status' => 'Pengajuan ini sudah diverifikasi sebelumnya.']);
             }
 
-            // Jika disetujui dan jenis cuti memotong kuota, kurangi sisa cuti
+            // Jika disetujui dan jenis cuti adalah Cuti Tahunan (CT), kurangi sisa cuti tahunan
             if ($status === PengajuanCuti::STATUS_DISETUJUI) {
                 $jenisCuti = $pengajuan->jenisCuti;
-                if ($jenisCuti->potong_kuota) {
+                if ($jenisCuti->kode_cuti === 'CT') {
                     $pegawai = $pengajuan->pegawai;
                     if ($pegawai->sisa_cuti_tahunan < $pengajuan->lama_cuti) {
                         throw ValidationException::withMessages(['cuti' => 'Sisa cuti tahunan pegawai tidak mencukupi.']);
@@ -248,7 +248,12 @@ class PengajuanCutiService
             }
         }
 
-        if ($jenisCuti->kode_cuti !== 'CT' && $jenisCuti->kode_cuti !== 'CB_UMROH' && $jenisCuti->kode_cuti !== 'CB_HAJI') {
+        if ($jenisCuti->kode_cuti === 'CT') {
+            // Validasi sisa cuti tahunan khusus Cuti Tahunan (CT)
+            if ($pegawai->sisa_cuti_tahunan < $lamaCuti) {
+                throw ValidationException::withMessages(['lama_cuti' => "Sisa cuti tahunan Anda ({$pegawai->sisa_cuti_tahunan} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);
+            }
+        } elseif ($jenisCuti->kode_cuti !== 'CB_UMROH' && $jenisCuti->kode_cuti !== 'CB_HAJI') {
             $tahunIni = now()->year;
             $usedDays = $pegawai->pengajuanCuti()
                 ->where('status', '!=', PengajuanCuti::STATUS_DITOLAK)
@@ -261,11 +266,6 @@ class PengajuanCutiService
 
             if ($sisaKuota < $lamaCuti) {
                 throw ValidationException::withMessages(['lama_cuti' => "Sisa kuota untuk {$jenisCuti->nama_cuti} Anda ({$sisaKuota} {$jenisCuti->satuan}) tidak mencukupi untuk pengajuan ini ({$lamaCuti} {$jenisCuti->satuan})."]);
-            }
-        } else {
-            // Validasi sisa cuti tahunan jika memotong kuota
-            if ($jenisCuti->potong_kuota && $pegawai->sisa_cuti_tahunan < $lamaCuti) {
-                throw ValidationException::withMessages(['lama_cuti' => "Sisa cuti tahunan Anda ({$pegawai->sisa_cuti_tahunan} hari) tidak mencukupi untuk pengajuan ini ({$lamaCuti} hari)."]);
             }
         }
 
