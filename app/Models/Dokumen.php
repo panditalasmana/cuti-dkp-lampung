@@ -32,19 +32,10 @@ class Dokumen extends Model
 
     public function getFileUrlAttribute(): string
     {
-        if (str_starts_with($this->path_file, 'pengajuan/')) {
-            return asset('storage/' . $this->path_file);
+        if (str_starts_with($this->path_file, 'http://') || str_starts_with($this->path_file, 'https://')) {
+            return $this->path_file;
         }
 
-        $disk = config('filesystems.upload_disk', 'public');
-        if ($disk === 'google') {
-            try {
-                return \Illuminate\Support\Facades\Storage::disk('google')->url($this->path_file);
-            } catch (\Exception $e) {
-                return 'https://docs.google.com/uc?export=download&id=' . $this->path_file;
-            }
-        }
-        
         return asset('storage/' . $this->path_file);
     }
 

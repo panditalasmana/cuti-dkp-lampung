@@ -45,8 +45,6 @@ Route::middleware(['auth', 'role:admin'])
     // Dashboard & Kalender
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/kalender',  [Admin\DashboardController::class, 'calendar'])->name('calendar');
-    Route::get('/gdrive/auth',     [Admin\DashboardController::class, 'gdriveAuth'])->name('gdrive.auth');
-    Route::get('/gdrive/callback', [Admin\DashboardController::class, 'gdriveCallback'])->name('gdrive.callback');
 
     // Master: Bidang
     Route::resource('bidang', Admin\BidangController::class);
