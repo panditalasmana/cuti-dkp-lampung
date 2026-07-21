@@ -208,7 +208,18 @@
             @yield('breadcrumb')
         </div>
 
-        <div class="topbar-right">
+        <div class="topbar-right d-flex align-items-center gap-3">
+            @if(Auth::check() && Auth::user()->isAdmin())
+                <div class="dropdown me-2">
+                    <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-light position-relative btn-sm rounded-circle p-2 shadow-sm" title="Pengajuan Menunggu Verifikasi">
+                        <i class="bi bi-bell-fill fs-5 text-warning"></i>
+                        @php $menungguHeader = \App\Models\PengajuanCuti::where('status','menunggu')->count(); @endphp
+                        <span id="badgeHeaderBell" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger {{ $menungguHeader > 0 ? '' : 'd-none' }}">
+                            {{ $menungguHeader }}
+                        </span>
+                    </a>
+                </div>
+            @endif
             <span class="topbar-date d-none d-md-block">
                 <i class="bi bi-calendar3 me-1"></i>
                 {{ now()->isoFormat('dddd, D MMMM Y') }}
@@ -312,15 +323,16 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch("{{ route('admin.check-notifications') }}")
             .then(res => res.json())
             .then(data => {
-                // Update badge sidebar otomatis
+                // Update badge sidebar & header lonceng otomatis
                 const badgeEl = document.getElementById('badgeSidebarAdmin');
-                if (badgeEl) {
-                    if (data.unread_count > 0) {
-                        badgeEl.innerText = data.unread_count;
-                        badgeEl.classList.remove('d-none');
-                    } else {
-                        badgeEl.classList.add('d-none');
-                    }
+                const badgeBellEl = document.getElementById('badgeHeaderBell');
+                
+                if (data.unread_count > 0) {
+                    if (badgeEl) { badgeEl.innerText = data.unread_count; badgeEl.classList.remove('d-none'); }
+                    if (badgeBellEl) { badgeBellEl.innerText = data.unread_count; badgeBellEl.classList.remove('d-none'); }
+                } else {
+                    if (badgeEl) { badgeEl.classList.add('d-none'); }
+                    if (badgeBellEl) { badgeBellEl.classList.add('d-none'); }
                 }
 
                 if (data.latest_pengajuan) {
