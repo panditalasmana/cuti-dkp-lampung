@@ -139,9 +139,14 @@
                             <div class="fw-semibold">{{ $pengajuan->scanSurat->nama_file }}</div>
                             <small class="text-muted">{{ $pengajuan->scanSurat->ukuran_format }} — {{ $pengajuan->scanSurat->created_at->isoFormat('D MMM Y, HH:mm') }}</small>
                         </div>
-                        <a href="{{ $pengajuan->scanSurat->file_url }}" class="btn btn-sm btn-primary" target="_blank" download>
-                            <i class="bi bi-download"></i> Unduh
-                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="previewDokumen('{{ $pengajuan->scanSurat->file_url }}', '{{ $pengajuan->scanSurat->nama_file }}', '{{ $pengajuan->scanSurat->mime_type }}')">
+                                <i class="bi bi-eye"></i> Lihat
+                            </button>
+                            <a href="{{ $pengajuan->scanSurat->file_url }}" class="btn btn-sm btn-primary" target="_blank" download>
+                                <i class="bi bi-download"></i> Unduh
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -161,4 +166,51 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Preview Dokumen Website -->
+<div class="modal fade" id="modalPreviewDokumen" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6 fw-semibold" id="previewModalTitle"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Pratinjau Berkas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3 bg-dark-subtle" style="min-height: 450px; display: flex; align-items: center; justify-content: center;">
+                <img id="previewImage" src="" class="img-fluid rounded shadow d-none" style="max-height: 75vh;" alt="preview berkas">
+                <iframe id="previewIframe" src="" class="w-100 rounded border-0 d-none" style="height: 75vh;"></iframe>
+            </div>
+            <div class="modal-footer bg-light">
+                <a id="previewDownloadBtn" href="" class="btn btn-primary" download target="_blank">
+                    <i class="bi bi-download me-1"></i>Unduh File
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewDokumen(url, filename, mimeType) {
+    const modal = new bootstrap.Modal(document.getElementById('modalPreviewDokumen'));
+    document.getElementById('previewModalTitle').innerText = filename;
+    document.getElementById('previewDownloadBtn').href = url;
+    
+    const imgEl = document.getElementById('previewImage');
+    const iframeEl = document.getElementById('previewIframe');
+    
+    if (mimeType.includes('image') || url.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+        imgEl.src = url;
+        imgEl.classList.remove('d-none');
+        iframeEl.classList.add('d-none');
+        iframeEl.src = '';
+    } else {
+        iframeEl.src = url;
+        iframeEl.classList.remove('d-none');
+        imgEl.classList.add('d-none');
+        imgEl.src = '';
+    }
+    
+    modal.show();
+}
+</script>
 @endsection
