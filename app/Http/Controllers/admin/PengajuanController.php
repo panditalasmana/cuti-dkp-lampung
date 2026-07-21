@@ -170,4 +170,58 @@ class PengajuanController extends Controller
 
         return view('admin.laporan.index', compact('statistik', 'perBulan', 'perBidang', 'perJenisCuti', 'tahun', 'bulan', 'tahunList', 'reportData', 'periodeLabel'));
     }
+
+    public function exportZip(Request $request)
+    {
+        $tahun = $request->get('tahun', date('Y'));
+        $bulan = $request->get('bulan', 'tahunan');
+
+        $query = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat'])
+            ->whereYear('tanggal_pengajuan', $tahun)
+            ->whereHas('scanSurat');
+
+        if ($bulan !== 'tahunan') {
+            $query->whereMonth('tanggal_pengajuan', $bulan);
+        }
+
+        $pengajuanList = $query->get();
+
+        if ($pengajuanList->isEmpty()) {
+            return back()->with('error', 'Tidak ada dokumen bukti scan pada periode yang dipilih.');
+        }
+
+        $zipFileName = "Rekap_Bukti_Scan_Cuti_{$tahun}_" . ($bulan !== 'tahunan' ? "Bulan_{$bulan}" : "Tahunan") . ".zip";
+        $zipPath = storage_path("app/public/{$zipFileName}");
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            return back()->with('error', 'Gagal membuat file ZIP rekap.');
+        }
+
+        $count = 0;
+        foreach ($pengajuanList as $item) {
+            if ($item->scanSurat && !empty($item->scanSurat->path_file)) {
+                $filePath = storage_path("app/public/" . $item->scanSurat->path_file);
+                if (file_exists($filePath)) {
+                    $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+                    $cleanNama = \Illuminate\Support\Str::slug($item->pegawai->nama_lengkap, '_');
+                    $cleanNip = $item->pegawai->nip;
+                    $cleanCuti = $item->jenisCuti->kode_cuti;
+                    $tanggal = $item->tanggal_pengajuan->format('Ymd');
+                    
+                    $entryName = "{$cleanNip}_{$cleanNama}_{$cleanCuti}_{$tanggal}.{$ext}";
+                    $zip->addFile($filePath, $entryName);
+                    $count++;
+                }
+            }
+        }
+
+        $zip->close();
+
+        if ($count === 0) {
+            return back()->with('error', 'Berkas fisik bukti scan belum diunggah atau tidak ditemukan di penyimpanan server.');
+        }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
+    }
 }

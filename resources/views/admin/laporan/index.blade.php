@@ -20,6 +20,9 @@
         <a href="{{ route('admin.laporan.export-excel', ['tahun' => $tahun, 'bulan' => $bulan]) }}" class="btn btn-success">
             <i class="bi bi-file-excel me-1"></i>Export Excel
         </a>
+        <a href="{{ route('admin.laporan.export-zip', ['tahun' => $tahun, 'bulan' => $bulan]) }}" class="btn btn-warning text-dark fw-semibold" title="Unduh seluruh foto & dokumen bukti scan dalam 1 paket ZIP">
+            <i class="bi bi-file-earmark-zip me-1"></i>Unduh Semua Bukti (ZIP)
+        </a>
     </div>
 </div>
 

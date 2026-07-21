@@ -77,6 +77,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/',               [Admin\PengajuanController::class, 'laporan'])->name('index');
         Route::get('/export-pdf',     [Admin\PengajuanController::class, 'exportPdf'])->name('export-pdf');
         Route::get('/export-excel',   [Admin\PengajuanController::class, 'exportExcel'])->name('export-excel');
+        Route::get('/export-zip',     [Admin\PengajuanController::class, 'exportZip'])->name('export-zip');
     });
 
     // Activity Log
