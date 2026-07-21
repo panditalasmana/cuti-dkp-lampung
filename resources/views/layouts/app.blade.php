@@ -268,5 +268,80 @@
 <script src="{{ asset('js/app.js') }}"></script>
 
 @stack('scripts')
+
+@if(Auth::check() && Auth::user()->isAdmin())
+<!-- Toast Notifikasi Real-time Admin -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
+    <div id="liveNotificationToast" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-warning text-dark fw-bold">
+            <i class="bi bi-bell-fill me-2 fs-5 text-dark"></i>
+            <strong class="me-auto" id="toastTitle">Pengajuan Cuti Baru!</strong>
+            <small id="toastTime" class="text-dark-50">Baru saja</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-white text-dark">
+            <div id="toastBodyText" class="fw-semibold mb-1"></div>
+            <div id="toastSubText" class="small text-muted mb-2"></div>
+            <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-sm btn-primary w-100">
+                <i class="bi bi-eye me-1"></i>Lihat Pengajuan
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let lastSeenId = localStorage.getItem('last_seen_pengajuan_id') || 0;
+    
+    function playChime() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+        } catch(e) {}
+    }
+
+    function checkLiveNotifications() {
+        fetch("{{ route('admin.check-notifications') }}")
+            .then(res => res.json())
+            .then(data => {
+                if (data.latest_pengajuan) {
+                    const latest = data.latest_pengajuan;
+                    
+                    if (parseInt(lastSeenId) === 0) {
+                        localStorage.setItem('last_seen_pengajuan_id', latest.id);
+                        lastSeenId = latest.id;
+                    } else if (latest.id > parseInt(lastSeenId)) {
+                        localStorage.setItem('last_seen_pengajuan_id', latest.id);
+                        lastSeenId = latest.id;
+
+                        document.getElementById('toastBodyText').innerText = latest.nama_pegawai + ' mengajukan ' + latest.jenis_cuti;
+                        document.getElementById('toastSubText').innerText = 'Durasi: ' + latest.lama_cuti + ' (' + latest.waktu + ')';
+                        
+                        const toastEl = document.getElementById('liveNotificationToast');
+                        const toast = new bootstrap.Toast(toastEl, { delay: 12000 });
+                        toast.show();
+                        
+                        playChime();
+                    }
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+    setInterval(checkLiveNotifications, 10000);
+    setTimeout(checkLiveNotifications, 2000);
+});
+</script>
+@endif
 </body>
 </html>

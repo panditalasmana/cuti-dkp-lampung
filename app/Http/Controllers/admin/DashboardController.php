@@ -101,4 +101,30 @@ class DashboardController extends Controller
 
         return response()->json($events);
     }
+
+    public function checkNotifications(): \Illuminate\Http\JsonResponse
+    {
+        $latest = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti'])
+            ->where('status', \App\Models\PengajuanCuti::STATUS_MENUNGGU)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $unreadCount = \App\Models\PengajuanCuti::where('status', \App\Models\PengajuanCuti::STATUS_MENUNGGU)->count();
+
+        $latestData = null;
+        if ($latest) {
+            $latestData = [
+                'id' => $latest->id,
+                'nama_pegawai' => $latest->pegawai->nama_lengkap ?? 'Pegawai',
+                'jenis_cuti' => $latest->jenisCuti->nama_cuti ?? 'Cuti',
+                'lama_cuti' => $latest->lama_cuti_display,
+                'waktu' => $latest->created_at ? $latest->created_at->diffForHumans() : 'baru saja',
+            ];
+        }
+
+        return response()->json([
+            'unread_count' => $unreadCount,
+            'latest_pengajuan' => $latestData,
+        ]);
+    }
 }

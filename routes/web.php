@@ -45,6 +45,7 @@ Route::middleware(['auth', 'role:admin'])
     // Dashboard & Kalender
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/kalender',  [Admin\DashboardController::class, 'calendar'])->name('calendar');
+    Route::get('/check-notifications', [Admin\DashboardController::class, 'checkNotifications'])->name('check-notifications');
 
     // Master: Bidang
     Route::resource('bidang', Admin\BidangController::class);
