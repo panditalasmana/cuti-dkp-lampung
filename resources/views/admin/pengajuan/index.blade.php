@@ -90,7 +90,8 @@
                         <th>Periode</th>
                         <th width="8%">Lama</th>
                         <th width="12%">Status</th>
-                        <th width="10%">Aksi</th>
+                        <th width="12%">Scan Surat</th>
+                        <th width="8%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,6 +113,15 @@
                             <td class="text-center fw-semibold">{{ $item->lama_cuti_display }}</td>
                             <td>
                                 @include('components.status-badge', ['status' => $item->status])
+                            </td>
+                            <td>
+                                @if($item->scanSurat)
+                                    <button type="button" class="btn btn-sm btn-outline-success" onclick="previewDokumenIndex('{{ $item->scanSurat->file_url }}', '{{ $item->scanSurat->nama_file }}', '{{ $item->scanSurat->mime_type }}')" title="Lihat Scan">
+                                        <i class="bi bi-file-earmark-check me-1"></i>Lihat
+                                    </button>
+                                @else
+                                    <span class="badge bg-light text-muted border">Belum ada</span>
+                                @endif
                             </td>
                             <td>
                                 <a href="{{ route('admin.pengajuan.show', $item) }}" class="btn btn-sm btn-primary" title="Detail">
@@ -137,4 +147,51 @@
         </div>
     @endif
 </div>
+
+<!-- Modal Preview Dokumen Website -->
+<div class="modal fade" id="modalPreviewDokumenIndex" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6 fw-semibold" id="previewModalTitleIndex"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Pratinjau Scan Surat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3 bg-dark-subtle" style="min-height: 450px; display: flex; align-items: center; justify-content: center;">
+                <img id="previewImageIndex" src="" class="img-fluid rounded shadow d-none" style="max-height: 75vh;" alt="preview scan">
+                <iframe id="previewIframeIndex" src="" class="w-100 rounded border-0 d-none" style="height: 75vh;"></iframe>
+            </div>
+            <div class="modal-footer bg-light">
+                <a id="previewDownloadBtnIndex" href="" class="btn btn-primary" download target="_blank">
+                    <i class="bi bi-download me-1"></i>Unduh File
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewDokumenIndex(url, filename, mimeType) {
+    const modal = new bootstrap.Modal(document.getElementById('modalPreviewDokumenIndex'));
+    document.getElementById('previewModalTitleIndex').innerText = filename;
+    document.getElementById('previewDownloadBtnIndex').href = url;
+    
+    const imgEl = document.getElementById('previewImageIndex');
+    const iframeEl = document.getElementById('previewIframeIndex');
+    
+    if (mimeType.includes('image') || url.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+        imgEl.src = url;
+        imgEl.classList.remove('d-none');
+        iframeEl.classList.add('d-none');
+        iframeEl.src = '';
+    } else {
+        iframeEl.src = url;
+        iframeEl.classList.remove('d-none');
+        imgEl.classList.add('d-none');
+        imgEl.src = '';
+    }
+    
+    modal.show();
+}
+</script>
 @endsection
