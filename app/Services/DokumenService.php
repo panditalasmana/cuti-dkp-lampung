@@ -98,13 +98,23 @@ class DokumenService
     {
         $disk = config('filesystems.upload_disk', 'public');
         if ($disk === 'google') {
-            return $this->uploadToGoogleDrive($file, $subfolderName);
+            try {
+                return $this->uploadToGoogleDrive($file, $subfolderName);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("Google Drive upload failed, falling back to local public disk: " . $e->getMessage());
+                return $file->store($folder, 'public');
+            }
         }
         return $file->store($folder, 'public');
     }
 
     private function deleteFile(string $path): void
     {
+        if (str_starts_with($path, 'pengajuan/')) {
+            Storage::disk('public')->delete($path);
+            return;
+        }
+
         $disk = config('filesystems.upload_disk', 'public');
         if ($disk === 'google') {
             $this->deleteFromGoogleDrive($path);
@@ -117,9 +127,11 @@ class DokumenService
     {
         $client = new \Google\Client();
         
-        $serviceAccountJson = config('filesystems.disks.google.serviceAccountJson');
-        if (!empty($serviceAccountJson)) {
-            $client->setAuthConfig(base_path($serviceAccountJson));
+        $serviceAccountJson = config('filesystems.disks.google.serviceAccountJson') ?: 'gdrive-credentials.json';
+        $jsonPath = base_path($serviceAccountJson);
+        
+        if (file_exists($jsonPath) && !is_dir($jsonPath)) {
+            $client->setAuthConfig($jsonPath);
         } else {
             $client->setClientId(config('filesystems.disks.google.clientId'));
             $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
@@ -133,7 +145,7 @@ class DokumenService
         $client->addScope(\Google\Service\Drive::DRIVE);
         $service = new \Google\Service\Drive($client);
         
-        $rootFolderId = config('filesystems.disks.google.folderId') ?: 'root';
+        $rootFolderId = config('filesystems.disks.google.folderId') ?: '1rUbWcZxJuYEM1oDTLHGaDBiMeRKOODiu';
         $targetFolderId = $rootFolderId;
 
         if (!empty($subfolderName)) {
@@ -198,9 +210,10 @@ class DokumenService
     {
         try {
             $client = new \Google\Client();
-            $serviceAccountJson = config('filesystems.disks.google.serviceAccountJson');
-            if (!empty($serviceAccountJson)) {
-                $client->setAuthConfig(base_path($serviceAccountJson));
+            $serviceAccountJson = config('filesystems.disks.google.serviceAccountJson') ?: 'gdrive-credentials.json';
+            $jsonPath = base_path($serviceAccountJson);
+            if (file_exists($jsonPath) && !is_dir($jsonPath)) {
+                $client->setAuthConfig($jsonPath);
             } else {
                 $client->setClientId(config('filesystems.disks.google.clientId'));
                 $client->setClientSecret(config('filesystems.disks.google.clientSecret'));
