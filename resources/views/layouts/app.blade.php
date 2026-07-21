@@ -90,9 +90,7 @@
                     <i class="bi bi-file-earmark-text"></i>
                     <span>Pengajuan Cuti</span>
                     @php $menunggu = \App\Models\PengajuanCuti::where('status','menunggu')->count(); @endphp
-                    @if($menunggu > 0)
-                        <span class="nav-badge">{{ $menunggu }}</span>
-                    @endif
+                    <span id="badgeSidebarAdmin" class="nav-badge {{ $menunggu > 0 ? '' : 'd-none' }}">{{ $menunggu }}</span>
                 </a>
             </li>
 
@@ -291,7 +289,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    let lastSeenId = localStorage.getItem('last_seen_pengajuan_id') || 0;
+    let lastSeenId = sessionStorage.getItem('last_seen_pengajuan_id') || 0;
     
     function playChime() {
         try {
@@ -314,14 +312,25 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch("{{ route('admin.check-notifications') }}")
             .then(res => res.json())
             .then(data => {
+                // Update badge sidebar otomatis
+                const badgeEl = document.getElementById('badgeSidebarAdmin');
+                if (badgeEl) {
+                    if (data.unread_count > 0) {
+                        badgeEl.innerText = data.unread_count;
+                        badgeEl.classList.remove('d-none');
+                    } else {
+                        badgeEl.classList.add('d-none');
+                    }
+                }
+
                 if (data.latest_pengajuan) {
                     const latest = data.latest_pengajuan;
                     
                     if (parseInt(lastSeenId) === 0) {
-                        localStorage.setItem('last_seen_pengajuan_id', latest.id);
+                        sessionStorage.setItem('last_seen_pengajuan_id', latest.id);
                         lastSeenId = latest.id;
                     } else if (latest.id > parseInt(lastSeenId)) {
-                        localStorage.setItem('last_seen_pengajuan_id', latest.id);
+                        sessionStorage.setItem('last_seen_pengajuan_id', latest.id);
                         lastSeenId = latest.id;
 
                         document.getElementById('toastBodyText').innerText = latest.nama_pegawai + ' mengajukan ' + latest.jenis_cuti;
@@ -339,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     setInterval(checkLiveNotifications, 10000);
-    setTimeout(checkLiveNotifications, 2000);
+    setTimeout(checkLiveNotifications, 1500);
 });
 </script>
 @endif
