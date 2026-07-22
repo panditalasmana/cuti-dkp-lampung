@@ -134,6 +134,27 @@ class DashboardController extends Controller
                 ];
             });
 
-        return response()->json($events);
+        $liburEvents = \App\Models\HariLibur::all()->map(function ($libur) {
+            return [
+                'id' => 'libur_' . $libur->id,
+                'title' => ($libur->is_cuti_bersama ? '🟡 ' : '🔴 ') . $libur->keterangan,
+                'start' => $libur->tanggal->format('Y-m-d'),
+                'end' => $libur->tanggal->format('Y-m-d'),
+                'backgroundColor' => $libur->is_cuti_bersama ? '#f59e0b' : '#ef4444',
+                'borderColor' => $libur->is_cuti_bersama ? '#d97706' : '#dc2626',
+                'display' => 'block',
+                'extendedProps' => [
+                    'nama' => $libur->keterangan,
+                    'nip' => 'HARI LIBUR',
+                    'bidang' => $libur->is_cuti_bersama ? 'Cuti Bersama' : 'Libur Nasional',
+                    'jenis_cuti' => $libur->keterangan,
+                    'tanggal_mulai' => $libur->tanggal->isoFormat('D MMMM Y'),
+                    'tanggal_selesai' => $libur->tanggal->isoFormat('D MMMM Y'),
+                    'jumlah_hari' => '1 hari',
+                ]
+            ];
+        });
+
+        return response()->json($events->concat($liburEvents)->values());
     }
 }

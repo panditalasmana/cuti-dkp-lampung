@@ -62,6 +62,9 @@ Route::middleware(['auth', 'role:admin'])
     // Master: Jenis Cuti
     Route::resource('jenis-cuti', Admin\JenisCutiController::class)->except(['show']);
 
+    // Master: Hari Libur
+    Route::resource('hari-libur', Admin\HariLiburController::class)->except(['show']);
+
     // Pengajuan Cuti
     Route::prefix('pengajuan')->name('pengajuan.')->group(function () {
         Route::get('/',                                    [Admin\PengajuanController::class, 'index'])->name('index');

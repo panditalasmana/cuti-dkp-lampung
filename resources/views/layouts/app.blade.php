@@ -131,6 +131,13 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a href="{{ route('admin.hari-libur.index') }}" class="nav-link {{ request()->routeIs('admin.hari-libur.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>Hari Libur Nasional</span>
+                </a>
+            </li>
+
             <li class="nav-label">Sistem</li>
 
             <li class="nav-item">

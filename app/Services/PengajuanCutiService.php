@@ -179,9 +179,16 @@ class PengajuanCutiService
         $end    = \Carbon\Carbon::parse($selesai);
         $count  = 0;
 
+        // Ambil daftar tanggal libur nasional & cuti bersama pada rentang tanggal tersebut
+        $liburDates = \App\Models\HariLibur::whereBetween('tanggal', [$start->format('Y-m-d'), $end->format('Y-m-d')])
+            ->pluck('tanggal')
+            ->map(fn($d) => $d->format('Y-m-d'))
+            ->toArray();
+
         $current = $start->copy();
         while ($current->lte($end)) {
-            if ($current->isWeekday()) {
+            $formatted = $current->format('Y-m-d');
+            if ($current->isWeekday() && !in_array($formatted, $liburDates)) {
                 $count++;
             }
             $current->addDay();
