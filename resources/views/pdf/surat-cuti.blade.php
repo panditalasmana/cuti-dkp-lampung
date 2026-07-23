@@ -17,7 +17,7 @@
         .center { text-align: center; }
         .bold { font-weight: bold; }
         .title { font-size: 11px; font-weight: bold; text-align: center; margin: 3px 0; }
-        .checkbox { width: 16px; text-align: center; font-weight: bold; }
+        .checkbox { text-align: center; font-weight: bold; }
         .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
         .spacer { height: 4px; line-height: 4px; font-size: 1px; }
         .notes-list { font-size: 8px; margin-top: 3px; line-height: 1.1; }
@@ -93,10 +93,10 @@
 <table>
     <tr><td colspan="4" class="bold">II. JENIS CUTI YANG DIAMBIL **</td></tr>
     <tr>
-        <td width="40%">1. Cuti Tahunan</td>
-        <td class="checkbox" width="10%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
-        <td width="40%">2. Cuti Besar</td>
-        <td class="checkbox" width="10%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
+        <td width="28%">1. Cuti Tahunan</td>
+        <td class="checkbox" width="22%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
+        <td width="28%">2. Cuti Besar</td>
+        <td class="checkbox" width="22%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
     </tr>
     <tr>
         <td>3. Cuti Sakit</td>
