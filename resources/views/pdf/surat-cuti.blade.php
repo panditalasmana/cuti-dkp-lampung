@@ -19,8 +19,8 @@
         .title { font-size: 11px; font-weight: bold; text-align: center; margin: 3px 0; }
         .checkbox { width: 16px; text-align: center; font-weight: bold; }
         .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
-        .spacer { height: 3px; line-height: 3px; font-size: 1px; }
-        .notes-list { font-size: 8px; margin-top: 2px; line-height: 1.1; }
+        .spacer { height: 4px; line-height: 4px; font-size: 1px; }
+        .notes-list { font-size: 8px; margin-top: 3px; line-height: 1.1; }
         .strike { text-decoration: line-through; }
     </style>
 </head>
@@ -89,7 +89,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN II (2 KOLOM SAJA PERSIS SEPERTI GAMBAR ACUAN) --}}
+{{-- BAGIAN II --}}
 <table>
     <tr><td colspan="4" class="bold">II. JENIS CUTI YANG DIAMBIL **</td></tr>
     <tr>
@@ -122,7 +122,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN IV (FORMAT SELAMA HARI/BULAN/TAHUN DENGAN CORET DYNAMIC PERFEKTIF) --}}
+{{-- BAGIAN IV (TEMPEL DENGAN V TANPA SPACER) --}}
 <table>
     <tr><td colspan="6" class="bold">IV. LAMANYA CUTI</td></tr>
     <tr>
@@ -137,9 +137,7 @@
     </tr>
 </table>
 
-<div class="spacer"></div>
-
-{{-- BAGIAN V. CATATAN CUTI --}}
+{{-- BAGIAN V. CATATAN CUTI (LANGSUNG MENEMPEL DENGAN IV) --}}
 <table>
     <tr>
         <td colspan="5" class="bold">V. CATATAN CUTI</td>
