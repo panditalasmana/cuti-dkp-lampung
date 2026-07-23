@@ -21,6 +21,7 @@
         .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
         .spacer { height: 3px; line-height: 3px; font-size: 1px; }
         .notes-list { font-size: 8px; margin-top: 2px; line-height: 1.1; }
+        .strike { text-decoration: line-through; }
     </style>
 </head>
 <body>
@@ -30,14 +31,20 @@
     $satuan = 'hari';
     if (in_array($jenisCuti->kode_cuti, ['CM', 'CB_HAJI'])) {
         $satuan = 'bulan';
-        $displayLama = ($lamaVal >= 30 ? round($lamaVal / 30) : $lamaVal) . ' Bulan';
+        $displayAngka = ($lamaVal >= 30 ? round($lamaVal / 30) : $lamaVal) . ' Bulan';
     } elseif ($lamaVal >= 365) {
         $satuan = 'tahun';
-        $displayLama = round($lamaVal / 365) . ' Tahun';
+        $displayAngka = round($lamaVal / 365) . ' Tahun';
     } else {
         $satuan = 'hari';
-        $displayLama = $lamaVal . ' Hari';
+        $displayAngka = $lamaVal . ' Hari Kerja';
     }
+
+    $strHari  = ($satuan === 'hari')  ? 'hari'  : '<span class="strike">hari</span>';
+    $strBulan = ($satuan === 'bulan') ? 'bulan' : '<span class="strike">bulan</span>';
+    $strTahun = ($satuan === 'tahun') ? 'tahun' : '<span class="strike">tahun</span>';
+    
+    $formatStrikethrough = "({$strHari}/{$strBulan}/{$strTahun})*";
 @endphp
 
 {{-- HEADER PERMOHONAN --}}
@@ -115,14 +122,13 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN IV (FORMAT SELAMA HARI/BULAN/TAHUN DENGAN CORET DYNAMIC) --}}
+{{-- BAGIAN IV (FORMAT SELAMA HARI/BULAN/TAHUN DENGAN CORET DYNAMIC PERFEKTIF) --}}
 <table>
     <tr><td colspan="6" class="bold">IV. LAMANYA CUTI</td></tr>
     <tr>
         <td width="10%">Selama</td>
         <td width="28%">
-            <b>{{ $displayLama }}</b> 
-            (@if($satuan == 'hari')hari@else<span style="text-decoration:line-through;">hari</span>@endif/@if($satuan == 'bulan')bulan@else<span style="text-decoration:line-through;">bulan</span>@endif/@if($satuan == 'tahun')tahun@else<span style="text-decoration:line-through;">tahun</span>@endif)*
+            <b>{{ $displayAngka }}</b> {!! $formatStrikethrough !!}
         </td>
         <td width="14%">Mulai Tanggal</td>
         <td width="20%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_mulai)->translatedFormat('d F Y') }}</td>
@@ -191,10 +197,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="height:95px; border:none; text-align:center; vertical-align:top; padding:6px 4px 4px 4px;">
-                        Hormat saya,<br>
-                        <div style="height:90px;"></div>
-                        <span style="font-weight:bold; text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
+                    <td colspan="2" style="border:none; text-align:center; padding-top:12px;">
+                        Hormat saya,<br><br><br><br>
+                        <span class="bold" style="text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
                         NIP. {{ $pegawai->nip }}
                     </td>
                 </tr>
@@ -218,11 +223,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:120px"></td>
+        <td style="height:85px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
             <span class="bold" style="text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
             NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
@@ -244,11 +249,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:120px"></td>
+        <td style="height:85px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
             <span class="bold" style="text-decoration:underline;">RENDI RESWANDI, S.STP.,M.Si</span><br>
             NIP. 19770526 199712 1 001
         </td>
