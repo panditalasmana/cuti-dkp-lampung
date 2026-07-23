@@ -16,11 +16,11 @@
         .no-border { border: none; }
         .center { text-align: center; }
         .bold { font-weight: bold; }
-        .title { font-size: 11px; font-weight: bold; text-align: center; margin: 3px 0; }
+        .title { font-size: 11px; font-weight: bold; text-align: center; margin: 2px 0; }
         .checkbox { text-align: center; font-weight: bold; }
         .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
-        .spacer { height: 4px; line-height: 4px; font-size: 1px; }
-        .notes-list { font-size: 8px; margin-top: 3px; line-height: 1.1; }
+        .spacer { height: 2px; line-height: 2px; font-size: 1px; }
+        .notes-list { font-size: 8px; margin-top: 2px; line-height: 1.1; }
         .strike { text-decoration: line-through; }
     </style>
 </head>
@@ -31,13 +31,13 @@
     $satuan = 'hari';
     if (in_array($jenisCuti->kode_cuti, ['CM', 'CB_HAJI'])) {
         $satuan = 'bulan';
-        $displayAngka = ($lamaVal >= 30 ? round($lamaVal / 30) : $lamaVal) . ' Bulan';
+        $displayAngka = ($lamaVal >= 30 ? round($lamaVal / 30) : $lamaVal);
     } elseif ($lamaVal >= 365) {
         $satuan = 'tahun';
-        $displayAngka = round($lamaVal / 365) . ' Tahun';
+        $displayAngka = round($lamaVal / 365);
     } else {
         $satuan = 'hari';
-        $displayAngka = $lamaVal . ' Hari';
+        $displayAngka = $lamaVal;
     }
 
     $strHari  = ($satuan === 'hari')  ? 'hari'  : '<span class="strike">hari</span>';
@@ -117,7 +117,7 @@
 {{-- BAGIAN III --}}
 <table>
     <tr><td class="bold">III. ALASAN CUTI</td></tr>
-    <tr><td style="height:20px; vertical-align:top;">{{ $pengajuan->alasan_cuti }}</td></tr>
+    <tr><td style="height:18px; vertical-align:top;">{{ $pengajuan->alasan_cuti }}</td></tr>
 </table>
 
 <div class="spacer"></div>
@@ -137,20 +137,20 @@
     </tr>
 </table>
 
-{{-- BAGIAN V. CATATAN CUTI --}}
+{{-- BAGIAN V. CATATAN CUTI (LANGSUNG MENEMPEL DENGAN IV) --}}
 <table>
     <tr>
         <td colspan="5" class="bold">V. CATATAN CUTI</td>
     </tr>
     <tr>
-        <td colspan="3" width="48%">1. CUTI TAHUNAN</td>
-        <td width="42%">2. CUTI BESAR</td>
+        <td colspan="3" width="50%">1. CUTI TAHUNAN</td>
+        <td width="40%">2. CUTI BESAR</td>
         <td width="10%"></td>
     </tr>
     <tr>
         <td width="12%" class="center">Tahun</td>
         <td width="12%" class="center">Sisa</td>
-        <td width="24%" class="center">Keterangan</td>
+        <td width="26%" class="center">Keterangan</td>
         <td>3. CUTI SAKIT</td>
         <td></td>
     </tr>
@@ -179,11 +179,11 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VI (Hormat saya langsung di atas, space TTD sangat lapang, nama bold tanpa garis bawah) --}}
+{{-- BAGIAN VI --}}
 <table>
     <tr><td colspan="2" class="bold">VI. ALAMAT SELAMA MENJALANKAN CUTI</td></tr>
     <tr>
-        <td width="50%" style="height:105px; vertical-align:top;">
+        <td width="50%" style="height:75px; vertical-align:top;">
             {{ $pengajuan->alamat_selama_cuti }}
         </td>
         <td width="50%" style="padding:0; vertical-align:top;">
@@ -196,7 +196,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border:none; text-align:center; padding-top:2px;">
-                        Hormat saya,<br><br><br><br><br><br>
+                        Hormat saya,<br><br><br><br>
                         <span class="bold">{{ $pegawai->nama_lengkap }}</span><br>
                         NIP. {{ $pegawai->nip }}
                     </td>
@@ -208,7 +208,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VII (SPACE TTD ATASAN SANGAT LAPANG GEDE) --}}
+{{-- BAGIAN VII --}}
 <table>
     <tr><td colspan="5" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
     <tr>
@@ -221,11 +221,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:95px"></td>
+        <td style="height:70px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:95px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+        <td style="height:70px; text-align:center; vertical-align:bottom; padding-bottom:3px;">
             <span class="bold">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
             NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
@@ -234,7 +234,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VIII (SPACE TTD PEJABAT BERWENANG SANGAT LAPANG GEDE) --}}
+{{-- BAGIAN VIII --}}
 <table>
     <tr><td colspan="5" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
     <tr>
@@ -247,11 +247,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:95px"></td>
+        <td style="height:70px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:95px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+        <td style="height:70px; text-align:center; vertical-align:bottom; padding-bottom:3px;">
             <span class="bold">RENDI RESWANDI, S.STP.,M.Si</span><br>
             NIP. 19770526 199712 1 001
         </td>
