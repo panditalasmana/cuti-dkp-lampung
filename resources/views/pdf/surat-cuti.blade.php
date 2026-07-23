@@ -93,10 +93,10 @@
 <table>
     <tr><td colspan="4" class="bold">II. JENIS CUTI YANG DIAMBIL **</td></tr>
     <tr>
-        <td width="28%">1. Cuti Tahunan</td>
-        <td class="checkbox" width="22%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
-        <td width="28%">2. Cuti Besar</td>
-        <td class="checkbox" width="22%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
+        <td width="26%">1. Cuti Tahunan</td>
+        <td class="checkbox" width="24%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
+        <td width="26%">2. Cuti Besar</td>
+        <td class="checkbox" width="24%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
     </tr>
     <tr>
         <td>3. Cuti Sakit</td>
@@ -183,7 +183,7 @@
 <table>
     <tr><td colspan="2" class="bold">VI. ALAMAT SELAMA MENJALANKAN CUTI</td></tr>
     <tr>
-        <td width="50%" style="height:75px; vertical-align:top;">
+        <td width="50%" style="height:70px; vertical-align:top;">
             {{ $pengajuan->alamat_selama_cuti }}
         </td>
         <td width="50%" style="padding:0; vertical-align:top;">
@@ -208,24 +208,21 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VII --}}
+{{-- BAGIAN VII (PERSIS 4 KOLOM ANEKA SAMPLE DOKUMEN 1) --}}
 <table>
-    <tr><td colspan="5" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
+    <tr><td colspan="4" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
     <tr>
-        <td class="center bold" width="16%">DISETUJUI</td>
-        <td class="center bold" width="16%">PERUBAHAN****</td>
+        <td class="center bold" width="15%">DISETUJUI</td>
+        <td class="center bold" width="18%">PERUBAHAN****</td>
         <td class="center bold" width="18%">DITANGGUHKAN****</td>
-        <td class="center bold" width="18%">TIDAK DISETUJUI****</td>
-        <td class="center bold" width="32%">
-            {{ strtoupper($pengajuan->atasan_jabatan ?? 'KEPALA DINAS') }}
-        </td>
+        <td class="center bold" width="49%">TIDAK DISETUJUI****</td>
     </tr>
     <tr>
-        <td style="height:70px"></td>
+        <td style="height:65px"></td>
         <td></td>
         <td></td>
-        <td></td>
-        <td style="height:70px; text-align:center; vertical-align:bottom; padding-bottom:3px;">
+        <td style="height:65px; text-align:center; padding: 4px 2px 2px 2px;">
+            <div class="bold" style="margin-bottom:20px;">{{ strtoupper($pengajuan->atasan_jabatan ?? 'KEPALA DINAS') }}</div>
             <span class="bold">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
             NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
@@ -234,24 +231,21 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VIII --}}
+{{-- BAGIAN VIII (PERSIS 4 KOLOM ANEKA SAMPLE DOKUMEN 1) --}}
 <table>
-    <tr><td colspan="5" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
+    <tr><td colspan="4" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
     <tr>
-        <td class="center bold" width="16%">DISETUJUI</td>
-        <td class="center bold" width="16%">PERUBAHAN****</td>
+        <td class="center bold" width="15%">DISETUJUI</td>
+        <td class="center bold" width="18%">PERUBAHAN****</td>
         <td class="center bold" width="18%">DITANGGUHKAN****</td>
-        <td class="center bold" width="18%">TIDAK DISETUJUI****</td>
-        <td class="center bold" width="32%">
-            Kepala Badan Kepegawaian<br>Daerah
-        </td>
+        <td class="center bold" width="49%">TIDAK DISETUJUI****</td>
     </tr>
     <tr>
-        <td style="height:70px"></td>
+        <td style="height:65px"></td>
         <td></td>
         <td></td>
-        <td></td>
-        <td style="height:70px; text-align:center; vertical-align:bottom; padding-bottom:3px;">
+        <td style="height:65px; text-align:center; padding: 4px 2px 2px 2px;">
+            <div class="bold" style="margin-bottom:20px;">Kepala Badan Kepegawaian Daerah</div>
             <span class="bold">RENDI RESWANDI, S.STP.,M.Si</span><br>
             NIP. 19770526 199712 1 001
         </td>
