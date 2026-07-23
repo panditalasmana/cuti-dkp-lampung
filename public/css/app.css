@@ -274,8 +274,8 @@ a:hover { color: var(--primary-dark); }
 }
 
 .brand-text { flex: 1; }
-.brand-title { display: block; font-size: .95rem; font-weight: 700; color: #fff; letter-spacing: .5px; }
-.brand-sub   { display: block; font-size: .7rem; color: rgba(255,255,255,.5); }
+.brand-title { display: block; font-size: 1rem; font-weight: 700; color: #fff; letter-spacing: .5px; margin-bottom: 2px; }
+.brand-sub   { display: block; font-size: .68rem; color: rgba(255,255,255,.65); line-height: 1.25; font-weight: 400; }
 
 .sidebar-close {
     background: none; border: none;

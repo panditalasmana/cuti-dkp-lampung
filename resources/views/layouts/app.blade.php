@@ -37,7 +37,7 @@
         </div>
         <div class="brand-text">
             <span class="brand-title">SIPENCUTI</span>
-            <span class="brand-sub">Dinas Kelautan & Perikanan</span>
+            <span class="brand-sub">Dinas Kelautan & Perikanan<br>Provinsi Lampung</span>
         </div>
         <button class="sidebar-close d-lg-none" id="sidebarClose">
             <i class="bi bi-x-lg"></i>
