@@ -330,28 +330,34 @@ a:hover { color: var(--primary-dark); }
 .nav-link {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: var(--radius-sm);
-    color: rgba(255,255,255,.65);
-    transition: var(--transition);
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease-in-out;
     font-size: .88rem;
+    font-weight: 500;
     position: relative;
+    margin-bottom: 3px;
 }
 
 .nav-link:hover {
-    background: rgba(255,255,255,.08);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    transform: translateX(2px);
 }
 
 .nav-link.active {
-    background: var(--primary);
-    color: #fff;
+    background: linear-gradient(90deg, rgba(13, 110, 253, 0.3) 0%, rgba(13, 110, 253, 0.12) 100%);
+    color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 3px 10px rgba(11,95,165,.4);
+    border-left: 4px solid #38bdf8;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
 }
 
-.nav-link i { font-size: 1.05rem; width: 20px; text-align: center; }
+.nav-link i { font-size: 1.1rem; width: 20px; text-align: center; transition: color 0.2s ease; }
+.nav-link.active i { color: #38bdf8; }
 
 .nav-badge {
     margin-left: auto;
