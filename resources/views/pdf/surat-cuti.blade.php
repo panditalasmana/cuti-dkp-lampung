@@ -4,156 +4,204 @@
     <meta charset="UTF-8">
     <title>Formulir Permintaan dan Pemberian Cuti</title>
     <style>
-        @page { margin: 15px 25px; }
+        @page { margin: 12px 20px; }
         body {
             font-family: 'Times-Roman', 'Times New Roman', Times, serif;
-            font-size: 10px;
+            font-size: 9.5px;
             color: #000;
-            line-height: 1.2;
+            line-height: 1.15;
         }
-        table { width: 100%; border-collapse: collapse; }
-        td, th { border: 1px solid #000; padding: 2.5px 4px; vertical-align: top; }
+        table { width: 100%; border-collapse: collapse; margin: 0; }
+        td, th { border: 1px solid #000; padding: 2px 4px; vertical-align: top; }
         .no-border { border: none; }
         .center { text-align: center; }
         .bold { font-weight: bold; }
-        .title { font-size: 14px; font-weight: bold; text-align: center; margin: 3px 0; }
-        .section { background: #efefef; font-weight: bold; padding: 3px 4px; }
+        .title { font-size: 11px; font-weight: bold; text-align: center; margin: 4px 0; }
+        .section { background: #ffffff; font-weight: bold; padding: 2px 4px; border-bottom: 1px solid #000; }
         .checkbox { width: 16px; text-align: center; font-weight: bold; }
-        .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; }
-        .spacer { height: 4px; line-height: 4px; font-size: 1px; }
+        .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
+        .spacer { height: 3px; line-height: 3px; font-size: 1px; }
+        .notes-list { font-size: 8.5px; margin-top: 3px; line-height: 1.1; }
     </style>
 </head>
 <body>
-{{-- HEADER --}}
-<table class="no-border">
+
+{{-- HEADER PERMOHONAN --}}
+<table class="no-border" style="margin-bottom: 2px;">
     <tr>
-        <td class="no-border" width="60%"></td>
-        <td class="no-border">Bandar Lampung, {{ now()->translatedFormat('d F Y') }}</td>
-    </tr>
-    <tr>
-        <td class="no-border"></td>
-        <td class="no-border">
+        <td class="no-border" width="55%"></td>
+        <td class="no-border" width="45%">
+            Bandar Lampung, {{ \Carbon\Carbon::parse($pengajuan->created_at ?? now())->translatedFormat('d F Y') }}<br>
             Kepada<br>
-            Yth. Kepala Dinas Kelautan dan Perikanan<br>
+            Yth. Kepala Badan Kepegawaian Daerah<br>
             Provinsi Lampung<br>
             di<br>
-            Bandar Lampung
+            &nbsp;&nbsp;&nbsp;&nbsp;TELUKBETUNG
         </td>
     </tr>
 </table>
-<div class="spacer"></div>
+
 <div class="title">FORMULIR PERMINTAAN DAN PEMBERIAN CUTI</div>
-<div class="spacer"></div>
+
 {{-- BAGIAN I --}}
 <table>
-    <tr><td colspan="4" class="section">I. DATA PEGAWAI</td></tr>
+    <tr><td colspan="4" class="bold">I. DATA PEGAWAI</td></tr>
     <tr>
-        <td width="20%">Nama</td>
-        <td width="30%">{{ $pegawai->nama_lengkap }}</td>
-        <td width="20%">NIP</td>
-        <td>{{ $pegawai->nip }}</td>
+        <td width="15%">Nama</td>
+        <td width="35%" class="bold">{{ $pegawai->nama_lengkap }}</td>
+        <td width="15%">NIP</td>
+        <td width="35%">{{ $pegawai->nip }}</td>
     </tr>
     <tr>
         <td>Jabatan</td>
         <td>{{ $jabatan->nama_jabatan }}</td>
-        <td>Golongan</td>
-        <td>{{ $pegawai->pangkat }}</td>
-    </tr>
-    <tr>
-        <td>Unit Kerja</td>
-        <td>{{ $bidang->nama_bidang }}</td>
         <td>Masa Kerja</td>
         <td>{{ $pegawai->masa_kerja }}</td>
     </tr>
     <tr>
-        <td>Sisa Cuti</td>
-        <td>{{ $pegawai->sisa_cuti_tahunan }} Hari</td>
-        <td>Jenis Pegawai</td>
-        <td>{{ $pegawai->jenis_pegawai }}</td>
+        <td>Unit Kerja</td>
+        <td>Dinas Kelautan dan Perikanan Provinsi Lampung</td>
+        <td>Pangkat/Gol</td>
+        <td>{{ $pegawai->pangkat }}</td>
     </tr>
 </table>
+
 <div class="spacer"></div>
+
 {{-- BAGIAN II --}}
 <table>
-    <tr><td colspan="8" class="section">II. JENIS CUTI YANG DIAMBIL</td></tr>
+    <tr><td colspan="6" class="bold">II. JENIS CUTI YANG DIAMBIL **</td></tr>
     <tr>
-        <td width="20%">Cuti Tahunan</td>
-        <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '✓' : '' }}</span></td>
-        <td width="20%">Cuti Besar</td>
-        <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '✓' : '' }}</span></td>
-        <td width="20%">Cuti Sakit</td>
-        <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CS'  ? '✓' : '' }}</span></td>
-        <td width="20%">Cuti Melahirkan</td>
-        <td class="checkbox" width="5%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CM'  ? '✓' : '' }}</span></td>
+        <td width="30%">1. Cuti Tahunan</td>
+        <td class="checkbox" width="3%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
+        <td width="30%">2. Cuti Besar</td>
+        <td class="checkbox" width="3%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
+        <td width="31%"></td>
+        <td class="checkbox" width="3%"></td>
     </tr>
     <tr>
-        <td>Cuti Karena Alasan Penting</td>
-        <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CAK' ? '✓' : '' }}</span></td>
-        <td colspan="5">Cuti di Luar Tanggungan Negara</td>
-        <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CLN' ? '✓' : '' }}</span></td>
+        <td>3. Cuti Sakit</td>
+        <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CS'  ? '√' : '' }}</span></td>
+        <td>4. Cuti Melahirkan</td>
+        <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CM'  ? '√' : '' }}</span></td>
+        <td></td>
+        <td class="checkbox"></td>
+    </tr>
+    <tr>
+        <td>5. Cuti Karena Alasan Penting</td>
+        <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CAK' ? '√' : '' }}</span></td>
+        <td>6. Cuti di Luar Tanggungan Negara</td>
+        <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CLN' ? '√' : '' }}</span></td>
+        <td></td>
+        <td class="checkbox"></td>
     </tr>
 </table>
+
 <div class="spacer"></div>
+
 {{-- BAGIAN III --}}
 <table>
-    <tr><td class="section">III. ALASAN CUTI</td></tr>
-    <tr><td style="height:32px">{{ $pengajuan->alasan_cuti }}</td></tr>
+    <tr><td class="bold">III. ALASAN CUTI</td></tr>
+    <tr><td style="height:22px; vertical-align:top;">{{ $pengajuan->alasan_cuti }}</td></tr>
 </table>
+
 <div class="spacer"></div>
+
 {{-- BAGIAN IV --}}
 <table>
-    <tr><td colspan="6" class="section">IV. LAMANYA CUTI</td></tr>
+    <tr><td colspan="6" class="bold">IV. LAMANYA CUTI</td></tr>
     <tr>
-        <td width="18%">Selama</td>
-        <td width="15%"><b>{{ $pengajuan->lama_cuti_display }}</b></td>
-        <td width="12%">Mulai</td>
+        <td width="12%">Selama</td>
+        <td width="20%"><b>{{ $pengajuan->lama_cuti_display }}</b></td>
+        <td width="15%">Mulai Tanggal</td>
         <td width="20%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_mulai)->translatedFormat('d F Y') }}</td>
-        <td width="12%">Sampai</td>
-        <td>{{ \Carbon\Carbon::parse($pengajuan->tanggal_selesai)->translatedFormat('d F Y') }}</td>
+        <td width="8%" class="center">s/d</td>
+        <td width="25%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_selesai)->translatedFormat('d F Y') }}</td>
     </tr>
 </table>
+
 <div class="spacer"></div>
+
 {{-- BAGIAN V --}}
 <table>
-    <tr><td colspan="8" class="section">V. CATATAN CUTI</td></tr>
+    <tr><td colspan="6" class="bold">V. CATATAN CUTI</td></tr>
     <tr>
-        <td width="22%">Cuti Tahunan</td>
-        <td width="13%">{{ $pegawai->sisa_cuti_tahunan }} Hari</td>
-        <td width="10%">N-2</td><td width="10%">-</td>
-        <td width="10%">N-1</td><td width="10%">-</td>
-        <td width="10%">N</td><td>{{ $pegawai->sisa_cuti_tahunan }}</td>
+        <td width="30%">1. CUTI TAHUNAN</td>
+        <td width="3%"></td>
+        <td width="33%">2. CUTI BESAR</td>
+        <td width="3%"></td>
+        <td width="28%"></td>
+        <td width="3%"></td>
     </tr>
-    <tr><td>Cuti Besar</td><td colspan="7">-</td></tr>
-    <tr><td>Cuti Sakit</td><td colspan="7">-</td></tr>
-    <tr><td>Cuti Melahirkan</td><td colspan="7">-</td></tr>
-    <tr><td>Cuti Karena Alasan Penting</td><td colspan="7">-</td></tr>
-    <tr><td>Cuti di Luar Tanggungan Negara</td><td colspan="7">-</td></tr>
+    <tr>
+        <td colspan="2">
+            <table style="width:100%; border:none;">
+                <tr style="background:#f8f9fa;">
+                    <td style="border:1px solid #000;" width="40%">Tahun</td>
+                    <td style="border:1px solid #000;" width="25%">Sisa</td>
+                    <td style="border:1px solid #000;">Keterangan</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000;">N-2</td>
+                    <td style="border:1px solid #000;" class="center">0</td>
+                    <td style="border:1px solid #000;"></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000;">N-1</td>
+                    <td style="border:1px solid #000;" class="center">0</td>
+                    <td style="border:1px solid #000;"></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000;">N</td>
+                    <td style="border:1px solid #000;" class="center">{{ $pegawai->sisa_cuti_tahunan }}</td>
+                    <td style="border:1px solid #000;"></td>
+                </tr>
+            </table>
+        </td>
+        <td colspan="4" style="vertical-align:top;">
+            <table style="width:100%; border:none;">
+                <tr>
+                    <td style="border:none;" width="50%">3. CUTI SAKIT</td>
+                    <td style="border:none;"></td>
+                </tr>
+                <tr>
+                    <td style="border:none;">4. CUTI MELAHIRKAN</td>
+                    <td style="border:none;"></td>
+                </tr>
+                <tr>
+                    <td style="border:none;">5. CUTI KARENA ALASAN PENTING</td>
+                    <td style="border:none;"></td>
+                </tr>
+                <tr>
+                    <td style="border:none;">6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
+                    <td style="border:none;"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
+
 <div class="spacer"></div>
+
 {{-- BAGIAN VI --}}
 <table>
-    <tr><td colspan="2" class="section">VI. ALAMAT SELAMA MENJALANKAN CUTI</td></tr>
+    <tr><td colspan="2" class="bold">VI. ALAMAT SELAMA MENJALANKAN CUTI</td></tr>
     <tr>
-        <!-- Left Column: Address -->
-        <td width="55%" style="height:120px; vertical-align:top; padding:4px;">
+        <td width="50%" style="height:70px; vertical-align:top;">
             {{ $pengajuan->alamat_selama_cuti }}
         </td>
-        <!-- Right Column: TELP and Signature (Nested Table) -->
-        <td width="45%" style="padding:0; vertical-align:top;">
-            <table style="width:100%; height:120px; border-collapse:collapse; border:none; margin:0; padding:0;">
+        <td width="50%" style="padding:0; vertical-align:top;">
+            <table style="width:100%; border:none;">
                 <tr>
-                    <td width="30%" style="height:25px; border-top:none; border-left:none; border-bottom:1px solid #000; border-right:1px solid #000; padding:2.5px 4px; vertical-align:middle;">
-                        TELP
-                    </td>
-                    <td style="height:25px; border-top:none; border-left:none; border-right:none; border-bottom:1px solid #000; padding:2.5px 4px; vertical-align:middle;">
+                    <td width="20%" style="border-top:none; border-left:none; border-bottom:1px solid #000;">TELP</td>
+                    <td style="border-top:none; border-right:none; border-left:1px solid #000; border-bottom:1px solid #000;">
                         {{ $pengajuan->no_telp_selama_cuti ?? '-' }}
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="height:95px; border:none; text-align:center; vertical-align:top; padding:6px 4px 4px 4px;">
-                        Hormat saya,<br>
-                        <div style="height:90px;"></div>
-                        <span style="font-weight:bold; text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
+                    <td colspan="2" style="border:none; text-align:center; padding-top:10px;">
+                        Hormat saya,<br><br><br>
+                        <span class="bold" style="text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
                         NIP. {{ $pegawai->nip }}
                     </td>
                 </tr>
@@ -161,64 +209,70 @@
         </td>
     </tr>
 </table>
+
 <div class="spacer"></div>
+
 {{-- BAGIAN VII --}}
 <table>
-    <tr><td colspan="5" class="section">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
+    <tr><td colspan="5" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
     <tr>
-        <td class="center bold" width="17%">DISETUJUI</td>
-        <td class="center bold" width="17%">PERUBAHAN****</td>
-        <td class="center bold" width="17%">DITANGGUHKAN****</td>
-        <td class="center bold" width="17%">TIDAK DISETUJUI****</td>
-        <td class="center bold" width="32%">{{ strtoupper($pengajuan->atasan_jabatan ?? 'Sekretaris Dinas') }},</td>
+        <td class="center bold" width="16%">DISETUJUI</td>
+        <td class="center bold" width="16%">PERUBAHAN****</td>
+        <td class="center bold" width="18%">DITANGGUHKAN****</td>
+        <td class="center bold" width="18%">TIDAK DISETUJUI****</td>
+        <td class="center bold" width="32%">
+            {{ strtoupper($pengajuan->atasan_jabatan ?? 'KEPALA DINAS') }}
+        </td>
     </tr>
     <tr>
-        <td style="height:120px"></td>
+        <td style="height:65px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
-            <span style="font-weight:bold; text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'A. FAISAL, A.Pi.' }}</span>
-            @if(!empty($pengajuan->atasan_nip) && $pengajuan->atasan_nip !== '-')
-                <br>NIP. {{ $pengajuan->atasan_nip }}
-            @endif
+        <td style="height:65px; text-align:center; vertical-align:bottom; padding-bottom:2px;">
+            <span class="bold" style="text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
+            NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
     </tr>
 </table>
+
 <div class="spacer"></div>
+
 {{-- BAGIAN VIII --}}
 <table>
+    <tr><td colspan="5" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
     <tr>
-        <td colspan="5" class="section center">
-            KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI
+        <td class="center bold" width="16%">DISETUJUI</td>
+        <td class="center bold" width="16%">PERUBAHAN****</td>
+        <td class="center bold" width="18%">DITANGGUHKAN****</td>
+        <td class="center bold" width="18%">TIDAK DISETUJUI****</td>
+        <td class="center bold" width="32%">
+            Kepala Badan Kepegawaian<br>Daerah
         </td>
     </tr>
     <tr>
-        <td class="center bold" width="17%">DISETUJUI</td>
-        <td class="center bold" width="17%">PERUBAHAN****</td>
-        <td class="center bold" width="17%">DITANGGUHKAN****</td>
-        <td class="center bold" width="17%">TIDAK DISETUJUI****</td>
-        <td class="center bold" width="32%">{{ strtoupper($pengajuan->pejabat_jabatan ?? 'Kepala Dinas') }},</td>
-    </tr>
-    <tr>
-        <td style="height:120px"></td>
+        <td style="height:65px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:6px;">
-            <span style="font-weight:bold; text-decoration:underline;">
-                {{ $pengajuan->pejabat_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}
-            </span>
-            @if(!empty($pengajuan->pejabat_nip) && $pengajuan->pejabat_nip !== '-')
-                <br>NIP. {{ $pengajuan->pejabat_nip }}
-            @endif
+        <td style="height:65px; text-align:center; vertical-align:bottom; padding-bottom:2px;">
+            <span class="bold" style="text-decoration:underline;">RENDI RESWANDI, S.STP.,M.Si</span><br>
+            NIP. 19770526 199712 1 001
         </td>
     </tr>
 </table>
-<div class="spacer"></div>
-<div style="text-align:center; font-size:9px; color:#666;">
-    Dicetak oleh Sistem Informasi Pengajuan Cuti Pegawai<br>
-    Dinas Kelautan dan Perikanan Provinsi Lampung<br>
+
+{{-- FOOTER CATATAN --}}
+<div class="notes-list">
+    Catatan :<br>
+    * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coret yang tidak perlu<br>
+    ** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pilih salah satu dengan memberi tanda centang ( √ )<br>
+    *** &nbsp;&nbsp;&nbsp;&nbsp;Diisi oleh pejabat yang menangani bidang kepegawaian sebelum PNS mengajukan cuti<br>
+    **** &nbsp;&nbsp;Diberi tanda centang dan alasannya<br>
+    N &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Cuti tahun berjalan<br>
+    N - 1 &nbsp;&nbsp;= Sisa cuti 1 tahun sebelumnya<br>
+    N - 2 &nbsp;&nbsp;= Sisa cuti 2 tahun sebelumnya
 </div>
+
 </body>
 </html>

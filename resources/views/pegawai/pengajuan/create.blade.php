@@ -11,66 +11,66 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">Pengajuan Cuti</h1>
-        <p class="page-subtitle">Isi formulir pengajuan cuti sesuai format ASN</p>
+        <p class="page-subtitle">Isi formulir pengajuan cuti sesuai format resmi ASN BKD Lampung</p>
     </div>
     <a href="{{ route('pegawai.riwayat.index') }}" class="btn btn-outline-secondary">
         <i class="bi bi-clock-history me-1"></i>Riwayat
     </a>
 </div>
 
-<div class="row g-4">
-    <!-- Form -->
-    <div class="col-12 col-xl-8">
-        <div class="card card-custom">
-            <div class="card-header-custom">
-                <h5 class="card-title-custom"><i class="bi bi-file-earmark-text me-2"></i>Formulir Pengajuan Cuti ASN</h5>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-9">
+        <div class="card card-custom shadow-sm">
+            <div class="card-header-custom bg-primary text-white py-3">
+                <h5 class="card-title-custom text-white mb-0">
+                    <i class="bi bi-file-earmark-text me-2"></i>Formulir Permintaan dan Pemberian Cuti (ASN / PPPK)
+                </h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="POST" action="{{ route('pegawai.pengajuan.store') }}" id="formPengajuan">
                     @csrf
 
-                    <!-- Data Pegawai (readonly display) -->
+                    <!-- I. DATA PEGAWAI -->
                     <div class="form-section mb-4">
-                        <h6 class="form-section-title"><i class="bi bi-person me-1"></i>Data Pegawai</h6>
+                        <h6 class="form-section-title text-primary fw-bold border-bottom pb-2 mb-3">
+                            I. DATA PEGAWAI
+                        </h6>
                         <div class="row g-3">
                             <div class="col-sm-6">
-                                <label class="form-label text-muted small">Nama Lengkap</label>
-                                <input type="text" class="form-control bg-light" value="{{ $pegawai->nama_lengkap }}" readonly>
+                                <label class="form-label text-muted small fw-semibold">Nama Lengkap</label>
+                                <input type="text" class="form-control bg-light fw-medium" value="{{ $pegawai->nama_lengkap }}" readonly>
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label text-muted small">NIP</label>
-                                <input type="text" class="form-control bg-light" value="{{ $pegawai->nip }}" readonly>
+                                <label class="form-label text-muted small fw-semibold">NIP</label>
+                                <input type="text" class="form-control bg-light fw-medium" value="{{ $pegawai->nip }}" readonly>
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label text-muted small">Jabatan</label>
+                                <label class="form-label text-muted small fw-semibold">Jabatan</label>
                                 <input type="text" class="form-control bg-light" value="{{ $pegawai->jabatan->nama_jabatan ?? '-' }}" readonly>
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label text-muted small">Bidang / UPTD</label>
-                                <input type="text" class="form-control bg-light" value="{{ $pegawai->bidang->nama_bidang ?? '-' }}" readonly>
+                                <label class="form-label text-muted small fw-semibold">Masa Kerja</label>
+                                <input type="text" class="form-control bg-light" value="{{ $pegawai->masa_kerja ?? '-' }}" readonly>
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label text-muted small">Sub Bagian / Seksi</label>
-                                <input type="text" class="form-control bg-light" value="{{ $pegawai->sub_bagian ?? '-' }}" readonly>
+                                <label class="form-label text-muted small fw-semibold">Unit Kerja</label>
+                                <input type="text" class="form-control bg-light" value="Dinas Kelautan dan Perikanan Provinsi Lampung" readonly>
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label text-muted small">Pangkat/Golongan</label>
+                                <label class="form-label text-muted small fw-semibold">Pangkat / Golongan</label>
                                 <input type="text" class="form-control bg-light" value="{{ $pegawai->pangkat ?? '-' }}" readonly>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="form-label text-muted small">Sisa Cuti Tahunan</label>
-                                <input type="text" class="form-control bg-light fw-bold text-primary"
-                                       value="{{ $pegawai->sisa_cuti_tahunan }} hari" readonly>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Data Cuti -->
+                    <!-- II. JENIS CUTI YANG DIAMBIL & IV. LAMANYA CUTI -->
                     <div class="form-section mb-4">
-                        <h6 class="form-section-title"><i class="bi bi-calendar-check me-1"></i>Data Permohonan Cuti</h6>
+                        <h6 class="form-section-title text-primary fw-bold border-bottom pb-2 mb-3">
+                            II. JENIS CUTI YANG DIAMBIL & IV. LAMANYA CUTI
+                        </h6>
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Jenis Cuti <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Pilih Jenis Cuti <span class="text-danger">*</span></label>
                                 <select name="jenis_cuti_id" id="jenisCutiSelect"
                                         class="form-select @error('jenis_cuti_id') is-invalid @enderror" required>
                                     <option value="">-- Pilih Jenis Cuti --</option>
@@ -89,7 +89,6 @@
                                 </select>
                                 @error('jenis_cuti_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
 
-                                <!-- Info Jenis Cuti -->
                                 <div id="infoJenisCuti" class="alert alert-info mt-2 p-2 small d-none">
                                     <i class="bi bi-info-circle me-1"></i>
                                     <span id="infoJenisCutiText"></span>
@@ -97,7 +96,7 @@
                             </div>
 
                             <div class="col-sm-6">
-                                <label class="form-label fw-semibold">Tanggal Mulai <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Mulai Tanggal <span class="text-danger">*</span></label>
                                 <input type="text" name="tanggal_mulai" id="tanggalMulai"
                                        class="form-control @error('tanggal_mulai') is-invalid @enderror"
                                        value="{{ old('tanggal_mulai') }}"
@@ -106,7 +105,7 @@
                             </div>
 
                             <div class="col-sm-6">
-                                <label class="form-label fw-semibold">Tanggal Selesai <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Sampai Dengan Tanggal <span class="text-danger">*</span></label>
                                 <input type="text" name="tanggal_selesai" id="tanggalSelesai"
                                        class="form-control @error('tanggal_selesai') is-invalid @enderror"
                                        value="{{ old('tanggal_selesai') }}"
@@ -114,23 +113,30 @@
                                 @error('tanggal_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
-                            <!-- Preview Lama Cuti -->
                             <div class="col-12">
-                                <div id="lamaCutiPreview" class="lama-cuti-box d-none">
-                                    <i class="bi bi-calendar2-week me-2"></i>
-                                    Lama Cuti: <strong id="lamaCutiValue">0</strong> <span id="lamaCutiSatuan">Hari Kerja</span>
-                                    <span id="lamaCutiNote" class="text-muted small">(Senin–Jumat, tidak termasuk weekend)</span>
+                                <div id="lamaCutiPreview" class="lama-cuti-box d-none bg-light p-3 rounded border">
+                                    <i class="bi bi-calendar2-week text-primary me-2 fs-5"></i>
+                                    Durasi Cuti: <strong id="lamaCutiValue" class="text-primary fs-5">0</strong> <span id="lamaCutiSatuan" class="fw-bold">Hari Kerja</span>
+                                    <span id="lamaCutiNote" class="text-muted small ms-2">(Senin–Jumat, tidak termasuk tanggal merah)</span>
                                 </div>
-                                <div id="lamaCutiLoading" class="text-muted small d-none">
-                                    <div class="spinner-border spinner-border-sm me-1"></div>Menghitung hari kerja...
+                                <div id="lamaCutiLoading" class="text-muted small d-none mt-2">
+                                    <div class="spinner-border spinner-border-sm me-1 text-primary"></div>Menghitung hari kerja...
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
+                    <!-- III. ALASAN CUTI -->
+                    <div class="form-section mb-4">
+                        <h6 class="form-section-title text-primary fw-bold border-bottom pb-2 mb-3">
+                            III. ALASAN CUTI
+                        </h6>
+                        <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Alasan Permohonan Cuti <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Alasan Lengkap Pengajuan Cuti <span class="text-danger">*</span></label>
                                 <textarea name="alasan_cuti" id="alasanCuti" rows="3"
                                           class="form-control @error('alasan_cuti') is-invalid @enderror"
-                                          placeholder="Tuliskan alasan pengajuan cuti secara jelas..." required
+                                          placeholder="Tuliskan alasan permohonan cuti Anda secara jelas..." required
                                           minlength="10" maxlength="1000">{{ old('alasan_cuti') }}</textarea>
                                 <div class="d-flex justify-content-between mt-1">
                                     @error('alasan_cuti')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -140,35 +146,41 @@
                         </div>
                     </div>
 
-                    <!-- Alamat Selama Cuti -->
+                    <!-- VI. ALAMAT SELAMA MENJALANKAN CUTI -->
                     <div class="form-section mb-4">
-                        <h6 class="form-section-title"><i class="bi bi-geo-alt me-1"></i>Alamat Selama Cuti</h6>
+                        <h6 class="form-section-title text-primary fw-bold border-bottom pb-2 mb-3">
+                            VI. ALAMAT SELAMA MENJALANKAN CUTI
+                        </h6>
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label fw-semibold">Alamat Lengkap Selama Cuti <span class="text-danger">*</span></label>
                                 <textarea name="alamat_selama_cuti" rows="2"
                                           class="form-control @error('alamat_selama_cuti') is-invalid @enderror"
-                                          placeholder="Alamat tempat tinggal selama menjalani cuti"
+                                          placeholder="Alamat tempat tinggal/domisili selama menjalankan cuti"
                                           required maxlength="500">{{ old('alamat_selama_cuti', $pegawai->alamat) }}</textarea>
                                 @error('alamat_selama_cuti')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label fw-semibold">No. Telepon yang Dapat Dihubungi</label>
+                                <label class="form-label fw-semibold">No. Telepon yang Dapat Dihubungi <span class="text-danger">*</span></label>
                                 <input type="text" name="no_telp_selama_cuti"
                                        class="form-control @error('no_telp_selama_cuti') is-invalid @enderror"
                                        value="{{ old('no_telp_selama_cuti', $pegawai->no_telepon) }}"
-                                       placeholder="08xxxxxxxxxx" maxlength="15">
+                                       placeholder="08xxxxxxxxxx" maxlength="15" required>
                                 @error('no_telp_selama_cuti')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
-                    </div>                    <!-- Penandatangan Dokumen Cuti -->
+                    </div>
+
+                    <!-- VII & VIII. PERTIMBANGAN ATASAN & PEJABAT BERWENANG -->
                     <div class="form-section mb-4">
-                        <h6 class="form-section-title"><i class="bi bi-pencil-square me-1"></i>Penandatangan Dokumen Cuti</h6>
+                        <h6 class="form-section-title text-primary fw-bold border-bottom pb-2 mb-3">
+                            VII & VIII. PENANDATANGAN DOKUMEN CUTI
+                        </h6>
                         <div class="row g-3">
                             <div class="col-sm-6">
-                                <label class="form-label fw-semibold">Tanda Tangan Atasan <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Atasan Langsung <span class="text-danger">*</span></label>
                                 <select name="atasan_langsung_select" class="form-select @error('atasan_langsung_select') is-invalid @enderror" required>
-                                    <option value="">-- Pilih Atasan --</option>
+                                    <option value="">-- Pilih Atasan Langsung --</option>
                                     <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('atasan_langsung_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
                                         Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
                                     </option>
@@ -176,59 +188,57 @@
                                         A. FAISAL, A.Pi. (Sekretaris Dinas - NIP. 197402031999031006)
                                     </option>
                                     <option value="Hardian Sylvanandra Prayitno S.Pi. MM.|198503222008041001|Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan" {{ old('atasan_langsung_select') == 'Hardian Sylvanandra Prayitno S.Pi. MM|198503222008041001|Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan' ? 'selected' : '' }}>
-                                        Hardian Sylvanandra Prayitno S.Pi. MM (Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan - NIP. 198503222008041001) 
+                                        Hardian Sylvanandra Prayitno S.Pi. MM (Kepala Bidang Pengawasan SDKP - NIP. 198503222008041001) 
                                     </option>
                                     <option value="Sadariah S.P M.M.|197009301996022001|Kepala Bidang Pengelolaan Ruang Laut" {{ old('atasan_langsung_select') == 'Sadariah S.P M.M.|197009301996022001|Kepala Bidang Pengelolaan Ruang Laut' ? 'selected' : '' }}>
-                                        Sadariah S.P M.M. (Kepala Bidang Pengelolaan Ruang Laut - NIP. 197009301996022001) 
+                                        Sadariah S.P M.M. (Kepala Bidang PRL - NIP. 197009301996022001) 
                                     </option>
                                     <option value="Nazdan S.Pi. MP.|197306102002121002|Kepala Bidang Perikanan Budidaya dan Penguatan Daya Saing" {{ old('atasan_langsung_select') == 'Nazdan S.Pi. MP.|197306102002121002|Kepala Bidang Perikanan Budidaya dan Penguatan Daya Saing' ? 'selected' : '' }}>
-                                        Nazdan S.Pi. MP. (Kepala Bidang Perikanan Budidaya dan Penguatan Daya Saing - NIP. 197306102002121002) 
+                                        Nazdan S.Pi. MP. (Kepala Bidang PBPDS - NIP. 197306102002121002) 
                                     </option>
                                     <option value="Sri Rihatun Dhamayanti S.Pi. M.M.|197307172000032004|Kepala UPTD Penerapan Mutu Hasil Perikanan" {{ old('atasan_langsung_select') == 'Sri Rihatun Dhamayanti S.Pi. M.M.|197307172000032004|Kepala UPTD Penerapan Mutu Hasil Perikanan' ? 'selected' : '' }}>
-                                        Sri Rihatun Dhamayanti S.Pi. M.M. (Kepala UPTD Penerapan Mutu Hasil Perikanan - NIP. 197307172000032004) 
+                                        Sri Rihatun Dhamayanti S.Pi. M.M. (Kepala UPTD PMHP - NIP. 197307172000032004) 
                                     </option>
                                     <option value="Zainal K S.Pi M.Ling.|197104051997031007|Kepala UPTD Pelabuhan Perikanan Labuhan Maringgai" {{ old('atasan_langsung_select') == 'Zainal K S.Pi M.Ling.|197104051997031007|Kepala UPTD Pelabuhan Perikanan Labuhan Maringgai' ? 'selected' : '' }}>
-                                        Zainal K S.Pi M.Ling. (Kepala UPTD Pelabuhan Perikanan Labuhan Maringgai - NIP. 197104051997031007) 
+                                        Zainal K S.Pi M.Ling. (Kepala UPTD PP Labuhan Maringgai - NIP. 197104051997031007) 
                                     </option>
                                     <option value="Ahmad Darma Habibillah S.Pi M.E.|198006182005011007|Kepala UPTD Pelabuhan Perikanan Lempasing" {{ old('atasan_langsung_select') == 'Ahmad Darma Habibillah S.Pi M.E.|198006182005011007|Kepala UPTD Pelabuhan Perikanan Lempasing' ? 'selected' : '' }}>
-                                        Ahmad Darma Habibillah S.Pi M.E. (Kepala UPTD Pelabuhan Perikanan Lempasing - NIP. 198006182005011007) 
+                                        Ahmad Darma Habibillah S.Pi M.E. (Kepala UPTD PP Lempasing - NIP. 198006182005011007) 
                                     </option>
                                     <option value="Sukarsono S.Pi.|197111081999031004|Kepala UPTD Pelabuhan Perikanan Kota Agung" {{ old('atasan_langsung_select') == 'Sukarsono S.Pi.|197111081999031004|Kepala UPTD Pelabuhan Perikanan Kota Agung' ? 'selected' : '' }}>
-                                        Sukarsono S.Pi. (Kepala UPTD Pelabuhan Perikanan Kota Agung - NIP. 197111081999031004) 
+                                        Sukarsono S.Pi. (Kepala UPTD PP Kota Agung - NIP. 197111081999031004) 
                                     </option>
                                     <option value="Zulhaidir SP M.Si.|197204292000031003|Kepala UPTD Pelabuhan Perikanan Kalianda" {{ old('atasan_langsung_select') == 'Zulhaidir SP M.Si.|197204292000031003|Kepala UPTD Pelabuhan Perikanan Kalianda' ? 'selected' : '' }}>
-                                        Zulhaidir SP M.Si. (Kepala UPTD Pelabuhan Perikanan Kalianda - NIP. 197204292000031003) 
+                                        Zulhaidir SP M.Si. (Kepala UPTD PP Kalianda - NIP. 197204292000031003) 
                                     </option>
                                 </select>
                                 @error('atasan_langsung_select')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
                             <div class="col-sm-6">
-                                <label class="form-label fw-semibold">Tanda Tangan Pejabat yang Berwenang <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Pejabat yang Berwenang <span class="text-danger">*</span></label>
                                 <select name="pejabat_wenang_select" class="form-select @error('pejabat_wenang_select') is-invalid @enderror" required>
                                     <option value="">-- Pilih Pejabat yang Berwenang --</option>
-                                    <option value="RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung" {{ old('pejabat_wenang_select') == 'RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung' ? 'selected' : '' }}>
-                                        RAHMAT MIRZANI DJAUSAL, S.T., M.M. (Gubernur Lampung)
-                                    </option>
-                                    <option value="Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung" {{ old('pejabat_wenang_select') == 'Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung' ? 'selected' : '' }}>
-                                        Dr. MARINDO KURNIAWAN, S.T., M.M. (Sekretaris Daerah Provinsi Lampung - NIP. 198012062002121010)
-                                    </option>
-                                    <option value="RENDY RISWANDI.S.STP, M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah" {{ old('pejabat_wenang_select') == 'RENDY RISWANDI.S.STP, M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah' ? 'selected' : '' }}>
-                                        RENDY RISWANDI.S.STP, M.Si (Kepala BKD - NIP. 197705261997121001)
+                                    <option value="RENDY RISWANDI, S.STP.,M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah" {{ old('pejabat_wenang_select') == 'RENDY RISWANDI, S.STP.,M.Si|197705261997121001|Kepala Badan Kepegawaian Daerah' ? 'selected' : '' }}>
+                                        RENDI RESWANDI, S.STP.,M.Si (Kepala BKD - NIP. 19770526 199712 1 001)
                                     </option>
                                     <option value="Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas" {{ old('pejabat_wenang_select') == 'Ir. BANI ISPRIYANTO, M.M.|196904101995031002|Kepala Dinas' ? 'selected' : '' }}>
-                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 196904101995031002)
+                                        Ir. BANI ISPRIYANTO, M.M. (Kepala Dinas - NIP. 19690410 199503 1 002)
+                                    </option>
+                                    <option value="Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung" {{ old('pejabat_wenang_select') == 'Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung' ? 'selected' : '' }}>
+                                        Dr. MARINDO KURNIAWAN, S.T., M.M. (Sekretaris Daerah Provinsi Lampung - NIP. 19801206 200212 1 010)
+                                    </option>
+                                    <option value="RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung" {{ old('pejabat_wenang_select') == 'RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung' ? 'selected' : '' }}>
+                                        RAHMAT MIRZANI DJAUSAL, S.T., M.M. (Gubernur Lampung)
                                     </option>
                                 </select>
                                 @error('pejabat_wenang_select')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
-                            <!-- Paraf Eselon 4 (Opsional) -->
-                            <div class="col-12 mt-2">
+                            <div class="col-12 mt-3">
                                 <label class="form-label fw-semibold">Paraf Eselon 4 <span class="text-muted small">(Opsional)</span></label>
                                 <select name="eselon_3" class="form-select @error('eselon_3') is-invalid @enderror">
                                     <option value="">-- Pilih Paraf Eselon 4 (Opsional) --</option>
-                                    
                                     <optgroup label="Kasubag / Kepala Sub Bagian">
                                         <option value="Imam Komarita S.Pi. M.Si.|198601302011011004|Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas" {{ old('eselon_3') == 'Imam Komarita S.Pi. M.Si.|198601302011011004|Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas' ? 'selected' : '' }}>
                                             Imam Komarita S.Pi. M.Si. (Kasubag Umum & Kepegawaian - NIP. 198601302011011004)
@@ -252,7 +262,6 @@
                                             Oca Patrycia S.Pd. M.IP (Kasubag TU UPTD BPBALP - NIP. 198204092009032003)
                                         </option>
                                     </optgroup>
-                                    
                                     <optgroup label="Kepala Seksi UPTD">
                                         <option value="Heru Romadi SE M.M|197108231998031007|Kepala Seksi Pengusahaan UPTD Pelabuhan Perikanan Lempasing" {{ old('eselon_3') == 'Heru Romadi SE M.M|197108231998031007|Kepala Seksi Pengusahaan UPTD Pelabuhan Perikanan Lempasing' ? 'selected' : '' }}>
                                             Heru Romadi SE M.M (Kasi Pengusahaan UPTD PP Lempasing - NIP. 197108231998031007)
@@ -294,74 +303,18 @@
                         </div>
                     </div>
 
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle me-1"></i>
-                        <strong>Perhatian:</strong> Setelah pengajuan dikirim, sistem akan otomatis membuat surat cuti dalam format PDF.
-                        Cetak surat tersebut, minta tanda tangan Kepala Bidang, kemudian serahkan ke Admin untuk diverifikasi.
+                    <div class="alert alert-warning border-0 shadow-sm mb-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                        <strong>Perhatian:</strong> Setelah permohonan dikirim, sistem akan otomatis menerbitkan PDF Surat Cuti sesuai format resmi BKD Lampung di atas.
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary" id="btnSubmit">
-                            <i class="bi bi-send me-1"></i>Kirim Pengajuan
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ route('pegawai.dashboard') }}" class="btn btn-light px-4">Batal</a>
+                        <button type="submit" class="btn btn-primary px-4" id="btnSubmit">
+                            <i class="bi bi-send me-1"></i>Kirim Pengajuan Cuti
                         </button>
-                        <a href="{{ route('pegawai.dashboard') }}" class="btn btn-outline-secondary">Batal</a>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sidebar Info -->
-    <div class="col-12 col-xl-4">
-        <div class="card card-custom mb-4">
-            <div class="card-header-custom">
-                <h5 class="card-title-custom"><i class="bi bi-info-circle me-1"></i>Informasi Penting</h5>
-            </div>
-            <div class="card-body">
-                <div class="info-steps">
-                    <div class="info-step">
-                        <div class="info-step__num">1</div>
-                        <div class="info-step__text">Isi formulir pengajuan cuti dengan lengkap dan benar.</div>
-                    </div>
-                    <div class="info-step">
-                        <div class="info-step__num">2</div>
-                        <div class="info-step__text">Sistem otomatis membuat PDF surat cuti resmi ASN.</div>
-                    </div>
-                    <div class="info-step">
-                        <div class="info-step__num">3</div>
-                        <div class="info-step__text">Cetak surat, minta tanda tangan Kepala Bidang secara fisik.</div>
-                    </div>
-                    <div class="info-step">
-                        <div class="info-step__num">4</div>
-                        <div class="info-step__text">Serahkan formulir fisik yang telah ditandatangani kepada Admin.</div>
-                    </div>
-                    <div class="info-step">
-                        <div class="info-step__num">5</div>
-                        <div class="info-step__text">Admin memverifikasi dan mengunggah scan surat. Status diperbarui.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card card-custom">
-            <div class="card-header-custom">
-                <h5 class="card-title-custom"><i class="bi bi-calendar-check me-1"></i>Jenis Cuti Tersedia</h5>
-            </div>
-            <div class="card-body p-0">
-                <ul class="list-group list-group-flush">
-                    @foreach($jenisCuti as $jc)
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="fw-semibold small">{{ $jc->nama_cuti }}</div>
-                            </div>
-                            @if($jc->potong_kuota)
-                                <span class="badge bg-warning text-dark small">Potong Cuti Tahunan</span>
-                            @else
-                                <span class="badge bg-success text-white small">Kuota Terpisah</span>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
             </div>
         </div>
     </div>
@@ -369,7 +322,6 @@
 @endsection
 
 <style>
-    /* Styling Flatpickr disabled days to be red and clearly marked */
     .flatpickr-day.flatpickr-disabled,
     .flatpickr-day.flatpickr-disabled:hover {
         background-color: #f8d7da !important;
@@ -386,21 +338,23 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 const sisaCuti  = {{ $pegawai->sisa_cuti_tahunan }};
 const usedDates = @json($usedDates);
 
-// Inisialisasi Flatpickr dengan daftar tanggal terpakai
 const fpMulai = flatpickr("#tanggalMulai", {
     locale: "id",
     dateFormat: "Y-m-d",
     altInput: true,
     altFormat: "d F Y",
     minDate: "today",
-    disable: usedDates,
-    onChange: function(selectedDates, dateStr, instance) {
-        if (selectedDates.length > 0) {
+    disable: [
+        function(date) {
+            return (date.getDay() === 0 || date.getDay() === 6);
+        },
+        ...usedDates
+    ],
+    onChange: function(selectedDates, dateStr) {
+        if (selectedDates[0]) {
             fpSelesai.set("minDate", dateStr);
-            
-            if (checkDateConflict()) return;
-            hitungLamaCuti();
         }
+        hitungHari();
     }
 });
 
@@ -410,160 +364,77 @@ const fpSelesai = flatpickr("#tanggalSelesai", {
     altInput: true,
     altFormat: "d F Y",
     minDate: "today",
-    disable: usedDates,
-    onChange: function(selectedDates, dateStr, instance) {
-        if (checkDateConflict()) return;
-        hitungLamaCuti();
+    disable: [
+        function(date) {
+            return (date.getDay() === 0 || date.getDay() === 6);
+        },
+        ...usedDates
+    ],
+    onChange: function() {
+        hitungHari();
     }
 });
 
-// Periksa apakah rentang tanggal yang dipilih menabrak hari yang sudah terpakai
-function checkDateConflict() {
-    const mulaiVal = document.getElementById('tanggalMulai').value;
-    const selesaiVal = document.getElementById('tanggalSelesai').value;
+const jenisCutiSelect = document.getElementById('jenisCutiSelect');
+const infoJenisCuti   = document.getElementById('infoJenisCuti');
+const infoText        = document.getElementById('infoJenisCutiText');
 
-    if (!mulaiVal || !selesaiVal) return false;
+jenisCutiSelect.addEventListener('change', function() {
+    const selected = this.options[this.selectedIndex];
+    const ket      = selected.dataset.keterangan;
+    const dasar    = selected.dataset.dasar;
 
-    const start = new Date(mulaiVal);
-    const end = new Date(selesaiVal);
-    
-    let hasConflict = false;
-    let conflictDateStr = "";
-
-    let current = new Date(start);
-    while (current <= end) {
-        const yyyy = current.getFullYear();
-        const mm = String(current.getMonth() + 1).padStart(2, '0');
-        const dd = String(current.getDate()).padStart(2, '0');
-        const dateStr = `${yyyy}-${mm}-${dd}`;
-
-        if (usedDates.includes(dateStr)) {
-            hasConflict = true;
-            conflictDateStr = dateStr;
-            break;
-        }
-        current.setDate(current.getDate() + 1);
+    if (this.value && (ket || dasar)) {
+        infoText.innerHTML = (ket ? ket : '') + (dasar ? '<br><small class="text-muted">Dasar Hukum: ' + dasar + '</small>' : '');
+        infoJenisCuti.classList.remove('d-none');
+    } else {
+        infoJenisCuti.classList.add('d-none');
     }
+    hitungHari();
+});
 
-    if (hasConflict) {
-        const formattedConflictDate = new Date(conflictDateStr).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
+const alasanInput = document.getElementById('alasanCuti');
+const charCount   = document.getElementById('charCount');
+alasanInput.addEventListener('input', function() {
+    charCount.textContent = this.value.length;
+});
 
-        Swal.fire({
-            title: 'Hari Sudah Terpakai!',
-            text: `Rentang tanggal yang Anda pilih menabrak tanggal cuti yang sudah Anda ajukan sebelumnya (${formattedConflictDate}). Silakan pilih tanggal lain.`,
-            icon: 'warning',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#dc3545',
-        });
-
-        fpMulai.clear();
-        fpSelesai.clear();
-        document.getElementById('lamaCutiPreview').classList.add('d-none');
-        return true;
-    }
-    return false;
-}
-
-// Hitung lama cuti otomatis via AJAX
-let hitungTimer = null;
-
-function hitungLamaCuti() {
+function hitungHari() {
     const mulai   = document.getElementById('tanggalMulai').value;
     const selesai = document.getElementById('tanggalSelesai').value;
 
-    const jenisCutiId = document.getElementById('jenisCutiSelect').value;
+    const preview = document.getElementById('lamaCutiPreview');
+    const valEl   = document.getElementById('lamaCutiValue');
+    const loading = document.getElementById('lamaCutiLoading');
 
-    if (!mulai || !selesai || selesai < mulai || !jenisCutiId) {
-        document.getElementById('lamaCutiPreview').classList.add('d-none');
+    if (!mulai || !selesai) {
+        preview.classList.add('d-none');
         return;
     }
 
-    document.getElementById('lamaCutiLoading').classList.remove('d-none');
-    document.getElementById('lamaCutiPreview').classList.add('d-none');
+    loading.classList.remove('d-none');
+    preview.classList.add('d-none');
 
-    clearTimeout(hitungTimer);
-    hitungTimer = setTimeout(() => {
-        fetch('{{ route("pegawai.pengajuan.hitung-hari") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-            },
-            body: JSON.stringify({ tanggal_mulai: mulai, tanggal_selesai: selesai, jenis_cuti_id: jenisCutiId }),
-        })
-        .then(r => r.json())
-        .then(data => {
-            document.getElementById('lamaCutiLoading').classList.add('d-none');
-            document.getElementById('lamaCutiValue').textContent = data.lama_cuti;
-            document.getElementById('lamaCutiSatuan').textContent = data.satuan_display;
-            
-            const noteDisplay = document.getElementById('lamaCutiNote');
-            if (noteDisplay) {
-                if (data.satuan_display === 'Hari Kerja') {
-                    noteDisplay.textContent = '(Senin–Jumat, tidak termasuk weekend)';
-                } else {
-                    noteDisplay.textContent = '(Termasuk akhir pekan dan hari libur)';
-                }
-            }
-            
-            document.getElementById('lamaCutiPreview').classList.remove('d-none');
-
-            // Cek jenis cuti potong kuota
-            const sel = document.getElementById('jenisCutiSelect');
-            if (sel.value) {
-                const opt = sel.options[sel.selectedIndex];
-                if (opt.dataset.potong === '1' && data.lama_cuti > sisaCuti) {
-                    document.getElementById('lamaCutiPreview').classList.add('lama-cuti-box--danger');
-                } else {
-                    document.getElementById('lamaCutiPreview').classList.remove('lama-cuti-box--danger');
-                }
-            }
-        })
-        .catch(() => {
-            document.getElementById('lamaCutiLoading').classList.add('d-none');
-        });
-    }, 500);
-}
-
-// Jenis Cuti Info
-document.getElementById('jenisCutiSelect').addEventListener('change', function() {
-    const opt = this.options[this.selectedIndex];
-    const info = document.getElementById('infoJenisCuti');
-    const text = document.getElementById('infoJenisCutiText');
-
-    if (this.value && opt.dataset.keterangan) {
-        text.textContent = opt.dataset.keterangan;
-        if (opt.dataset.dasar) {
-            text.textContent += ' | Dasar Hukum: ' + opt.dataset.dasar;
+    fetch("{{ route('pegawai.pengajuan.hitung-hari') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ tanggal_mulai: mulai, tanggal_selesai: selesai })
+    })
+    .then(res => res.json())
+    .then(data => {
+        loading.classList.add('d-none');
+        if (data.lama_cuti !== undefined) {
+            valEl.textContent = data.lama_cuti;
+            preview.classList.remove('d-none');
         }
-        info.classList.remove('d-none');
-    } else {
-        info.classList.add('d-none');
-    }
-    hitungLamaCuti();
-});
-
-// Char counter alasan
-document.getElementById('alasanCuti').addEventListener('input', function() {
-    document.getElementById('charCount').textContent = this.value.length;
-});
-
-// Submit confirm
-document.getElementById('formPengajuan').addEventListener('submit', function(e) {
-    e.preventDefault();
-    Swal.fire({
-        title: 'Kirim Pengajuan Cuti?',
-        text: 'Setelah dikirim, pengajuan tidak dapat diubah. Pastikan semua data sudah benar.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Kirim',
-        cancelButtonText: 'Cek Kembali',
-        confirmButtonColor: '#0B5FA5',
-    }).then(r => { if (r.isConfirmed) this.submit(); });
-});
+    })
+    .catch(() => {
+        loading.classList.add('d-none');
+    });
+}
 </script>
 @endpush
