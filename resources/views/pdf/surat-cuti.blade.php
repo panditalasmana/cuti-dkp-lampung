@@ -37,7 +37,7 @@
         $displayAngka = round($lamaVal / 365) . ' Tahun';
     } else {
         $satuan = 'hari';
-        $displayAngka = $lamaVal . ' Hari Kerja';
+        $displayAngka = $lamaVal . ' Hari';
     }
 
     $strHari  = ($satuan === 'hari')  ? 'hari'  : '<span class="strike">hari</span>';
