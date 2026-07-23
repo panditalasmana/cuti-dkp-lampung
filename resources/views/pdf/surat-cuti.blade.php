@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Formulir Permintaan dan Pemberian Cuti</title>
     <style>
-        @page { margin: 12px 20px; }
+        @page { margin: 10px 20px; }
         body {
             font-family: 'Times-Roman', 'Times New Roman', Times, serif;
-            font-size: 9.5px;
+            font-size: 9px;
             color: #000;
             line-height: 1.15;
         }
@@ -16,12 +16,11 @@
         .no-border { border: none; }
         .center { text-align: center; }
         .bold { font-weight: bold; }
-        .title { font-size: 11px; font-weight: bold; text-align: center; margin: 4px 0; }
-        .section { background: #ffffff; font-weight: bold; padding: 2px 4px; border-bottom: 1px solid #000; }
+        .title { font-size: 11px; font-weight: bold; text-align: center; margin: 3px 0; }
         .checkbox { width: 16px; text-align: center; font-weight: bold; }
         .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
         .spacer { height: 3px; line-height: 3px; font-size: 1px; }
-        .notes-list { font-size: 8.5px; margin-top: 3px; line-height: 1.1; }
+        .notes-list { font-size: 8px; margin-top: 2px; line-height: 1.1; }
     </style>
 </head>
 <body>
@@ -102,7 +101,7 @@
 {{-- BAGIAN III --}}
 <table>
     <tr><td class="bold">III. ALASAN CUTI</td></tr>
-    <tr><td style="height:22px; vertical-align:top;">{{ $pengajuan->alasan_cuti }}</td></tr>
+    <tr><td style="height:20px; vertical-align:top;">{{ $pengajuan->alasan_cuti }}</td></tr>
 </table>
 
 <div class="spacer"></div>
@@ -122,62 +121,43 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN V --}}
+{{-- BAGIAN V. CATATAN CUTI (PERSIS SEPERTI GAMBAR DOKUMEN SAMPLING 2) --}}
 <table>
-    <tr><td colspan="6" class="bold">V. CATATAN CUTI</td></tr>
     <tr>
-        <td width="30%">1. CUTI TAHUNAN</td>
-        <td width="3%"></td>
-        <td width="33%">2. CUTI BESAR</td>
-        <td width="3%"></td>
-        <td width="28%"></td>
-        <td width="3%"></td>
+        <td colspan="5" class="bold">V. CATATAN CUTI</td>
     </tr>
     <tr>
-        <td colspan="2">
-            <table style="width:100%; border:none;">
-                <tr style="background:#f8f9fa;">
-                    <td style="border:1px solid #000;" width="40%">Tahun</td>
-                    <td style="border:1px solid #000;" width="25%">Sisa</td>
-                    <td style="border:1px solid #000;">Keterangan</td>
-                </tr>
-                <tr>
-                    <td style="border:1px solid #000;">N-2</td>
-                    <td style="border:1px solid #000;" class="center">0</td>
-                    <td style="border:1px solid #000;"></td>
-                </tr>
-                <tr>
-                    <td style="border:1px solid #000;">N-1</td>
-                    <td style="border:1px solid #000;" class="center">0</td>
-                    <td style="border:1px solid #000;"></td>
-                </tr>
-                <tr>
-                    <td style="border:1px solid #000;">N</td>
-                    <td style="border:1px solid #000;" class="center">{{ $pegawai->sisa_cuti_tahunan }}</td>
-                    <td style="border:1px solid #000;"></td>
-                </tr>
-            </table>
-        </td>
-        <td colspan="4" style="vertical-align:top;">
-            <table style="width:100%; border:none;">
-                <tr>
-                    <td style="border:none;" width="50%">3. CUTI SAKIT</td>
-                    <td style="border:none;"></td>
-                </tr>
-                <tr>
-                    <td style="border:none;">4. CUTI MELAHIRKAN</td>
-                    <td style="border:none;"></td>
-                </tr>
-                <tr>
-                    <td style="border:none;">5. CUTI KARENA ALASAN PENTING</td>
-                    <td style="border:none;"></td>
-                </tr>
-                <tr>
-                    <td style="border:none;">6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
-                    <td style="border:none;"></td>
-                </tr>
-            </table>
-        </td>
+        <td colspan="3" width="48%" class="bold">1. CUTI TAHUNAN</td>
+        <td width="42%" class="bold">2. CUTI BESAR</td>
+        <td width="10%"></td>
+    </tr>
+    <tr>
+        <td width="12%" class="center bold">Tahun</td>
+        <td width="12%" class="center bold">Sisa</td>
+        <td width="24%" class="center bold">Keterangan</td>
+        <td class="bold">3. CUTI SAKIT</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="center">N-2</td>
+        <td class="center">0</td>
+        <td></td>
+        <td class="bold">4. CUTI MELAHIRKAN</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="center">N-1</td>
+        <td class="center">0</td>
+        <td></td>
+        <td class="bold">5. CUTI KARENA ALASAN PENTING</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="center">N</td>
+        <td class="center">{{ $pegawai->sisa_cuti_tahunan }}</td>
+        <td></td>
+        <td class="bold">6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
+        <td></td>
     </tr>
 </table>
 
@@ -187,7 +167,7 @@
 <table>
     <tr><td colspan="2" class="bold">VI. ALAMAT SELAMA MENJALANKAN CUTI</td></tr>
     <tr>
-        <td width="50%" style="height:70px; vertical-align:top;">
+        <td width="50%" style="height:85px; vertical-align:top;">
             {{ $pengajuan->alamat_selama_cuti }}
         </td>
         <td width="50%" style="padding:0; vertical-align:top;">
@@ -199,8 +179,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="border:none; text-align:center; padding-top:10px;">
-                        Hormat saya,<br><br><br>
+                    <td colspan="2" style="border:none; text-align:center; padding-top:12px;">
+                        Hormat saya,<br><br><br><br>
                         <span class="bold" style="text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
                         NIP. {{ $pegawai->nip }}
                     </td>
@@ -212,7 +192,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VII --}}
+{{-- BAGIAN VII (LEBIH LAPANG / SPACE GEDE UNTUK TTD ATASAN) --}}
 <table>
     <tr><td colspan="5" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
     <tr>
@@ -225,11 +205,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:65px"></td>
+        <td style="height:85px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:65px; text-align:center; vertical-align:bottom; padding-bottom:2px;">
+        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
             <span class="bold" style="text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
             NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
@@ -238,7 +218,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VIII --}}
+{{-- BAGIAN VIII (LEBIH LAPANG / SPACE GEDE UNTUK TTD PEJABAT BERWENANG) --}}
 <table>
     <tr><td colspan="5" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
     <tr>
@@ -251,11 +231,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:65px"></td>
+        <td style="height:85px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:65px; text-align:center; vertical-align:bottom; padding-bottom:2px;">
+        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
             <span class="bold" style="text-decoration:underline;">RENDI RESWANDI, S.STP.,M.Si</span><br>
             NIP. 19770526 199712 1 001
         </td>
