@@ -4,24 +4,51 @@
     <meta charset="UTF-8">
     <title>Formulir Permintaan dan Pemberian Cuti</title>
     <style>
-        @page { margin: 10px 20px; }
+        @page {
+            size: a4 portrait;
+            margin: 12px 25px 12px 25px;
+        }
         body {
             font-family: 'Times-Roman', 'Times New Roman', Times, serif;
-            font-size: 9px;
+            font-size: 8.5px;
             color: #000;
-            line-height: 1.15;
+            line-height: 1.1;
         }
-        table { width: 100%; border-collapse: collapse; margin: 0; }
-        td, th { border: 1px solid #000; padding: 2px 4px; vertical-align: top; }
-        .no-border { border: none; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 4px;
+        }
+        td, th {
+            border: 1px solid #000;
+            padding: 1.5px 3px;
+            vertical-align: top;
+        }
+        .no-border { border: none !important; }
         .center { text-align: center; }
         .bold { font-weight: bold; }
-        .title { font-size: 11px; font-weight: bold; text-align: center; margin: 2px 0; }
-        .checkbox { text-align: center; font-weight: bold; }
-        .checkbox-symbol { font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
-        .spacer { height: 2px; line-height: 2px; font-size: 1px; }
-        .notes-list { font-size: 8px; margin-top: 2px; line-height: 1.1; }
-        .strike { text-decoration: line-through; }
+        .title {
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            margin: 3px 0 5px 0;
+        }
+        .checkbox {
+            text-align: center;
+            font-weight: bold;
+        }
+        .checkbox-symbol {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 9px;
+        }
+        .notes-list {
+            font-size: 7.5px;
+            margin-top: 2px;
+            line-height: 1.1;
+        }
+        .strike {
+            text-decoration: line-through;
+        }
     </style>
 </head>
 <body>
@@ -64,14 +91,14 @@
 
 <div class="title">FORMULIR PERMINTAAN DAN PEMBERIAN CUTI</div>
 
-{{-- BAGIAN I --}}
+{{-- I. DATA PEGAWAI --}}
 <table>
     <tr><td colspan="4" class="bold">I. DATA PEGAWAI</td></tr>
     <tr>
-        <td width="15%">Nama</td>
-        <td width="35%" class="bold">{{ $pegawai->nama_lengkap }}</td>
+        <td width="12%">Nama</td>
+        <td width="40%" class="bold">{{ $pegawai->nama_lengkap }}</td>
         <td width="15%">NIP</td>
-        <td width="35%">{{ $pegawai->nip }}</td>
+        <td width="33%">{{ $pegawai->nip }}</td>
     </tr>
     <tr>
         <td>Jabatan</td>
@@ -87,16 +114,14 @@
     </tr>
 </table>
 
-<div class="spacer"></div>
-
-{{-- BAGIAN II --}}
+{{-- II. JENIS CUTI YANG DIAMBIL --}}
 <table>
     <tr><td colspan="4" class="bold">II. JENIS CUTI YANG DIAMBIL **</td></tr>
     <tr>
-        <td width="26%">1. Cuti Tahunan</td>
-        <td class="checkbox" width="24%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
-        <td width="26%">2. Cuti Besar</td>
-        <td class="checkbox" width="24%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
+        <td width="36%">1. Cuti Tahunan</td>
+        <td class="checkbox" width="4%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
+        <td width="28%">2. Cuti Besar</td>
+        <td class="checkbox" width="32%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
     </tr>
     <tr>
         <td>3. Cuti Sakit</td>
@@ -107,23 +132,19 @@
     <tr>
         <td>5. Cuti Karena Alasan Penting</td>
         <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CAK' ? '√' : '' }}</span></td>
-        <td>6. Cuti di Luar Tanggungan Negara</td>
+        <td>6. Cuti di Luar<br>Tanggungan Negara</td>
         <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CLN' ? '√' : '' }}</span></td>
     </tr>
 </table>
 
-<div class="spacer"></div>
-
-{{-- BAGIAN III --}}
+{{-- III. ALASAN CUTI --}}
 <table>
     <tr><td class="bold">III. ALASAN CUTI</td></tr>
-    <tr><td style="height:18px; vertical-align:top;">{{ $pengajuan->alasan_cuti }}</td></tr>
+    <tr><td style="height:14px; vertical-align:top;">{{ $pengajuan->alasan_cuti }}</td></tr>
 </table>
 
-<div class="spacer"></div>
-
-{{-- BAGIAN IV --}}
-<table>
+{{-- IV. LAMANYA CUTI & V. CATATAN CUTI (MENEMPEL LENGKAP TANPA MARGIN) --}}
+<table style="margin-bottom:0px;">
     <tr><td colspan="6" class="bold">IV. LAMANYA CUTI</td></tr>
     <tr>
         <td width="10%">Selama</td>
@@ -136,21 +157,19 @@
         <td width="22%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_selesai)->translatedFormat('d F Y') }}</td>
     </tr>
 </table>
-
-{{-- BAGIAN V. CATATAN CUTI (LANGSUNG MENEMPEL DENGAN IV) --}}
-<table>
+<table style="margin-top:-1px;">
     <tr>
         <td colspan="5" class="bold">V. CATATAN CUTI</td>
     </tr>
     <tr>
-        <td colspan="3" width="50%">1. CUTI TAHUNAN</td>
-        <td width="40%">2. CUTI BESAR</td>
-        <td width="10%"></td>
+        <td colspan="3" width="36%">1. CUTI TAHUNAN</td>
+        <td width="32%">2. CUTI BESAR</td>
+        <td width="32%"></td>
     </tr>
     <tr>
-        <td width="12%" class="center">Tahun</td>
-        <td width="12%" class="center">Sisa</td>
-        <td width="26%" class="center">Keterangan</td>
+        <td width="10%" class="center">Tahun</td>
+        <td width="6%" class="center">Sisa</td>
+        <td width="20%" class="center">Keterangan</td>
         <td>3. CUTI SAKIT</td>
         <td></td>
     </tr>
@@ -177,13 +196,11 @@
     </tr>
 </table>
 
-<div class="spacer"></div>
-
-{{-- BAGIAN VI --}}
-<table>
+{{-- VI. ALAMAT SELAMA MENJALANKAN CUTI --}}
+<table style="margin-top:4px;">
     <tr><td colspan="2" class="bold">VI. ALAMAT SELAMA MENJALANKAN CUTI</td></tr>
     <tr>
-        <td width="50%" style="height:70px; vertical-align:top;">
+        <td width="50%" style="height:55px; vertical-align:top;">
             {{ $pengajuan->alamat_selama_cuti }}
         </td>
         <td width="50%" style="padding:0; vertical-align:top;">
@@ -206,9 +223,7 @@
     </tr>
 </table>
 
-<div class="spacer"></div>
-
-{{-- BAGIAN VII (PERSIS 4 KOLOM ANEKA SAMPLE DOKUMEN 1) --}}
+{{-- VII. PERTIMBANGAN ATASAN LANGSUNG --}}
 <table>
     <tr><td colspan="4" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
     <tr>
@@ -218,20 +233,18 @@
         <td class="center bold" width="49%">TIDAK DISETUJUI****</td>
     </tr>
     <tr>
-        <td style="height:65px"></td>
+        <td style="height:50px"></td>
         <td></td>
         <td></td>
-        <td style="height:65px; text-align:center; padding: 4px 2px 2px 2px;">
-            <div class="bold" style="margin-bottom:20px;">{{ strtoupper($pengajuan->atasan_jabatan ?? 'KEPALA DINAS') }}</div>
-            <span class="bold">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
+        <td style="height:50px; text-align:center; padding: 2px;">
+            <div class="bold" style="margin-bottom:18px;">{{ strtoupper($pengajuan->atasan_jabatan ?? 'KEPALA DINAS') }}</div>
+            <span class="bold">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO M.M.' }}</span><br>
             NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
     </tr>
 </table>
 
-<div class="spacer"></div>
-
-{{-- BAGIAN VIII (PERSIS 4 KOLOM ANEKA SAMPLE DOKUMEN 1) --}}
+{{-- VIII. KEPUTUSAN PEJABAT YANG BERWENANG --}}
 <table>
     <tr><td colspan="4" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
     <tr>
@@ -241,11 +254,11 @@
         <td class="center bold" width="49%">TIDAK DISETUJUI****</td>
     </tr>
     <tr>
-        <td style="height:65px"></td>
+        <td style="height:50px"></td>
         <td></td>
         <td></td>
-        <td style="height:65px; text-align:center; padding: 4px 2px 2px 2px;">
-            <div class="bold" style="margin-bottom:20px;">Kepala Badan Kepegawaian Daerah</div>
+        <td style="height:50px; text-align:center; padding: 2px;">
+            <div class="bold" style="margin-bottom:18px;">Kepala Badan Kepegawaian Daerah</div>
             <span class="bold">RENDI RESWANDI, S.STP.,M.Si</span><br>
             NIP. 19770526 199712 1 001
         </td>
