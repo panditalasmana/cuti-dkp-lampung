@@ -25,6 +25,21 @@
 </head>
 <body>
 
+@php
+    $lamaVal = $pengajuan->lama_cuti;
+    $satuan = 'hari';
+    if (in_array($jenisCuti->kode_cuti, ['CM', 'CB_HAJI'])) {
+        $satuan = 'bulan';
+        $displayLama = ($lamaVal >= 30 ? round($lamaVal / 30) : $lamaVal) . ' Bulan';
+    } elseif ($lamaVal >= 365) {
+        $satuan = 'tahun';
+        $displayLama = round($lamaVal / 365) . ' Tahun';
+    } else {
+        $satuan = 'hari';
+        $displayLama = $lamaVal . ' Hari';
+    }
+@endphp
+
 {{-- HEADER PERMOHONAN --}}
 <table class="no-border" style="margin-bottom: 2px;">
     <tr>
@@ -67,32 +82,26 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN II --}}
+{{-- BAGIAN II (2 KOLOM SAJA PERSIS SEPERTI GAMBAR ACUAN) --}}
 <table>
-    <tr><td colspan="6" class="bold">II. JENIS CUTI YANG DIAMBIL **</td></tr>
+    <tr><td colspan="4" class="bold">II. JENIS CUTI YANG DIAMBIL **</td></tr>
     <tr>
-        <td width="30%">1. Cuti Tahunan</td>
-        <td class="checkbox" width="3%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
-        <td width="30%">2. Cuti Besar</td>
-        <td class="checkbox" width="3%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
-        <td width="31%"></td>
-        <td class="checkbox" width="3%"></td>
+        <td width="40%">1. Cuti Tahunan</td>
+        <td class="checkbox" width="10%"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CT'  ? '√' : '' }}</span></td>
+        <td width="40%">2. Cuti Besar</td>
+        <td class="checkbox" width="10%"><span class="checkbox-symbol">{{ in_array($jenisCuti->kode_cuti, ['CB', 'CB_UMROH', 'CB_HAJI'])  ? '√' : '' }}</span></td>
     </tr>
     <tr>
         <td>3. Cuti Sakit</td>
         <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CS'  ? '√' : '' }}</span></td>
         <td>4. Cuti Melahirkan</td>
         <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CM'  ? '√' : '' }}</span></td>
-        <td></td>
-        <td class="checkbox"></td>
     </tr>
     <tr>
         <td>5. Cuti Karena Alasan Penting</td>
         <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CAK' ? '√' : '' }}</span></td>
         <td>6. Cuti di Luar Tanggungan Negara</td>
         <td class="checkbox"><span class="checkbox-symbol">{{ $jenisCuti->kode_cuti == 'CLN' ? '√' : '' }}</span></td>
-        <td></td>
-        <td class="checkbox"></td>
     </tr>
 </table>
 
@@ -106,57 +115,60 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN IV --}}
+{{-- BAGIAN IV (FORMAT SELAMA HARI/BULAN/TAHUN DENGAN CORET DYNAMIC) --}}
 <table>
     <tr><td colspan="6" class="bold">IV. LAMANYA CUTI</td></tr>
     <tr>
-        <td width="12%">Selama</td>
-        <td width="20%"><b>{{ $pengajuan->lama_cuti_display }}</b></td>
-        <td width="15%">Mulai Tanggal</td>
+        <td width="10%">Selama</td>
+        <td width="28%">
+            <b>{{ $displayLama }}</b> 
+            (@if($satuan == 'hari')hari@else<span style="text-decoration:line-through;">hari</span>@endif/@if($satuan == 'bulan')bulan@else<span style="text-decoration:line-through;">bulan</span>@endif/@if($satuan == 'tahun')tahun@else<span style="text-decoration:line-through;">tahun</span>@endif)*
+        </td>
+        <td width="14%">Mulai Tanggal</td>
         <td width="20%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_mulai)->translatedFormat('d F Y') }}</td>
-        <td width="8%" class="center">s/d</td>
-        <td width="25%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_selesai)->translatedFormat('d F Y') }}</td>
+        <td width="6%" class="center">s/d</td>
+        <td width="22%">{{ \Carbon\Carbon::parse($pengajuan->tanggal_selesai)->translatedFormat('d F Y') }}</td>
     </tr>
 </table>
 
 <div class="spacer"></div>
 
-{{-- BAGIAN V. CATATAN CUTI (PERSIS SEPERTI GAMBAR DOKUMEN SAMPLING 2) --}}
+{{-- BAGIAN V. CATATAN CUTI --}}
 <table>
     <tr>
         <td colspan="5" class="bold">V. CATATAN CUTI</td>
     </tr>
     <tr>
-        <td colspan="3" width="48%" class="bold">1. CUTI TAHUNAN</td>
-        <td width="42%" class="bold">2. CUTI BESAR</td>
+        <td colspan="3" width="48%">1. CUTI TAHUNAN</td>
+        <td width="42%">2. CUTI BESAR</td>
         <td width="10%"></td>
     </tr>
     <tr>
-        <td width="12%" class="center bold">Tahun</td>
-        <td width="12%" class="center bold">Sisa</td>
-        <td width="24%" class="center bold">Keterangan</td>
-        <td class="bold">3. CUTI SAKIT</td>
+        <td width="12%" class="center">Tahun</td>
+        <td width="12%" class="center">Sisa</td>
+        <td width="24%" class="center">Keterangan</td>
+        <td>3. CUTI SAKIT</td>
         <td></td>
     </tr>
     <tr>
         <td class="center">N-2</td>
         <td class="center">0</td>
         <td></td>
-        <td class="bold">4. CUTI MELAHIRKAN</td>
+        <td>4. CUTI MELAHIRKAN</td>
         <td></td>
     </tr>
     <tr>
         <td class="center">N-1</td>
         <td class="center">0</td>
         <td></td>
-        <td class="bold">5. CUTI KARENA ALASAN PENTING</td>
+        <td>5. CUTI KARENA ALASAN PENTING</td>
         <td></td>
     </tr>
     <tr>
         <td class="center">N</td>
         <td class="center">{{ $pegawai->sisa_cuti_tahunan }}</td>
         <td></td>
-        <td class="bold">6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
+        <td>6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
         <td></td>
     </tr>
 </table>
@@ -179,9 +191,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="border:none; text-align:center; padding-top:12px;">
-                        Hormat saya,<br><br><br><br>
-                        <span class="bold" style="text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
+                    <td colspan="2" style="height:95px; border:none; text-align:center; vertical-align:top; padding:6px 4px 4px 4px;">
+                        Hormat saya,<br>
+                        <div style="height:90px;"></div>
+                        <span style="font-weight:bold; text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
                         NIP. {{ $pegawai->nip }}
                     </td>
                 </tr>
@@ -192,7 +205,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VII (LEBIH LAPANG / SPACE GEDE UNTUK TTD ATASAN) --}}
+{{-- BAGIAN VII (SPACE TTD ATASAN) --}}
 <table>
     <tr><td colspan="5" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
     <tr>
@@ -205,11 +218,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:85px"></td>
+        <td style="height:120px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+        <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
             <span class="bold" style="text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
             NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
@@ -218,7 +231,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VIII (LEBIH LAPANG / SPACE GEDE UNTUK TTD PEJABAT BERWENANG) --}}
+{{-- BAGIAN VIII (SPACE TTD PEJABAT BERWENANG) --}}
 <table>
     <tr><td colspan="5" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
     <tr>
@@ -231,11 +244,11 @@
         </td>
     </tr>
     <tr>
-        <td style="height:85px"></td>
+        <td style="height:120px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+        <td style="height:120px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
             <span class="bold" style="text-decoration:underline;">RENDI RESWANDI, S.STP.,M.Si</span><br>
             NIP. 19770526 199712 1 001
         </td>
