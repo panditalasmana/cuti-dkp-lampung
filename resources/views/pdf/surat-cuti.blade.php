@@ -122,7 +122,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN IV (TEMPEL DENGAN V TANPA SPACER) --}}
+{{-- BAGIAN IV --}}
 <table>
     <tr><td colspan="6" class="bold">IV. LAMANYA CUTI</td></tr>
     <tr>
@@ -137,7 +137,7 @@
     </tr>
 </table>
 
-{{-- BAGIAN V. CATATAN CUTI (LANGSUNG MENEMPEL DENGAN IV) --}}
+{{-- BAGIAN V. CATATAN CUTI --}}
 <table>
     <tr>
         <td colspan="5" class="bold">V. CATATAN CUTI</td>
@@ -179,11 +179,11 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VI --}}
+{{-- BAGIAN VI (Hormat saya langsung di atas, space TTD sangat lapang, nama bold tanpa garis bawah) --}}
 <table>
     <tr><td colspan="2" class="bold">VI. ALAMAT SELAMA MENJALANKAN CUTI</td></tr>
     <tr>
-        <td width="50%" style="height:85px; vertical-align:top;">
+        <td width="50%" style="height:105px; vertical-align:top;">
             {{ $pengajuan->alamat_selama_cuti }}
         </td>
         <td width="50%" style="padding:0; vertical-align:top;">
@@ -195,9 +195,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="border:none; text-align:center; padding-top:12px;">
-                        Hormat saya,<br><br><br><br>
-                        <span class="bold" style="text-decoration:underline;">{{ $pegawai->nama_lengkap }}</span><br>
+                    <td colspan="2" style="border:none; text-align:center; padding-top:2px;">
+                        Hormat saya,<br><br><br><br><br><br>
+                        <span class="bold">{{ $pegawai->nama_lengkap }}</span><br>
                         NIP. {{ $pegawai->nip }}
                     </td>
                 </tr>
@@ -208,7 +208,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VII (SPACE TTD ATASAN) --}}
+{{-- BAGIAN VII (SPACE TTD ATASAN SANGAT LAPANG GEDE) --}}
 <table>
     <tr><td colspan="5" class="bold">VII. PERTIMBANGAN ATASAN LANGSUNG</td></tr>
     <tr>
@@ -221,12 +221,12 @@
         </td>
     </tr>
     <tr>
-        <td style="height:85px"></td>
+        <td style="height:95px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
-            <span class="bold" style="text-decoration:underline;">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
+        <td style="height:95px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+            <span class="bold">{{ $pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}</span><br>
             NIP. {{ $pengajuan->atasan_nip ?? '19690410 199503 1 002' }}
         </td>
     </tr>
@@ -234,7 +234,7 @@
 
 <div class="spacer"></div>
 
-{{-- BAGIAN VIII (SPACE TTD PEJABAT BERWENANG) --}}
+{{-- BAGIAN VIII (SPACE TTD PEJABAT BERWENANG SANGAT LAPANG GEDE) --}}
 <table>
     <tr><td colspan="5" class="bold center">KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</td></tr>
     <tr>
@@ -247,12 +247,12 @@
         </td>
     </tr>
     <tr>
-        <td style="height:85px"></td>
+        <td style="height:95px"></td>
         <td></td>
         <td></td>
         <td></td>
-        <td style="height:85px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
-            <span class="bold" style="text-decoration:underline;">RENDI RESWANDI, S.STP.,M.Si</span><br>
+        <td style="height:95px; text-align:center; vertical-align:bottom; padding-bottom:4px;">
+            <span class="bold">RENDI RESWANDI, S.STP.,M.Si</span><br>
             NIP. 19770526 199712 1 001
         </td>
     </tr>
