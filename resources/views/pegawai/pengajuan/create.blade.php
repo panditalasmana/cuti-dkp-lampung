@@ -205,10 +205,10 @@
 
                             <div class="col-sm-6">
                                 <label class="form-label fw-semibold">Tanda Tangan Pejabat yang Berwenang <span class="text-danger">*</span></label>
-                                <select name="pejabat_wenang_select" class="form-select @error('pejabat_wenang_select') is-invalid @enderror" required>
+                                <select name="pejabat_wenang_select" class="form-select @error('pejabat_wenang_select') is-invalid @enderror" id="pejabatWenangSelect" required>
                                     <option value="">-- Pilih Pejabat yang Berwenang --</option>
-                                    <option value="RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung" {{ old('pejabat_wenang_select') == 'RAHMAT MIRZANI DJAUSAL, S.T., M.M.|-|Gubernur Lampung' ? 'selected' : '' }}>
-                                        RAHMAT MIRZANI DJAUSAL, S.T., M.M. (Gubernur Lampung)
+                                    <option value="RAHMAT MIRZANI DJAUSAL|-|Gubernur Lampung" {{ old('pejabat_wenang_select') == 'RAHMAT MIRZANI DJAUSAL|-|Gubernur Lampung' ? 'selected' : '' }}>
+                                        RAHMAT MIRZANI DJAUSAL (Gubernur Lampung)
                                     </option>
                                     <option value="Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung" {{ old('pejabat_wenang_select') == 'Dr. MARINDO KURNIAWAN, S.T., M.M.|198012062002121010|Sekretaris Daerah Provinsi Lampung' ? 'selected' : '' }}>
                                         Dr. MARINDO KURNIAWAN, S.T., M.M. (Sekretaris Daerah Provinsi Lampung - NIP. 198012062002121010)
@@ -221,6 +221,17 @@
                                     </option>
                                 </select>
                                 @error('pejabat_wenang_select')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
+                                <!-- Pratinjau Tujuan Surat PDF -->
+                                <div id="tujuanHeaderPreview" class="mt-2 p-2.5 rounded-3 border border-info-subtle bg-info-subtle text-info-emphasis d-none" style="font-size:0.875rem;">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-file-earmark-text-fill text-info fs-5"></i>
+                                        <div>
+                                            <span class="small text-muted d-block" style="font-size:0.75rem;">Tujuan Surat (Kepada Yth.) pada PDF:</span>
+                                            <strong id="tujuanHeaderText" class="fw-bold">Kepada Yth. Kepala Dinas Kelautan dan Perikanan Provinsi Lampung</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Paraf Eselon 4 (Opsional) -->
@@ -551,6 +562,44 @@ document.getElementById('jenisCutiSelect').addEventListener('change', function()
 document.getElementById('alasanCuti').addEventListener('input', function() {
     document.getElementById('charCount').textContent = this.value.length;
 });
+
+// Listener Pratinjau Tujuan Surat PDF
+const pejabatSelect = document.getElementById('pejabatWenangSelect');
+const previewBox = document.getElementById('tujuanHeaderPreview');
+const previewText = document.getElementById('tujuanHeaderText');
+
+function updateTujuanPreview() {
+    if (!pejabatSelect || !previewBox || !previewText) return;
+    const val = pejabatSelect.value;
+    if (!val) {
+        previewBox.classList.add('d-none');
+        return;
+    }
+    
+    const parts = val.split('|');
+    const jabatan = (parts[2] || '').toLowerCase();
+    
+    let tujuan = '';
+    if (jabatan.includes('gubernur')) {
+        tujuan = 'Kepada Yth. Gubernur Lampung';
+    } else if (jabatan.includes('sekretaris daerah') || jabatan.includes('sekda')) {
+        tujuan = 'Kepada Yth. Sekretaris Daerah Provinsi Lampung';
+    } else if (jabatan.includes('dinas')) {
+        tujuan = 'Kepada Yth. Kepala Dinas Kelautan dan Perikanan Provinsi Lampung';
+    } else if (jabatan.includes('bkd') || jabatan.includes('kepegawaian daerah')) {
+        tujuan = 'Kepada Yth. Kepala Badan Kepegawaian Daerah Provinsi Lampung';
+    } else {
+        tujuan = 'Kepada Yth. ' + parts[2] + ' Provinsi Lampung';
+    }
+    
+    previewText.textContent = tujuan;
+    previewBox.classList.remove('d-none');
+}
+
+if (pejabatSelect) {
+    pejabatSelect.addEventListener('change', updateTujuanPreview);
+    updateTujuanPreview();
+}
 
 // Submit confirm
 document.getElementById('formPengajuan').addEventListener('submit', function(e) {

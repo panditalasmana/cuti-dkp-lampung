@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
             [
                 'name'      => 'Gerry Gahara S.Kom.',
                 'email'     => null,
-                'password'  => Hash::make('password123'),
+                'password'  => Hash::make('1991'),
                 'role'      => 'pegawai',
                 'is_active' => true,
             ]

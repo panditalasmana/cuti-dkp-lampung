@@ -57,6 +57,7 @@ Route::middleware(['auth', 'role:admin'])
     Route::post('pegawai/import', [Admin\PegawaiController::class, 'import'])->name('pegawai.import');
     Route::get('pegawai/download-template', [Admin\PegawaiController::class, 'downloadTemplate'])->name('pegawai.download-template');
     Route::get('pegawai/export', [Admin\PegawaiController::class, 'export'])->name('pegawai.export');
+    Route::get('pegawai/export-akun', [Admin\PegawaiController::class, 'exportAkun'])->name('pegawai.export-akun');
     Route::resource('pegawai', Admin\PegawaiController::class);
 
     // Master: Jenis Cuti

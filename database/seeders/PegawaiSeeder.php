@@ -33,8 +33,6 @@ class PegawaiSeeder extends Seeder
         $bidangMap  = Bidang::pluck('id', 'nama_bidang')->toArray();
         $jabatanMap = Jabatan::pluck('id', 'nama_jabatan')->toArray();
 
-        $passwordDefault = Hash::make('password123');
-
         $handle = fopen($file, 'r');
         fgetcsv($handle, 0, ','); // skip header
 
@@ -44,7 +42,7 @@ class PegawaiSeeder extends Seeder
 
         DB::transaction(function () use (
             $handle, &$bidangMap, &$jabatanMap,
-            $passwordDefault, &$inserted, &$skipped, &$errors
+            &$inserted, &$skipped, &$errors
         ) {
             while (($row = fgetcsv($handle, 0, ',')) !== false) {
 
@@ -124,7 +122,7 @@ class PegawaiSeeder extends Seeder
                     'nip'       => $nip,
                     'name'      => $namaLengkap,
                     'email'     => null,
-                    'password'  => $passwordDefault,
+                    'password'  => Hash::make(substr($nip, 0, 4)),
                     'role'      => 'pegawai',
                     'is_active' => true,
                 ]);

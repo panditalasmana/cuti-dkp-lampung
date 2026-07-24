@@ -14,11 +14,14 @@
         <p class="page-subtitle">Kelola data seluruh pegawai DKP Provinsi Lampung</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a href="{{ route('admin.pegawai.export') }}" class="btn btn-outline-primary">
-            <i class="bi bi-download me-1"></i>Export CSV / Excel
+        <a href="{{ route('admin.pegawai.export-akun') }}" class="btn btn-outline-success" title="Download daftar NIP & Password Default pegawai">
+            <i class="bi bi-shield-lock me-1"></i>Download Password Akun
         </a>
-        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importModal">
-            <i class="bi bi-file-earmark-excel me-1"></i>Import CSV / Excel
+        <a href="{{ route('admin.pegawai.export') }}" class="btn btn-outline-primary">
+            <i class="bi bi-download me-1"></i>Export Data CSV
+        </a>
+        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#importModal">
+            <i class="bi bi-file-earmark-excel me-1"></i>Import CSV
         </button>
         <a href="{{ route('admin.pegawai.create') }}" class="btn btn-primary">
             <i class="bi bi-person-plus me-1"></i>Tambah Pegawai

@@ -467,4 +467,58 @@ class PegawaiController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+     * Export NIP, Nama, dan Password Default Pegawai ke Excel/CSV
+     */
+    public function exportAkun()
+    {
+        $filename = "data_akun_dan_password_pegawai_dkp_" . date('Ymd_His') . ".csv";
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() {
+            $file = fopen('php://output', 'w');
+            // Tulis UTF-8 BOM untuk kompatibilitas penuh dengan Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, [
+                'NO',
+                'NIP',
+                'NAMA PEGAWAI',
+                'BIDANG / UPTD',
+                'SUB BAGIAN',
+                'JABATAN',
+                'JENIS PEGAWAI',
+                'PASSWORD DEFAULT'
+            ], ';');
+
+            $pegawais = Pegawai::with(['bidang', 'jabatan'])
+                ->orderBy('nama_lengkap', 'asc')
+                ->get();
+            
+            $no = 1;
+            foreach ($pegawais as $p) {
+                $cleanNip = preg_replace('/\s+/', '', trim($p->nip));
+                $passwordDefault = strlen($cleanNip) >= 4 ? substr($cleanNip, 0, 4) : '-';
+
+                fputcsv($file, [
+                    $no++,
+                    $cleanNip,
+                    $p->nama_lengkap,
+                    $p->bidang->nama_bidang ?? '',
+                    $p->sub_bagian ?? '',
+                    $p->jabatan->nama_jabatan ?? '',
+                    $p->jenis_pegawai,
+                    $passwordDefault
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
