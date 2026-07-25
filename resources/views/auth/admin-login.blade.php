@@ -139,9 +139,7 @@
                 </button>
 
                 <div class="text-center">
-                    <a href="javascript:void(0)" id="btnAutofillAdmin" class="text-decoration-none text-muted small d-block mb-2" style="font-weight: 500;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#6c757d'">
-                        <i class="bi bi-magic me-1"></i>Gunakan Akun Demo Admin
-                    </a>
+
                     <a href="{{ route('login') }}" class="text-decoration-none text-primary small d-block mt-3" style="font-weight: 500;">
                         <i class="bi bi-arrow-left me-1"></i>Masuk sebagai Pegawai
                     </a>

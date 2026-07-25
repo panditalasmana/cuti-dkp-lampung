@@ -14,12 +14,18 @@ class PegawaiSeeder extends Seeder
 {
     public function run(): void
     {
+        // Coba pegawai.csv dulu, kalau tidak ada pakai CSV DUK resmi
         $file = database_path('data/pegawai.csv');
+        if (!file_exists($file)) {
+            $file = database_path('data/pegawai_format_resmi_duk.csv');
+        }
 
         if (!file_exists($file)) {
-            $this->command->error('File pegawai.csv tidak ditemukan di: ' . $file);
+            $this->command->error('File CSV pegawai tidak ditemukan (dicoba: pegawai.csv dan pegawai_format_resmi_duk.csv)');
             return;
         }
+
+        $this->command->info("Membaca data dari: {$file}");
 
         // Hapus data lama dengan aman
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -58,7 +64,7 @@ class PegawaiSeeder extends Seeder
                 $pangkat      = trim($row[7]  ?? '-');
                 $namaBidang   = trim($row[8]  ?? '');
                 $namaJabatan  = trim($row[9]  ?? '');
-                
+
                 $subBagian = null;
                 if ($namaBidang === 'Sub Bagian Umum dan Kepegawaian') {
                     $namaBidang = 'Sekretariat';
@@ -67,7 +73,7 @@ class PegawaiSeeder extends Seeder
                     $namaBidang = 'Sekretariat';
                     $subBagian = 'Sub Bagian Keuangan dan Aset';
                 }
-                
+
                 if (str_contains($namaBidang, 'UPTD') && str_contains($namaJabatan, 'Tata Usaha')) {
                     $subBagian = 'Sub Bagian Tata Usaha';
                 }
@@ -166,18 +172,19 @@ class PegawaiSeeder extends Seeder
 
     /**
      * Buat kode unik — jika kode sudah ada, tambahkan angka di belakang
-     * Contoh: KEPALAUPTD sudah ada → KEPALAUPTD2, KEPALAUPTD3, dst.
+     * Contoh: KEPALAUPTDPELABUHANPERIKANAN sudah ada → ...2, ...3, dst.
      */
     private function uniqueKode(string $nama, array $existingKodes): string
     {
-        $base = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $nama), 0, 10));
+        $panjangMaks = 30; // sesuai kolom kode_bidang / kode_jabatan varchar(30)
+        $base = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $nama), 0, $panjangMaks));
         if (empty($base)) $base = 'LAINNYA';
 
         $kode = $base;
         $i = 2;
         while (in_array($kode, $existingKodes)) {
             $suffix = (string) $i;
-            $kode   = substr($base, 0, 10 - strlen($suffix)) . $suffix;
+            $kode   = substr($base, 0, $panjangMaks - strlen($suffix)) . $suffix;
             $i++;
         }
         return $kode;
