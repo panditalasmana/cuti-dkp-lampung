@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('bidang_id')->nullable()->constrained('bidang')->onDelete('set null');
+            $table->string('sub_bagian')->nullable();
             $table->foreignId('jabatan_id')->constrained('jabatan')->onDelete('restrict');
             $table->string('nip', 20)->unique();
             $table->string('nama_lengkap');
@@ -19,6 +20,8 @@ return new class extends Migration
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->string('email')->nullable();
+            $table->string('no_telepon')->nullable();
+            $table->text('alamat')->nullable();
             $table->date('tanggal_masuk')->comment('TMT CPNS / PPPK');
             $table->enum('jenis_pegawai', ['PNS', 'PPPK', 'Honorer'])->default('PNS');
             $table->string('pangkat')->nullable()->comment('Pangkat/Golongan Ruang, e.g. Penata Muda / III-a');

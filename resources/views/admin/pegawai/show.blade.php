@@ -217,9 +217,12 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <label class="detail-label text-muted small fw-semibold">Akun Login</label>
+                                <label class="detail-label text-muted small fw-semibold">Akun Login & Password</label>
                                 <div class="detail-value fs-6 mt-1">
                                     <code class="small">{{ $pegawai->user->nip ?? '-' }}</code>
+                                    <span class="badge bg-light text-dark border ms-1" title="Password Akun">
+                                        <i class="bi bi-key-fill text-warning me-1"></i>{{ $pegawai->user->password_plain ?? (strlen($pegawai->nip) >= 4 ? substr($pegawai->nip, 0, 4) : '-') }}
+                                    </span>
                                     <span class="badge {{ ($pegawai->user->is_active ?? false) ? 'bg-success' : 'bg-danger' }} ms-1">
                                         {{ ($pegawai->user->is_active ?? false) ? 'Aktif' : 'Nonaktif' }}
                                     </span>

@@ -124,13 +124,16 @@ class PegawaiSeeder extends Seeder
                 }
 
                 // ── Buat User ────────────────────────────────────────────
+                $defaultPw = substr($nip, 0, 4);
                 $user = User::create([
-                    'nip'       => $nip,
-                    'name'      => $namaLengkap,
-                    'email'     => null,
-                    'password'  => Hash::make(substr($nip, 0, 4)),
-                    'role'      => 'pegawai',
-                    'is_active' => true,
+                    'nip'                  => $nip,
+                    'name'                 => $namaLengkap,
+                    'email'                => null,
+                    'password'             => Hash::make($defaultPw),
+                    'password_plain'       => $defaultPw,
+                    'role'                 => 'pegawai',
+                    'is_active'            => true,
+                    'must_change_password' => false,
                 ]);
 
                 // ── Buat Pegawai ─────────────────────────────────────────

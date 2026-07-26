@@ -18,11 +18,13 @@ class UserSeeder extends Seeder
                 'nip' => '198501012010011001',
             ],
             [
-                'name'      => 'Administrator DKP',
-                'email'     => 'admin@dkp.lampungprov.go.id',
-                'password'  => Hash::make('Admin@DKP2026'),
-                'role'      => 'admin',
-                'is_active' => true,
+                'name'                 => 'Administrator DKP',
+                'email'                => 'admin@dkp.lampungprov.go.id',
+                'password'             => Hash::make('Admin@DKP2026'),
+                'password_plain'       => 'Admin@DKP2026',
+                'role'                 => 'admin',
+                'is_active'            => true,
+                'must_change_password' => false,
             ]
         );
 
@@ -34,11 +36,13 @@ class UserSeeder extends Seeder
                 'nip' => '199111152025211022',
             ],
             [
-                'name'      => 'Gerry Gahara S.Kom.',
-                'email'     => null,
-                'password'  => Hash::make('1991'),
-                'role'      => 'pegawai',
-                'is_active' => true,
+                'name'                 => 'Gerry Gahara, S.Kom.',
+                'email'                => null,
+                'password'             => Hash::make('1991'),
+                'password_plain'       => '1991',
+                'role'                 => 'pegawai',
+                'is_active'            => true,
+                'must_change_password' => false,
             ]
         );
 

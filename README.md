@@ -1,66 +1,74 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏛️ Si-Cuti DKP Lampung — Sistem Informasi Pengajuan Cuti Pegawai
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Informasi Pengajuan Cuti Pegawai Berbasis Web resmi untuk **Dinas Kelautan dan Perikanan (DKP) Provinsi Lampung**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📌 Ringkasan Audit & Perbaikan Terbaru (Refactoring Log)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Dokumen ini mencatat seluruh perbaikan, audit arsitektur, dan penyelarasan kode yang telah diselesaikan untuk memastikan aplikasi **100% bersih, aman, akurat, dan siap disidangkan/digunakan di dinas**:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. 🧹 Pembersihan & Penyelarasan Migrasi Database (`database/migrations/`)
+* **Folder Migrasi Bersih:** Menggabungkan 26 file patch berantakan menjadi **12 file migrasi utama** yang rapi dan terstruktur.
+* **Standarisasi NIP:** Mengubah `users.nip` menjadi `varchar(20)` selaras dengan `pegawai.nip`.
+* **Perbaikan Nama Kolom (`no_telepon`):** Mengubah kolom `no_hp` pada migration `pegawai` menjadi `no_telepon` agar 100% serasi dengan Model `Pegawai`, Controller, Service, dan Form Blade.
+* **Baku Enum Status:** Menyesuaikan enum status `pengajuan_cuti` menjadi `['menunggu', 'disetujui', 'ditolak', 'dibatalkan']` dengan nilai default `'menunggu'`.
+* **Integritas Relasi (`onDelete restrict`):** Mengembalikan relasi `pegawai_id` & `jenis_cuti_id` ke `restrict` agar data transaksi pengajuan cuti tidak hilang secara sengaja/tidak sengaja.
 
-## Learning Laravel
+### 2. 👥 Standar Baku Format Nama & Gelar Pegawai (EYD V / PUEBI / BKN)
+* Seluruh **161 Data Pegawai ASN DKP Lampung** (142 PNS + 19 PPPK) pada `database/data/pegawai_format_resmi_duk.csv` telah dirapikan 100% mengikuti aturan EYD Edisi V / PUEBI / BKN (presisi koma sebelum/antar gelar dan titik di tiap singkatan gelar).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 3. 🛡️ Keamanan & Evaluasi Dospem
+* **Rate Limiting Login (`throttle:5,1`):** Membatasi maksimal 5 kali percobaan login salah per menit per IP address di `routes/web.php`.
+* **Mandiri Ubah Password & Rekap Admin Excel:** Pegawai dapat mengubah password secara mandiri di menu Profil, dan Admin dapat mengunduh rekap password aktif seluruh pegawai dalam format Excel ringkas 4 kolom (`NO`, `NIP (ID AKUN)`, `NAMA PEGAWAI`, `PASSWORD`).
+* **Alur Login Langsung:** Login langsung mengarahkan pengguna ke Dashboard sesuai role tanpa hambatan alur tambahan.
+* **Panduan Production & Backup Database:** Tersedia panduan deployment `APP_ENV=production` & `APP_DEBUG=false` serta skrip Cron Job `mysqldump` harian di `hosting_guide.md`.
+* **Automated Feature Testing:** Tersedia pengujian otomatis di `tests/Feature/AuthTest.php` dan `tests/Feature/PengajuanCutiTest.php`.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 4. 🖨️ Presisi Form PDF Surat Cuti (Standar A4 Kedinasan)
+* **Ukuran Kertas A4 Portrait:** Dikonfigurasi presisi `@page { size: A4 portrait; margin: 28pt 64.5pt 24pt 64.5pt; }` dengan font Times New Roman dan border tabel 0.5px.
+* **Header Dinamis:** Header permohonan "Kepada Yth." dirender otomatis berdasarkan Pejabat Berwenang yang dipilih pegawai (Gubernur, Sekda, BKD, atau Kepala Dinas).
+* **Alasan Penolakan Transparan:** Jika pengajuan ditolak, alasan penolakan dari admin tampil menonjol dengan kotak merah (`alert-danger`).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🛠️ Teknologi & Arsitektur
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* **Framework:** Laravel 10 (PHP 8.1+)
+* **Architecture:** Service-Repository Pattern (`App\Services` & `App\Repositories`)
+* **Database:** MySQL / MariaDB
+* **PDF Engine:** DomPDF (A4 Portrait)
+* **Frontend:** Blade, Bootstrap 5.3, Vanilla CSS & JavaScript
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 🚀 Perintah Dasar Penggunaan
 
-## Contributing
+### 1. Inisialisasi / Refresh Database
+```bash
+php artisan migrate:fresh --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Jalankan Dev Server
+```bash
+php artisan serve
+```
 
-## Code of Conduct
+### 3. Jalankan Automated Tests
+```bash
+php artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🔐 Akun Login Default Demo
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Role | NIP | Password | Halaman Login |
+|---|---|---|---|
+| **Administrator** | `198501012010011001` | `Admin@DKP2026` | `/admin/login` |
+| **Pegawai (Demo)** | `199111152025211022` | `1991` | `/login` |
 
-## License
+*(Password default seluruh 161 pegawai adalah 4-digit NIP awal masing-masing).*
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+ Hak Cipta © 2026 Dinas Kelautan dan Perikanan Provinsi Lampung.

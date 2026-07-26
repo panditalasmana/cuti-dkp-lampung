@@ -486,33 +486,25 @@ class PegawaiController extends Controller
             
             fputcsv($file, [
                 'NO',
-                'NIP',
+                'NIP (ID AKUN)',
                 'NAMA PEGAWAI',
-                'BIDANG / UPTD',
-                'SUB BAGIAN',
-                'JABATAN',
-                'JENIS PEGAWAI',
-                'PASSWORD DEFAULT'
+                'PASSWORD'
             ], ';');
 
-            $pegawais = Pegawai::with(['bidang', 'jabatan'])
+            $pegawais = Pegawai::with('user')
                 ->orderBy('nama_lengkap', 'asc')
                 ->get();
             
             $no = 1;
             foreach ($pegawais as $p) {
                 $cleanNip = preg_replace('/\s+/', '', trim($p->nip));
-                $passwordDefault = strlen($cleanNip) >= 4 ? substr($cleanNip, 0, 4) : '-';
+                $passwordAktif = $p->user->password_plain ?? (strlen($cleanNip) >= 4 ? substr($cleanNip, 0, 4) : '-');
 
                 fputcsv($file, [
                     $no++,
                     $cleanNip,
                     $p->nama_lengkap,
-                    $p->bidang->nama_bidang ?? '',
-                    $p->sub_bagian ?? '',
-                    $p->jabatan->nama_jabatan ?? '',
-                    $p->jenis_pegawai,
-                    $passwordDefault
+                    $passwordAktif
                 ], ';');
             }
 

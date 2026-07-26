@@ -102,10 +102,17 @@
                 </div>
 
                 @if($pengajuan->catatan_admin)
-                    <div class="alert alert-info mt-3">
-                        <strong><i class="bi bi-info-circle me-1"></i>Catatan Admin:</strong><br>
-                        {{ $pengajuan->catatan_admin }}
-                    </div>
+                    @if($pengajuan->status === \App\Models\PengajuanCuti::STATUS_DITOLAK)
+                        <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger-emphasis mt-3 rounded-3 p-3">
+                            <h6 class="fw-bold mb-1"><i class="bi bi-x-circle-fill me-2"></i>Alasan Penolakan dari Admin:</h6>
+                            <p class="mb-0 small">{{ $pengajuan->catatan_admin }}</p>
+                        </div>
+                    @else
+                        <div class="alert alert-info border-0 bg-info bg-opacity-10 text-info-emphasis mt-3 rounded-3 p-3">
+                            <h6 class="fw-bold mb-1"><i class="bi bi-info-circle-fill me-2"></i>Catatan Admin:</h6>
+                            <p class="mb-0 small">{{ $pengajuan->catatan_admin }}</p>
+                        </div>
+                    @endif
                 @endif
 
                 @if($pengajuan->tanggal_verifikasi)

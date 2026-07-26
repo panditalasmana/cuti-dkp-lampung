@@ -18,8 +18,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'password_plain',
         'role',
         'is_active',
+        'must_change_password',
         'last_login_at',
     ];
 
@@ -31,9 +33,10 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password'      => 'hashed',
-            'is_active'     => 'boolean',
-            'last_login_at' => 'datetime',
+            'password'             => 'hashed',
+            'is_active'            => 'boolean',
+            'must_change_password' => 'boolean',
+            'last_login_at'        => 'datetime',
         ];
     }
 

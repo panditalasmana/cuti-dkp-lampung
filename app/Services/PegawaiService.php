@@ -159,7 +159,10 @@ class PegawaiService
 
     public function gantiPassword(User $user, string $newPassword): void
     {
-        $user->update(['password' => Hash::make($newPassword)]);
+        $user->update([
+            'password'       => Hash::make($newPassword),
+            'password_plain' => $newPassword,
+        ]);
         $this->logService->logUpdate('auth', 'Ganti password', $user, [], []);
     }
 
