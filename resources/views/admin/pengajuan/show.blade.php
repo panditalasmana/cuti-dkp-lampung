@@ -19,6 +19,13 @@
         <a href="{{ route('admin.pengajuan.preview-pdf', $pengajuan) }}" class="btn btn-outline-danger" target="_blank" title="Preview PDF">
             <i class="bi bi-file-pdf me-1"></i><span class="d-none d-sm-inline">Preview PDF</span><span class="d-inline d-sm-none">Preview</span>
         </a>
+        <form action="{{ route('admin.pengajuan.destroy', $pengajuan) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data pengajuan cuti ini?')">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger" title="Hapus Pengajuan">
+                <i class="bi bi-trash me-1"></i><span class="d-none d-sm-inline">Hapus Pengajuan</span><span class="d-inline d-sm-none">Hapus</span>
+            </button>
+        </form>
         <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-outline-secondary px-2 px-sm-3" title="Kembali">
             <i class="bi bi-arrow-left"></i><span class="d-none d-sm-inline ms-1">Kembali</span>
         </a>

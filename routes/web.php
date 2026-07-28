@@ -73,6 +73,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/{pengajuan}/verifikasi',             [Admin\PengajuanController::class, 'verifikasi'])->name('verifikasi');
         Route::post('/{pengajuan}/upload-scan',            [Admin\PengajuanController::class, 'uploadScan'])->name('upload-scan');
         Route::get('/{pengajuan}/preview-pdf',             [Admin\PengajuanController::class, 'previewPdf'])->name('preview-pdf');
+        Route::delete('/{pengajuan}',                      [Admin\PengajuanController::class, 'destroy'])->name('destroy');
     });
 
     // Laporan

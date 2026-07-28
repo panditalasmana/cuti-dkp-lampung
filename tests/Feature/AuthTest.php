@@ -51,25 +51,21 @@ class AuthTest extends TestCase
         $response->assertStatus(429);
     }
 
-    public function test_pegawai_must_change_password_on_first_login(): void
+    public function test_pegawai_can_login_and_access_dashboard_directly(): void
     {
         $user = User::factory()->create([
-            'nip'                  => '199111152025211022',
-            'role'                 => 'pegawai',
-            'password'             => bcrypt('1991'),
-            'must_change_password' => true,
+            'nip'      => '199111152025211022',
+            'role'     => 'pegawai',
+            'password' => bcrypt('1991'),
         ]);
 
-        $this->post('/login', [
+        $response = $this->post('/login', [
             'nip'        => '199111152025211022',
             'password'   => '1991',
             'login_type' => 'pegawai',
         ]);
 
         $this->assertAuthenticatedAs($user);
-
-        // Attempting to access dashboard should redirect to change password page
-        $response = $this->get('/pegawai/dashboard');
-        $response->assertRedirect('/ubah-password-pertama');
+        $response->assertRedirect('/pegawai/dashboard');
     }
 }

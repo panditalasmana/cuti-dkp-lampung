@@ -224,4 +224,20 @@ class PengajuanController extends Controller
 
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
+
+    public function destroy(PengajuanCuti $pengajuan): RedirectResponse
+    {
+        // Jika pengajuan disetujui dan jenis cuti memotong kuota (CT), kembalikan sisa cuti pegawai
+        if ($pengajuan->status === PengajuanCuti::STATUS_DISETUJUI && $pengajuan->jenisCuti && $pengajuan->jenisCuti->kode_cuti === 'CT') {
+            if ($pengajuan->pegawai) {
+                $pengajuan->pegawai->increment('sisa_cuti_tahunan', $pengajuan->lama_cuti);
+            }
+        }
+
+        $nomorSurat = $pengajuan->nomor_surat;
+        $pengajuan->delete();
+
+        return redirect()->route('admin.pengajuan.index')
+                         ->with('success', "Pengajuan cuti ({$nomorSurat}) berhasil dihapus.");
+    }
 }

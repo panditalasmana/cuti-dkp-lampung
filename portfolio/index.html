@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pandita Lasman — Portfolio</title>
+  <meta name="description" content="Portfolio website Pandita Lasman - Mahasiswa Ilmu Komputer Universitas Lampung. Web Developer & IT Solutions.">
+  <meta name="keywords" content="Pandita Lasman, Web Developer, Portfolio, Universitas Lampung, Ilmu Komputer">
+  <meta name="author" content="Pandita Lasman">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Pandita Lasman — Portfolio">
+  <meta property="og:description" content="Web Developer & Computer Science Student">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ====== NAVBAR ====== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">PL<span>.</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="active" data-i18n="nav.home">Beranda</a></li>
+        <li><a href="#about" data-i18n="nav.about">Tentang</a></li>
+        <li><a href="#skills" data-i18n="nav.skills">Keahlian</a></li>
+        <li><a href="#projects" data-i18n="nav.projects">Proyek</a></li>
+        <li><a href="#services" data-i18n="nav.services">Layanan</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Kontak</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="lang-toggle" id="langToggle" aria-label="Switch Language">
+          <span class="lang-active">ID</span> / <span>EN</span>
+        </button>
+        <a href="#contact" class="nav-cta" data-i18n="nav.cta">Hubungi Saya</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ====== HERO ====== -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <p class="hero-greeting" data-i18n="hero.greeting">Halo, saya</p>
+      <h1 class="hero-name">PANDITA<br>LASMAN</h1>
+      <p class="hero-tagline" data-i18n="hero.tagline">Mahasiswa Ilmu Komputer &amp; Web Developer yang bersemangat membangun solusi digital kreatif dan fungsional.</p>
+      <a href="#contact" class="btn-primary" data-i18n="hero.cta">Hubungi Saya →</a>
+    </div>
+    <div class="hero-scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ====== ABOUT ====== -->
+  <section class="section section--alt about" id="about">
+    <div class="container">
+      <p class="section-label" data-i18n="about.label">Tentang Saya</p>
+      <div class="about-grid reveal">
+        <div class="about-text">
+          <h2 class="section-title" data-i18n="about.title">Membangun Solusi<br>Digital yang Bermakna</h2>
+          <p data-i18n="about.desc">Saya Pandita Lasman, mahasiswa Ilmu Komputer di Universitas Lampung angkatan 2023. Saya memiliki passion dalam web development dan teknologi informasi. Dengan pengalaman membangun berbagai proyek, saya siap membantu mewujudkan ide digital Anda menjadi kenyataan.</p>
+          <p data-i18n="about.desc2">Saya percaya bahwa teknologi yang baik harus sederhana, fungsional, dan memberikan dampak nyata bagi penggunanya.</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-item">
+            <span class="stat-number" data-count="10">0</span><span class="stat-plus">+</span>
+            <p class="stat-label" data-i18n="about.stat1">Proyek Selesai</p>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="15">0</span><span class="stat-plus">+</span>
+            <p class="stat-label" data-i18n="about.stat2">Teknologi</p>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="2">0</span><span class="stat-plus">+</span>
+            <p class="stat-label" data-i18n="about.stat3">Tahun Pengalaman</p>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="8">0</span><span class="stat-plus">+</span>
+            <p class="stat-label" data-i18n="about.stat4">Klien Puas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SKILLS ====== -->
+  <section class="section skills" id="skills">
+    <div class="container">
+      <p class="section-label" data-i18n="skills.label">Keahlian</p>
+      <h2 class="section-title" data-i18n="skills.title">Teknologi yang Saya Kuasai</h2>
+      <div class="skills-grid reveal">
+        <!-- Frontend -->
+        <div class="skill-category">
+          <h3 class="skill-category-title" data-i18n="skills.frontend">Frontend</h3>
+          <div class="skill-item">
+            <span class="skill-icon">🌐</span>
+            <span class="skill-name">HTML5</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🎨</span>
+            <span class="skill-name">CSS3</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">⚡</span>
+            <span class="skill-name">JavaScript</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 80%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">⚛️</span>
+            <span class="skill-name">React</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 70%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🌊</span>
+            <span class="skill-name">Tailwind CSS</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 75%"></div></div>
+          </div>
+        </div>
+        <!-- Backend -->
+        <div class="skill-category">
+          <h3 class="skill-category-title" data-i18n="skills.backend">Backend</h3>
+          <div class="skill-item">
+            <span class="skill-icon">🐘</span>
+            <span class="skill-name">PHP</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🏗️</span>
+            <span class="skill-name">Laravel</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🗄️</span>
+            <span class="skill-name">MySQL</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 80%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">📦</span>
+            <span class="skill-name">Node.js</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 70%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🐍</span>
+            <span class="skill-name">Python</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 65%"></div></div>
+          </div>
+        </div>
+        <!-- Tools -->
+        <div class="skill-category">
+          <h3 class="skill-category-title" data-i18n="skills.tools">Tools &amp; Lainnya</h3>
+          <div class="skill-item">
+            <span class="skill-icon">📂</span>
+            <span class="skill-name">Git</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">💻</span>
+            <span class="skill-name">VS Code</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🎯</span>
+            <span class="skill-name">Figma</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 75%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🐧</span>
+            <span class="skill-name">Linux</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 70%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon">🐋</span>
+            <span class="skill-name">Docker</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 60%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PROJECTS ====== -->
+  <section class="section section--alt projects" id="projects">
+    <div class="container">
+      <p class="section-label" data-i18n="projects.label">Proyek</p>
+      <h2 class="section-title" data-i18n="projects.title">Karya Terbaru Saya</h2>
+      <div class="project-filters">
+        <button class="project-filter-btn active" data-filter="all" data-i18n="projects.all">Semua</button>
+        <button class="project-filter-btn" data-filter="web" data-i18n="projects.web">Website</button>
+        <button class="project-filter-btn" data-filter="system" data-i18n="projects.system">Sistem</button>
+      </div>
+      <div class="project-grid reveal">
+        <!-- Project 1 -->
+        <div class="project-card" data-category="system">
+          <div class="project-image" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
+            <div class="project-image-label">📊</div>
+          </div>
+          <div class="project-info">
+            <h3 class="project-title" data-i18n="projects.p1.title">Sistem Cuti DKP Lampung</h3>
+            <p class="project-desc" data-i18n="projects.p1.desc">Sistem manajemen cuti online untuk Dinas Kelautan dan Perikanan Provinsi Lampung. Fitur approval multi-level dan dashboard admin.</p>
+            <div class="project-tags">
+              <span class="project-tag">Laravel</span>
+              <span class="project-tag">MySQL</span>
+              <span class="project-tag">Bootstrap</span>
+            </div>
+            <a href="#" class="project-link" data-i18n="projects.view">Lihat Proyek →</a>
+          </div>
+        </div>
+        <!-- Project 2 -->
+        <div class="project-card" data-category="web">
+          <div class="project-image" style="background: linear-gradient(135deg, #1a2a1a, #162e16);">
+            <div class="project-image-label">🛒</div>
+          </div>
+          <div class="project-info">
+            <h3 class="project-title" data-i18n="projects.p2.title">E-Commerce Platform</h3>
+            <p class="project-desc" data-i18n="projects.p2.desc">Platform toko online modern dengan fitur keranjang belanja, pembayaran, dan manajemen produk.</p>
+            <div class="project-tags">
+              <span class="project-tag">React</span>
+              <span class="project-tag">Node.js</span>
+              <span class="project-tag">MongoDB</span>
+            </div>
+            <a href="#" class="project-link" data-i18n="projects.view">Lihat Proyek →</a>
+          </div>
+        </div>
+        <!-- Project 3 -->
+        <div class="project-card" data-category="web">
+          <div class="project-image" style="background: linear-gradient(135deg, #2a1a1a, #2e1616);">
+            <div class="project-image-label">🌐</div>
+          </div>
+          <div class="project-info">
+            <h3 class="project-title" data-i18n="projects.p3.title">Portfolio Website</h3>
+            <p class="project-desc" data-i18n="projects.p3.desc">Website portfolio personal dengan desain modern dan animasi interaktif.</p>
+            <div class="project-tags">
+              <span class="project-tag">HTML</span>
+              <span class="project-tag">CSS</span>
+              <span class="project-tag">JavaScript</span>
+            </div>
+            <a href="#" class="project-link" data-i18n="projects.view">Lihat Proyek →</a>
+          </div>
+        </div>
+        <!-- Project 4 -->
+        <div class="project-card" data-category="system">
+          <div class="project-image" style="background: linear-gradient(135deg, #1a1a2e, #2e1a2e);">
+            <div class="project-image-label">🎓</div>
+          </div>
+          <div class="project-info">
+            <h3 class="project-title" data-i18n="projects.p4.title">Sistem Informasi Akademik</h3>
+            <p class="project-desc" data-i18n="projects.p4.desc">Sistem informasi untuk manajemen data akademik mahasiswa termasuk KRS, nilai, dan jadwal.</p>
+            <div class="project-tags">
+              <span class="project-tag">PHP</span>
+              <span class="project-tag">MySQL</span>
+              <span class="project-tag">Bootstrap</span>
+            </div>
+            <a href="#" class="project-link" data-i18n="projects.view">Lihat Proyek →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SERVICES ====== -->
+  <section class="section services" id="services">
+    <div class="container">
+      <p class="section-label" data-i18n="services.label">Layanan</p>
+      <h2 class="section-title" data-i18n="services.title">Apa yang Bisa Saya Bantu</h2>
+      <div class="services-grid reveal">
+        <div class="service-card">
+          <span class="service-icon">💻</span>
+          <h3 class="service-title" data-i18n="services.s1.title">Web Development</h3>
+          <p class="service-desc" data-i18n="services.s1.desc">Pembuatan website modern, responsif, dan cepat sesuai kebutuhan bisnis Anda.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🗃️</span>
+          <h3 class="service-title" data-i18n="services.s2.title">Sistem Informasi</h3>
+          <p class="service-desc" data-i18n="services.s2.desc">Pengembangan sistem informasi custom untuk efisiensi operasional organisasi Anda.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🎨</span>
+          <h3 class="service-title" data-i18n="services.s3.title">UI/UX Design</h3>
+          <p class="service-desc" data-i18n="services.s3.desc">Desain antarmuka yang intuitif dan pengalaman pengguna yang menyenangkan.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🔧</span>
+          <h3 class="service-title" data-i18n="services.s4.title">Maintenance &amp; Support</h3>
+          <p class="service-desc" data-i18n="services.s4.desc">Perawatan berkala, update keamanan, dan dukungan teknis untuk website Anda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== TESTIMONIALS ====== -->
+  <section class="section section--alt testimonials" id="testimonials">
+    <div class="container">
+      <p class="section-label" data-i18n="testimonials.label">Testimoni</p>
+      <h2 class="section-title" data-i18n="testimonials.title">Apa Kata Mereka</h2>
+      <div class="testimonial-slider reveal">
+        <div class="testimonial-track">
+          <div class="testimonial-item">
+            <p class="testimonial-quote" data-i18n="testimonials.t1.quote">Hasil kerjanya sangat memuaskan. Website yang dibuat modern, cepat, dan sesuai dengan kebutuhan kami. Sangat profesional!</p>
+            <p class="testimonial-author" data-i18n="testimonials.t1.author">Ahmad Rizki</p>
+            <p class="testimonial-role" data-i18n="testimonials.t1.role">Pemilik Toko Online</p>
+          </div>
+          <div class="testimonial-item">
+            <p class="testimonial-quote" data-i18n="testimonials.t2.quote">Pandita sangat responsif dan kreatif. Sistem informasi yang dibuat sangat membantu efisiensi kerja di kantor kami.</p>
+            <p class="testimonial-author" data-i18n="testimonials.t2.author">Siti Nurhaliza</p>
+            <p class="testimonial-role" data-i18n="testimonials.t2.role">Staff Admin Instansi</p>
+          </div>
+          <div class="testimonial-item">
+            <p class="testimonial-quote" data-i18n="testimonials.t3.quote">Desain website-nya keren dan profesional. Proses pengerjaan cepat dan komunikasinya sangat baik. Recommended!</p>
+            <p class="testimonial-author" data-i18n="testimonials.t3.author">Budi Santoso</p>
+            <p class="testimonial-role" data-i18n="testimonials.t3.role">Pengusaha UMKM</p>
+          </div>
+        </div>
+        <div class="testimonial-dots">
+          <button class="testimonial-dot active" data-slide="0" aria-label="Slide 1"></button>
+          <button class="testimonial-dot" data-slide="1" aria-label="Slide 2"></button>
+          <button class="testimonial-dot" data-slide="2" aria-label="Slide 3"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CONTACT ====== -->
+  <section class="section contact" id="contact">
+    <div class="container">
+      <p class="section-label" data-i18n="contact.label">Kontak</p>
+      <h2 class="section-title" data-i18n="contact.title">Mari Bekerja Sama</h2>
+      <p class="contact-subtitle" data-i18n="contact.subtitle">Punya proyek atau ide? Jangan ragu untuk menghubungi saya.</p>
+      <div class="contact-grid reveal">
+        <div class="contact-info">
+          <div class="contact-item">
+            <span class="contact-item-icon">📧</span>
+            <div>
+              <p class="contact-item-label" data-i18n="contact.email">Email</p>
+              <p class="contact-item-value"><a href="mailto:pandita@email.com">pandita@email.com</a></p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-icon">📱</span>
+            <div>
+              <p class="contact-item-label" data-i18n="contact.phone">Telepon</p>
+              <p class="contact-item-value"><a href="tel:+6281200000000">+62 812-xxxx-xxxx</a></p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-icon">📍</span>
+            <div>
+              <p class="contact-item-label" data-i18n="contact.location">Lokasi</p>
+              <p class="contact-item-value" data-i18n="contact.location.value">Bandar Lampung, Indonesia</p>
+            </div>
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="GitHub" title="GitHub">GH</a>
+            <a href="#" class="social-link" aria-label="LinkedIn" title="LinkedIn">IN</a>
+            <a href="#" class="social-link" aria-label="Instagram" title="Instagram">IG</a>
+            <a href="https://wa.me/6281200000000" class="social-link" aria-label="WhatsApp" title="WhatsApp">WA</a>
+          </div>
+        </div>
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label class="form-label" for="name" data-i18n="contact.form.name">Nama Anda</label>
+            <input class="form-input" type="text" id="name" name="name" placeholder="Masukkan nama..." data-i18n-placeholder="contact.form.name.placeholder" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email" data-i18n="contact.form.email">Email Anda</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="Masukkan email..." data-i18n-placeholder="contact.form.email.placeholder" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="message" data-i18n="contact.form.message">Pesan Anda</label>
+            <textarea class="form-textarea" id="message" name="message" placeholder="Tulis pesan Anda..." data-i18n-placeholder="contact.form.message.placeholder" required></textarea>
+          </div>
+          <button type="submit" class="btn-submit" data-i18n="contact.form.submit">Kirim Pesan →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p class="footer-copyright" data-i18n="footer.copyright">© 2024 Pandita Lasman. Hak cipta dilindungi.</p>
+      <div class="footer-links">
+        <a href="#home" data-i18n="nav.home">Beranda</a>
+        <a href="#about" data-i18n="nav.about">Tentang</a>
+        <a href="#projects" data-i18n="nav.projects">Proyek</a>
+        <a href="#contact" data-i18n="nav.contact">Kontak</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/effects.js"></script>
+</body>
+</html>

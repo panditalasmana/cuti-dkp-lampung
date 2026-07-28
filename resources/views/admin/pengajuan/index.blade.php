@@ -124,9 +124,18 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('admin.pengajuan.show', $item) }}" class="btn btn-sm btn-primary" title="Detail">
-                                    <i class="bi bi-eye"></i>
-                                </a>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a href="{{ route('admin.pengajuan.show', $item) }}" class="btn btn-sm btn-primary" title="Detail">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <form action="{{ route('admin.pengajuan.destroy', $item) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data pengajuan cuti ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Pengajuan">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty
