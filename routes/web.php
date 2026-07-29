@@ -66,6 +66,10 @@ Route::middleware(['auth', 'role:admin'])
     // Master: Hari Libur
     Route::resource('hari-libur', Admin\HariLiburController::class)->except(['show']);
 
+    // Master: Pejabat Penandatangan
+    Route::post('penandatangan/{penandatangan}/set-default', [Admin\PenandatanganController::class, 'setDefault'])->name('penandatangan.set-default');
+    Route::resource('penandatangan', Admin\PenandatanganController::class)->except(['show']);
+
     // Pengajuan Cuti
     Route::prefix('pengajuan')->name('pengajuan.')->group(function () {
         Route::get('/',                                    [Admin\PengajuanController::class, 'index'])->name('index');

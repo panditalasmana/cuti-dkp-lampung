@@ -20,6 +20,7 @@ class PengajuanCutiService
         private PegawaiRepository $pegawaiRepo,
         private ActivityLogService $logService,
         private PdfService $pdfService,
+        private \App\Repositories\PenandatanganRepository $penandatanganRepo,
     ) {}
 
     public function paginateForAdmin(int $perPage = 15, array $filters = []): LengthAwarePaginator
@@ -59,26 +60,28 @@ class PengajuanCutiService
             // Generate nomor surat otomatis
             $nomorSurat = $this->repo->generateNomorSurat();
 
-            // Default fallbacks
-            $atasanNama = 'A. FAISAL, A.Pi.';
-            $atasanNip = '197402031999031006';
-            $atasanJabatan = 'Sekretaris Dinas';
+            // Dynamic fallbacks from DB table 'penandatangan'
+            $defaultAtasan = $this->penandatanganRepo->getDefaultByKategori('atasan_langsung');
+            $atasanNama    = $defaultAtasan->nama ?? 'A. FAISAL, A.Pi.';
+            $atasanNip     = $defaultAtasan->nip ?? '197402031999031006';
+            $atasanJabatan = $defaultAtasan->jabatan ?? 'Sekretaris Dinas';
 
             if (isset($data['atasan_langsung_select']) && str_contains($data['atasan_langsung_select'], '|')) {
-                $atasanParts = explode('|', $data['atasan_langsung_select']);
-                $atasanNama = $atasanParts[0] ?? $atasanNama;
-                $atasanNip = $atasanParts[1] ?? $atasanNip;
+                $atasanParts   = explode('|', $data['atasan_langsung_select']);
+                $atasanNama    = $atasanParts[0] ?? $atasanNama;
+                $atasanNip     = $atasanParts[1] ?? $atasanNip;
                 $atasanJabatan = $atasanParts[2] ?? $atasanJabatan;
             }
 
-            $pejabatNama = 'Ir. BANI ISPRIYANTO, M.M.';
-            $pejabatNip = '196904101995031002';
-            $pejabatJabatan = 'Kepala Dinas';
+            $defaultPejabat = $this->penandatanganRepo->getDefaultByKategori('pejabat_wenang');
+            $pejabatNama    = $defaultPejabat->nama ?? 'Ir. BANI ISPRIYANTO, M.M.';
+            $pejabatNip     = $defaultPejabat->nip ?? '196904101995031002';
+            $pejabatJabatan = $defaultPejabat->jabatan ?? 'Kepala Dinas';
 
             if (isset($data['pejabat_wenang_select']) && str_contains($data['pejabat_wenang_select'], '|')) {
-                $pejabatParts = explode('|', $data['pejabat_wenang_select']);
-                $pejabatNama = $pejabatParts[0] ?? $pejabatNama;
-                $pejabatNip = $pejabatParts[1] ?? $pejabatNip;
+                $pejabatParts   = explode('|', $data['pejabat_wenang_select']);
+                $pejabatNama    = $pejabatParts[0] ?? $pejabatNama;
+                $pejabatNip     = $pejabatParts[1] ?? $pejabatNip;
                 $pejabatJabatan = $pejabatParts[2] ?? $pejabatJabatan;
             }
 

@@ -13,8 +13,9 @@ class DatabaseSeeder extends Seeder
             JabatanSeeder::class,   // 2. Jabatan dulu
             JenisCutiSeeder::class, // 3. Jenis Cuti
             HariLiburSeeder::class, // 4. Hari Libur Nasional
-            UserSeeder::class,      // 5. User admin
-            PegawaiSeeder::class,   // 6. Pegawai terakhir (butuh semua di atas)
+            UserSeeder::class,          // 5. User admin
+            PegawaiSeeder::class,       // 6. Pegawai terakhir (butuh semua di atas)
+            PenandatanganSeeder::class, // 7. Master Pejabat Penandatangan
         ]);
 
         @file_put_contents(storage_path('app/last_reset_year.txt'), date('Y'));

@@ -138,6 +138,13 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a href="{{ route('admin.penandatangan.index') }}" class="nav-link {{ request()->routeIs('admin.penandatangan.*') ? 'active' : '' }}">
+                    <i class="bi bi-pen"></i>
+                    <span>Pejabat Penandatangan</span>
+                </a>
+            </li>
+
             <li class="nav-label">Sistem</li>
 
             <li class="nav-item">

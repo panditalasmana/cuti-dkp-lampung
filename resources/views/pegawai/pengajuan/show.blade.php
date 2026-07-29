@@ -86,7 +86,7 @@
                     </div>
                     @if($pengajuan->eselon_3)
                         <div class="col-12">
-                            <label class="detail-label">Paraf Eselon 4</label>
+                            <label class="detail-label">Pejabat Pengawas</label>
                             <div class="detail-value">
                                 @if(str_contains($pengajuan->eselon_3, '|'))
                                     @php

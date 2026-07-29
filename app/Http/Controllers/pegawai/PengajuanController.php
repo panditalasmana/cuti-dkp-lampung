@@ -20,6 +20,7 @@ class PengajuanController extends Controller
         private PengajuanCutiService $service,
         private PegawaiService $pegawaiService,
         private PdfService $pdfService,
+        private \App\Services\PenandatanganService $penandatanganService,
     ) {}
 
     private function getPegawai()
@@ -43,6 +44,7 @@ class PengajuanController extends Controller
     {
         $pegawai   = $this->getPegawai();
         $jenisCuti = JenisCuti::active()->orderBy('nama_cuti')->get();
+        $signers   = $this->penandatanganService->getActiveSignersGrouped();
 
         // Ambil semua tanggal yang sudah terpakai oleh pengajuan cuti pegawai (status disetujui & menunggu)
         $usedDates = [];
@@ -60,7 +62,7 @@ class PengajuanController extends Controller
         }
         $usedDates = array_values(array_unique($usedDates));
 
-        return view('pegawai.pengajuan.create', compact('pegawai', 'jenisCuti', 'usedDates'));
+        return view('pegawai.pengajuan.create', compact('pegawai', 'jenisCuti', 'signers', 'usedDates'));
     }
 
     public function store(Request $request): RedirectResponse

@@ -326,11 +326,11 @@
                 <tr>
                     <td style="border:none; text-align:center; vertical-align:top;">
                         <div style="font-weight:bold;">
-                            {{ strtoupper($pengajuan->atasan_jabatan ?? 'KEPALA DINAS') }}
+                            {{ strtoupper($pengajuan->atasan_jabatan ?? 'Sekretaris Dinas ') }}
                         </div>
                         <div style="height:50px;"></div>
                         <div style="display:inline-block;font-weight:bold;border-bottom:1px solid #000;padding:0 2px;line-height:1.1;">
-                            {{ strtoupper($pengajuan->atasan_nama ?? 'Ir. BANI ISPRIYANTO M.M.') }}
+                            {{ strtoupper($pengajuan->atasan_nama ?? 'A. FAISAL, A.Pi.') }}
                         </div>
                         @if(!empty($pengajuan->atasan_nip))
                             <div>
@@ -370,11 +370,11 @@
         <td style="border-top:none; text-align:center; vertical-align:top;">
 
             <div style="font-weight:bold;">
-                {{ strtoupper($pengajuan->pejabat_jabatan ?? 'Kepala Badan Kepegawaian Daerah') }}
+                {{ strtoupper($pengajuan->pejabat_jabatan ?? 'Kepala Dinas ') }}
             </div>
             <div style="height:68px;"></div>
             <div style="display:inline-block;font-weight:bold;border-bottom:1px solid #000;padding:0 2px;line-height:1.1;">
-                {{ strtoupper($pengajuan->pejabat_nama ?? 'RENDI RESWANDI, S.STP., M.Si') }}
+                {{ $pengajuan->pejabat_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}
             </div>
 
             @if(!empty($pengajuan->pejabat_nip))
