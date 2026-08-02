@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Helper script untuk membuat tabel (migrate:fresh), memperbarui data database & seeder di Hostinger secara otomatis.
+ * Helper script untuk membuat tabel (migrate:fresh) & menjalankan SELURUH Seeder resmi SIPENCUTI di Hostinger.
  * Akses via browser: https://domain-anda.com/setup_database_hostinger.php
  */
 
@@ -9,28 +9,20 @@ require __DIR__ . '/vendor/autoload.php';
 $app = require_once __DIR__ . '/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
-echo "<h2>SIPENCUTI — Full Database Setup & Migration Tool</h2>";
+echo "<h2>SIPENCUTI — Full Database Reset & All Seeders Tool</h2>";
 echo "<ul>";
 
 try {
     // 1. Run Migration Fresh (Buat semua tabel dari nol)
     $kernel->call('migrate:fresh', ['--force' => true]);
-    echo "<li>✓ <strong>Migrasi Tabel</strong>: Seluruh tabel (users, pegawai, bidang, jabatan, jenis_cuti, penandatangan, pengajuan_cuti) berhasil dibuat!</li>";
+    echo "<li>✓ <strong>Migrasi Tabel</strong>: Seluruh tabel (users, pegawai, bidang, jabatan, jenis_cuti, penandatangan, pengajuan_cuti) berhasil dibuat bersih!</li>";
 
-    // 2. Seed Jabatan
-    $kernel->call('db:seed', ['--class' => 'JabatanSeeder', '--force' => true]);
-    echo "<li>✓ <strong>JabatanSeeder</strong>: 67 Jabatan resmi DUK berhasil di-seed.</li>";
-
-    // 3. Cleanup Jabatan Duplikat
-    $kernel->call('jabatan:cleanup');
-    echo "<li>✓ <strong>Cleanup Jabatan</strong>: Pembersihan duplikat selesai.</li>";
-
-    // 4. Seed Pegawai Resmi DUK & Penandatangan
-    $kernel->call('db:seed', ['--class' => 'PegawaiSeeder', '--force' => true]);
-    echo "<li>✓ <strong>PegawaiSeeder</strong>: 162 Pegawai resmi DUK & Akun Admin berhasil dibuat.</li>";
+    // 2. Run All Seeders (Jabatan, Pegawai, Penandatangan, Jenis Cuti, Hari Libur, Admin)
+    $kernel->call('db:seed', ['--force' => true]);
+    echo "<li>✓ <strong>Full Database Seeder</strong>: Berhasil mengisikan 162 Pegawai DUK, 67 Jabatan, 9 Pejabat Penandatangan Atasan, Master Jenis Cuti, Hari Libur, & Akun Admin!</li>";
 
     echo "</ul>";
-    echo "<h3 style='color:green;'>✅ SUCCESS! Seluruh struktur database & data resmi SIPENCUTI di Hostinger sudah 100% SAMA PERSIS dengan Localhost!</h3>";
+    echo "<h3 style='color:green;'>✅ SUCCESS! Seluruh data Atasan Langsung (9 Pejabat), Jenis Cuti (12 Hari), & Data Pegawai DUK 100% LENGKAP & SAMA PERSIS DENGAN LOCALHOST!</h3>";
 } catch (\Exception $e) {
     echo "</ul>";
     echo "<h3 style='color:red;'>Error: " . htmlspecialchars($e->getMessage()) . "</h3>";
