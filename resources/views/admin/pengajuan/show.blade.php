@@ -234,48 +234,56 @@
                     </form>
                 </div>
             </div>
-
-            {{-- Upload Scan --}}
-            <div class="card card-custom mb-4">
-                <div class="card-header-custom">
-                    <h5 class="card-title-custom">
-                        <i class="bi bi-cloud-upload me-1"></i>Upload Scan Surat
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted small mb-3">Upload scan/foto formulir cuti yang sudah ditandatangani Kepala Bidang.</p>
-                    <form method="POST" action="{{ route('admin.pengajuan.upload-scan', $pengajuan) }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">File Scan <span class="text-danger">*</span></label>
-                            
-                            <!-- Tombol Kamera Scan Baru -->
-                            <button type="button" class="btn btn-outline-info btn-sm w-100 mb-2" id="btnBukaKamera">
-                                <i class="bi bi-camera me-1"></i>Ambil dari Kamera
-                            </button>
-                            
-                            <!-- Thumbnail Preview dari Tangkapan Kamera -->
-                            <div id="previewKameraContainer" class="d-none mb-2 text-center p-2 border rounded bg-light position-relative">
-                                <img id="previewKameraImg" style="max-height: 120px; border-radius: 6px;" alt="preview scan">
-                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" id="btnHapusPreviewKamera" title="Hapus foto">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-
-                            <input type="file" name="file_scan" id="fileScanInput" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
-                            <div class="form-text">Format: PDF, JPG, PNG. Maks. 5MB.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Keterangan</label>
-                            <input type="text" name="keterangan" class="form-control" placeholder="Keterangan tambahan...">
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-upload me-1"></i>Upload Scan
-                        </button>
-                    </form>
-                </div>
-            </div>
         @endif
+
+        {{-- Upload / Update Scan (Bisa di-upload KAPAN SAJA: Sebelum atau Sesudah Disetujui) --}}
+        <div class="card card-custom mb-4">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <h5 class="card-title-custom m-0">
+                    <i class="bi bi-cloud-upload me-1"></i>{{ $pengajuan->scanSurat ? 'Perbarui Scan Surat' : 'Upload Scan Surat' }}
+                </h5>
+                @if($pengajuan->scanSurat)
+                    <span class="badge bg-success">File Tersedia</span>
+                @endif
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">
+                    {{ $pengajuan->scanSurat 
+                        ? 'Unggah file scan/foto baru di bawah ini jika ingin mengganti berkas yang sudah diunggah sebelumnya.' 
+                        : 'Upload scan/foto formulir cuti yang sudah ditandatangani Kepala Bidang.' }}
+                </p>
+                <form method="POST" action="{{ route('admin.pengajuan.upload-scan', $pengajuan) }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">File Scan {{ $pengajuan->scanSurat ? '(Opsional / Ganti)' : '*' }}</label>
+                        
+                        <!-- Tombol Kamera Scan -->
+                        <button type="button" class="btn btn-outline-info btn-sm w-100 mb-2" id="btnBukaKamera">
+                            <i class="bi bi-camera me-1"></i>Ambil dari Kamera
+                        </button>
+                        
+                        <!-- Thumbnail Preview dari Tangkapan Kamera -->
+                        <div id="previewKameraContainer" class="d-none mb-2 text-center p-2 border rounded bg-light position-relative">
+                            <img id="previewKameraImg" style="max-height: 120px; border-radius: 6px;" alt="preview scan">
+                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" id="btnHapusPreviewKamera" title="Hapus foto">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                        <input type="file" name="file_scan" id="fileScanInput" class="form-control" accept=".pdf,.jpg,.jpeg,.png" {{ $pengajuan->scanSurat ? '' : 'required' }}>
+                        <div class="form-text">Format: PDF, JPG, PNG. Maks. 5MB.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan</label>
+                        <input type="text" name="keterangan" class="form-control" placeholder="Keterangan tambahan..." value="{{ $pengajuan->scanSurat?->keterangan }}">
+                    </div>
+                    <button type="submit" class="btn {{ $pengajuan->scanSurat ? 'btn-warning text-dark' : 'btn-primary' }} w-100">
+                        <i class="bi {{ $pengajuan->scanSurat ? 'bi-arrow-repeat' : 'bi-upload' }} me-1"></i>
+                        {{ $pengajuan->scanSurat ? 'Ganti / Perbarui Scan Surat' : 'Upload Scan Surat' }}
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <!-- Info Dasar Hukum -->
         <div class="card card-custom">

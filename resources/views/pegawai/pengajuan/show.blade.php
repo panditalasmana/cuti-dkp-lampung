@@ -16,12 +16,24 @@
         <p class="page-subtitle">Tanggal Pengajuan: {{ $pengajuan->tanggal_pengajuan->isoFormat('D MMMM Y') }}</p>
     </div>
     <div class="d-flex gap-2 align-items-center flex-wrap">
-        <a href="{{ route('pegawai.pengajuan.preview', $pengajuan) }}" class="btn btn-outline-danger" target="_blank" title="Preview PDF">
-            <i class="bi bi-file-pdf me-1"></i><span class="d-none d-sm-inline">Preview PDF</span><span class="d-inline d-sm-none">Preview</span>
-        </a>
-        <a href="{{ route('pegawai.pengajuan.cetak', $pengajuan) }}" class="btn btn-outline-primary" title="Unduh/Cetak PDF">
-            <i class="bi bi-download me-1"></i><span class="d-none d-sm-inline">Unduh/Cetak PDF</span><span class="d-inline d-sm-none">Cetak</span>
-        </a>
+        @if($pengajuan->status !== \App\Models\PengajuanCuti::STATUS_DISETUJUI)
+            <a href="{{ route('pegawai.pengajuan.preview', $pengajuan) }}" class="btn btn-outline-danger" target="_blank" title="Preview PDF">
+                <i class="bi bi-file-pdf me-1"></i><span class="d-none d-sm-inline">Preview PDF</span><span class="d-inline d-sm-none">Preview</span>
+            </a>
+            <a href="{{ route('pegawai.pengajuan.cetak', $pengajuan) }}" class="btn btn-outline-primary" title="Unduh/Cetak PDF">
+                <i class="bi bi-download me-1"></i><span class="d-none d-sm-inline">Unduh/Cetak PDF</span><span class="d-inline d-sm-none">Cetak</span>
+            </a>
+        @else
+            @if($pengajuan->scanSurat)
+                <button type="button" class="btn btn-success" onclick="previewDokumen('{{ $pengajuan->scanSurat->file_url }}', '{{ $pengajuan->scanSurat->nama_file }}', '{{ $pengajuan->scanSurat->mime_type }}')">
+                    <i class="bi bi-file-earmark-check me-1"></i><span>Lihat Scan Surat Ditandatangani</span>
+                </button>
+            @else
+                <span class="badge bg-warning text-dark p-2 border">
+                    <i class="bi bi-clock-history me-1"></i>Menunggu Scan Surat dari Admin
+                </span>
+            @endif
+        @endif
         @if($pengajuan->status === \App\Models\PengajuanCuti::STATUS_MENUNGGU)
             <form action="{{ route('pegawai.pengajuan.batal', $pengajuan) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan cuti ini?')" class="d-inline">
                 @csrf

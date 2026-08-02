@@ -97,12 +97,14 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <a href="{{ route('pegawai.pengajuan.show', $item) }}" class="btn btn-sm btn-primary" title="Detail">
+                                    <a href="{{ route('pegawai.pengajuan.show', $item) }}" class="btn btn-sm btn-primary" title="Detail Pengajuan">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('pegawai.pengajuan.cetak', $item) }}" class="btn btn-sm btn-outline-danger" title="Cetak PDF">
-                                        <i class="bi bi-printer"></i>
-                                    </a>
+                                    @if($item->status !== \App\Models\PengajuanCuti::STATUS_DISETUJUI)
+                                        <a href="{{ route('pegawai.pengajuan.cetak', $item) }}" class="btn btn-sm btn-outline-danger" title="Cetak PDF Formulir">
+                                            <i class="bi bi-printer"></i>
+                                        </a>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

@@ -31,11 +31,7 @@ class DokumenService
             // Validasi file
             $this->validasiFile($file);
 
-            if ($pengajuan->status !== PengajuanCuti::STATUS_MENUNGGU) {
-                throw ValidationException::withMessages(['file' => 'Upload scan hanya dapat dilakukan pada pengajuan berstatus Menunggu.']);
-            }
-
-            // Hapus scan lama jika ada
+            // Hapus scan lama jika ada (untuk mengganti/memperbarui scan)
             $scanLama = $this->repo->getScanByPengajuan($pengajuan->id);
             if ($scanLama) {
                 $this->deleteFile($scanLama->path_file);
