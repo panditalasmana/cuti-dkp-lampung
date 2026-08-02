@@ -8,6 +8,18 @@
             size: A4 portrait;
             margin: 28pt 64.5pt 24pt 64.5pt; /* top right bottom left — top & bottom dikecilkan agar muat di A4 */
         }
+        @font-face {
+    font-family: 'TimesCustom';
+    src: url('{{ public_path('fonts/times.ttf') }}') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'TimesCustom';
+    src: url('{{ public_path('fonts/timesbd.ttf') }}') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 12px;
