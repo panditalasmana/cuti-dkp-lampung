@@ -27,6 +27,24 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrapFive();
 
+        // Autoloader fallback toleran huruf besar/kecil untuk Linux Hostinger
+        spl_autoload_register(function ($class) {
+            if (str_starts_with($class, 'App\\Http\\Controllers\\Admin\\')) {
+                $sub = str_replace(['App\\Http\\Controllers\\', '\\'], ['', '/'], $class);
+                $altFile = app_path('Http/Controllers/' . str_replace('Admin/', 'admin/', $sub) . '.php');
+                if (file_exists($altFile) && !class_exists($class, false)) {
+                    require_once $altFile;
+                }
+            }
+            if (str_starts_with($class, 'App\\Http\\Controllers\\Pegawai\\')) {
+                $sub = str_replace(['App\\Http\\Controllers\\', '\\'], ['', '/'], $class);
+                $altFile = app_path('Http/Controllers/' . str_replace('Pegawai/', 'pegawai/', $sub) . '.php');
+                if (file_exists($altFile) && !class_exists($class, false)) {
+                    require_once $altFile;
+                }
+            }
+        });
+
         // Auto-reset jatah cuti tahunan pegawai jika terdeteksi pergantian tahun baru (fallback jika cron scheduler tidak aktif)
         $resetFilePath = storage_path('app/last_reset_year.txt');
         $currentYear = date('Y');
