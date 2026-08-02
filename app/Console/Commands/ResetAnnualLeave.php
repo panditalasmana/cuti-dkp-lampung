@@ -32,11 +32,7 @@ class ResetAnnualLeave extends Command
         $count = 0;
         
         foreach ($pegawais as $pegawai) {
-            $sisaLama = $pegawai->sisa_cuti_tahunan;
-            // Maksimal akumulasi sisa cuti tahun lalu adalah 6 hari kerja
-            $carryOver = min(max($sisaLama, 0), 6);
-            $sisaBaru = 12 + $carryOver;
-            
+            $sisaBaru = 12;
             $pegawai->update(['sisa_cuti_tahunan' => $sisaBaru]);
             $count++;
         }
