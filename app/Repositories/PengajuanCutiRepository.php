@@ -76,7 +76,20 @@ class PengajuanCutiRepository
 
     public function generateNomorSurat(): string
     {
-        return "Pengajuan Cuti (" . now()->isoFormat('D MMMM Y') . ")";
+        $tahun = now()->year;
+        $count = $this->model->withTrashed()->whereYear('tanggal_pengajuan', $tahun)->count() + 1;
+
+        do {
+            $urutan = str_pad($count, 4, '0', STR_PAD_LEFT);
+            $nomorSurat = "Pengajuan Cuti (" . now()->isoFormat('D MMMM Y') . " - #" . $urutan . ")";
+            $exists = $this->model->withTrashed()->where('nomor_surat', $nomorSurat)->exists();
+            if (!$exists) {
+                break;
+            }
+            $count++;
+        } while (true);
+
+        return $nomorSurat;
     }
 
     public function countByStatus(string $status): int

@@ -27,7 +27,21 @@ Route::get('/fix-folders', function () {
     @array_map('unlink', glob(storage_path('framework/views/*.php')));
 
     return '<h2>✅ FIX & RESET SUKSES!</h2><p>' . implode('<br>', $log) . '</p><br><a href="/login">Buka Halaman Login / Dashboard</a>';
-});
+// ─── Storage File Fallback Route (100% Symlink Free untuk Hostinger) ───────────
+Route::get('/storage/{path}', function ($path) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        $fullPath = storage_path('app/' . $path);
+    }
+    if (!file_exists($fullPath) || is_dir($fullPath)) {
+        abort(404, 'File dokumen tidak ditemukan.');
+    }
+    $mime = @mime_content_type($fullPath) ?: 'application/octet-stream';
+    return response()->file($fullPath, [
+        'Content-Type' => $mime,
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+})->where('path', '.*');
 
 Route::get('/home', function () {
     if (Auth::check()) {
