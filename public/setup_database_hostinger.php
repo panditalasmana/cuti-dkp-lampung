@@ -5,8 +5,12 @@
  * Akses via browser: https://domain-anda.com/setup_database_hostinger.php
  */
 
-require __DIR__ . '/vendor/autoload.php';
-$app = require_once __DIR__ . '/bootstrap/app.php';
+// Perbaiki path autoload & bootstrap karena file ada di subfolder public/
+$vendorPath = file_exists(__DIR__ . '/vendor/autoload.php') ? __DIR__ . '/vendor/autoload.php' : __DIR__ . '/../vendor/autoload.php';
+$appPath    = file_exists(__DIR__ . '/bootstrap/app.php') ? __DIR__ . '/bootstrap/app.php' : __DIR__ . '/../bootstrap/app.php';
+
+require $vendorPath;
+$app = require_once $appPath;
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
 echo "<h2>SIPENCUTI — Full Database Reset & All Seeders Tool</h2>";
