@@ -69,14 +69,6 @@
             <h5 class="card-title-custom">Daftar Pengajuan</h5>
             <p class="card-subtitle-custom">Total: {{ $pengajuan->total() }} pengajuan</p>
         </div>
-        <div class="d-flex gap-2">
-            <a href="{{ route('admin.laporan.export-pdf', request()->query()) }}" class="btn btn-sm btn-danger" target="_blank">
-                <i class="bi bi-file-pdf me-1"></i>PDF
-            </a>
-            <a href="{{ route('admin.laporan.export-excel', request()->query()) }}" class="btn btn-sm btn-success">
-                <i class="bi bi-file-excel me-1"></i>Excel
-            </a>
-        </div>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

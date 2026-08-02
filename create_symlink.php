@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$baseDir = file_exists(__DIR__ . '/../storage') ? realpath(__DIR__ . '/..') : realpath(__DIR__);
+$baseDir = file_exists(__DIR__ . '/storage') ? realpath(__DIR__) : realpath(__DIR__ . '/..');
 if (!$baseDir) $baseDir = __DIR__;
 
 $storagePaths = [
