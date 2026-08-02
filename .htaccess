@@ -1,5 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Jika file asli ada (misal: clear_cache.php, setup_database_hostinger.php, create_symlink.php), langsung jalankan file tersebut
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Selain itu, arahkan ke folder public/
     RewriteRule ^$ public/ [L]
     RewriteRule (.*) public/$1 [L]
 </IfModule>
