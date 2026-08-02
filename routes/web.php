@@ -9,6 +9,23 @@ use Illuminate\Support\Facades\Auth;
 // ─── Root Redirect & Home Fallback ──────────────────────────────────────────────
 Route::get('/', fn() => redirect()->route('login'));
 
+Route::get('/fix-folders', function () {
+    $dir = app_path('Http/Controllers');
+    $log = [];
+    if (file_exists($dir . '/admin') && !file_exists($dir . '/Admin')) {
+        @rename($dir . '/admin', $dir . '/Admin');
+        $log[] = 'Renamed admin -> Admin';
+    }
+    if (file_exists($dir . '/pegawai') && !file_exists($dir . '/Pegawai')) {
+        @rename($dir . '/pegawai', $dir . '/Pegawai');
+        $log[] = 'Renamed pegawai -> Pegawai';
+    }
+    @array_map('unlink', glob(base_path('bootstrap/cache/*.php')));
+    @array_map('unlink', glob(storage_path('framework/views/*.php')));
+
+    return '<h2>✅ FIX CONTROLLER COMPLETED!</h2><p>' . (empty($log) ? 'Folder Admin & Pegawai sudah berhuruf besar (OK).' : implode('<br>', $log)) . '</p><br><a href="/login">Buka Halaman Login</a>';
+});
+
 Route::get('/home', function () {
     if (Auth::check()) {
         return match (Auth::user()->role) {
