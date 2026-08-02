@@ -342,7 +342,7 @@
                         </div>
                         <div style="height:50px;"></div>
                         <div style="display:inline-block;font-weight:bold;border-bottom:1px solid #000;padding:0 2px;line-height:1.1;">
-                            {{ strtoupper($pengajuan->atasan_nama ?? 'A. FAISAL, A.Pi.') }}
+                            {{ $pengajuan->atasan_nama ?? 'A. FAISAL, A.Pi.' }}
                         </div>
                         @if(!empty($pengajuan->atasan_nip))
                             <div>

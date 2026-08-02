@@ -60,15 +60,21 @@ class PengajuanController extends Controller
     public function uploadScan(Request $request, PengajuanCuti $pengajuan): RedirectResponse
     {
         $request->validate([
-            'file_scan'   => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+            'file_scan'   => [$pengajuan->scanSurat ? 'nullable' : 'required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
             'keterangan'  => ['nullable', 'string', 'max:300'],
         ]);
 
-        $this->dokumenService->uploadScanSurat(
-            $pengajuan,
-            $request->file('file_scan'),
-            $request->keterangan
-        );
+        if ($request->hasFile('file_scan')) {
+            $this->dokumenService->uploadScanSurat(
+                $pengajuan,
+                $request->file('file_scan'),
+                $request->keterangan
+            );
+        } elseif ($pengajuan->scanSurat && $request->filled('keterangan')) {
+            $pengajuan->scanSurat->update([
+                'keterangan' => $request->keterangan,
+            ]);
+        }
 
         return redirect()->route('admin.pengajuan.show', $pengajuan)
                          ->with('success', 'Scan surat berhasil diunggah.');
