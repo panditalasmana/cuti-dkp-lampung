@@ -82,7 +82,7 @@ class PengajuanCutiRepository
         $count = $this->model->withTrashed()->whereYear('tanggal_pengajuan', $tahun)->count() + 1;
         do {
             $urutan = str_pad($count, 4, '0', STR_PAD_LEFT);
-            $nomorSurat = "DKP.800/{$urutan}/CUTI/{$bulan}/{$tahun}";
+            $nomorSurat = "800/{$urutan}/DKP/{$bulan}/{$tahun}";
             $exists = $this->model->withTrashed()->where('nomor_surat', $nomorSurat)->exists();
             if (!$exists) {
                 break;
