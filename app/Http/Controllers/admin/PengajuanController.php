@@ -238,6 +238,6 @@ class PengajuanController extends Controller
         $pengajuan->delete();
 
         return redirect()->route('admin.pengajuan.index')
-                         ->with('success', "Pengajuan cuti ({$nomorSurat}) berhasil dihapus.");
+                         ->with('success', 'Pengajuan cuti berhasil dihapus.');
     }
 }
