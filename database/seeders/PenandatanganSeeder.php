@@ -22,7 +22,7 @@ class PenandatanganSeeder extends Seeder
             ],
             [
                 'kategori'         => 'pejabat_wenang',
-                'nama'             => 'RAHMAT MIRZANI DJAUSAL, S.T., M.M.',
+                'nama'             => 'RAHMAT MIRZANI DJAUSAL ',
                 'nip'              => '-',
                 'jabatan'          => 'Gubernur Lampung',
                 'pangkat_golongan' => 'Pejabat Negara',

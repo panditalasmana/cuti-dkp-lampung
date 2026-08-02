@@ -101,10 +101,10 @@
 @endphp
 
 {{-- HEADER PERMOHONAN --}}
-<table class="no-border" width="100%" style="margin-bottom:8px;">
+<table class="no-border" width="100%" style="table-layout: fixed; margin-bottom:8px;">
     <tr>
         <td class="no-border" width="58%"></td>
-        <td class="no-border" width="27%">
+        <td class="no-border" width="27%" style="white-space: nowrap;">
             Bandar Lampung,
             {{ \Carbon\Carbon::parse($pengajuan->created_at ?? now())->locale('id')->translatedFormat('d F Y') }}
         </td>
