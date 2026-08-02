@@ -131,10 +131,10 @@ class PengajuanCutiService
                 throw ValidationException::withMessages(['status' => 'Pengajuan ini sudah diverifikasi sebelumnya.']);
             }
 
-            // Jika disetujui dan jenis cuti adalah Cuti Tahunan (CT), kurangi sisa cuti tahunan
+            // Jika disetujui dan jenis cuti memotong kuota (CT), kurangi sisa cuti tahunan
             if ($status === PengajuanCuti::STATUS_DISETUJUI) {
                 $jenisCuti = $pengajuan->jenisCuti;
-                if ($jenisCuti->kode_cuti === 'CT') {
+                if ($jenisCuti && ($jenisCuti->kode_cuti === 'CT' || $jenisCuti->potong_kuota)) {
                     $pegawai = $pengajuan->pegawai;
                     if ($pegawai->sisa_cuti_tahunan < $pengajuan->lama_cuti) {
                         throw ValidationException::withMessages(['cuti' => 'Sisa cuti tahunan pegawai tidak mencukupi.']);
