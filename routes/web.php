@@ -21,6 +21,9 @@ Route::get('/fix-folders', function () {
         $log[] = 'Renamed pegawai -> Pegawai';
     }
 
+    \Illuminate\Support\Facades\DB::table('pegawai')->update(['sisa_cuti_tahunan' => 12]);
+    $log[] = 'Sisa cuti tahunan SELURUH PEGAWAI BERHASIL DI-RESET MENJADI 12 HARI!';
+
     @array_map('unlink', glob(base_path('bootstrap/cache/*.php')));
     @array_map('unlink', glob(storage_path('framework/views/*.php')));
 

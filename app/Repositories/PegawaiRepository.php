@@ -70,7 +70,8 @@ class PegawaiRepository
 
     public function tambahSisaCuti(Pegawai $pegawai, int $jumlahHari): void
     {
-        $pegawai->increment('sisa_cuti_tahunan', $jumlahHari);
+        $sisaBaru = min(12, $pegawai->sisa_cuti_tahunan + $jumlahHari);
+        $pegawai->update(['sisa_cuti_tahunan' => $sisaBaru]);
     }
 
     public function countAll(): int

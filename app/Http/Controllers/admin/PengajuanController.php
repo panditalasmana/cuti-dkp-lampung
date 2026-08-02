@@ -235,9 +235,8 @@ class PengajuanController extends Controller
     {
         // Jika pengajuan disetujui dan jenis cuti memotong kuota (CT), kembalikan sisa cuti pegawai
         if ($pengajuan->status === PengajuanCuti::STATUS_DISETUJUI && $pengajuan->jenisCuti && $pengajuan->jenisCuti->kode_cuti === 'CT') {
-            if ($pengajuan->pegawai) {
-                $pengajuan->pegawai->increment('sisa_cuti_tahunan', $pengajuan->lama_cuti);
-            }
+                $sisaBaru = min(12, $pengajuan->pegawai->sisa_cuti_tahunan + $pengajuan->lama_cuti);
+                $pengajuan->pegawai->update(['sisa_cuti_tahunan' => $sisaBaru]);
         }
 
         $nomorSurat = $pengajuan->nomor_surat;
