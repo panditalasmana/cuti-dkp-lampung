@@ -27,6 +27,8 @@ Route::get('/fix-folders', function () {
     @array_map('unlink', glob(storage_path('framework/views/*.php')));
 
     return '<h2>✅ FIX & RESET SUKSES!</h2><p>' . implode('<br>', $log) . '</p><br><a href="/login">Buka Halaman Login / Dashboard</a>';
+});
+
 // ─── Storage File Fallback Route (100% Symlink Free untuk Hostinger) ───────────
 Route::get('/storage/{path}', function ($path) {
     $fullPath = storage_path('app/public/' . $path);
