@@ -77,7 +77,7 @@ class PegawaiSeeder extends Seeder
                 if (str_contains($namaBidang, 'UPTD') && str_contains($namaJabatan, 'Tata Usaha')) {
                     $subBagian = 'Sub Bagian Tata Usaha';
                 }
-                $sisaCuti     = isset($row[10]) && $row[10] !== '' ? (int) trim($row[10]) : 12;
+                $sisaCuti     = 12;
 
                 if (strlen($nip) < 10) {
                     $errors[] = "NIP tidak valid: '{$nip}' ({$namaLengkap})";

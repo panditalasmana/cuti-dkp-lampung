@@ -20,10 +20,13 @@ Route::get('/fix-folders', function () {
         @rename($dir . '/pegawai', $dir . '/Pegawai');
         $log[] = 'Renamed pegawai -> Pegawai';
     }
+    \Illuminate\Support\Facades\DB::table('pegawai')->update(['sisa_cuti_tahunan' => 12]);
+    $log[] = 'Sisa cuti tahunan seluruh pegawai di-reset menjadi 12 hari';
+
     @array_map('unlink', glob(base_path('bootstrap/cache/*.php')));
     @array_map('unlink', glob(storage_path('framework/views/*.php')));
 
-    return '<h2>✅ FIX CONTROLLER COMPLETED!</h2><p>' . (empty($log) ? 'Folder Admin & Pegawai sudah berhuruf besar (OK).' : implode('<br>', $log)) . '</p><br><a href="/login">Buka Halaman Login</a>';
+    return '<h2>✅ FIX & RESET SUKSES!</h2><p>' . implode('<br>', $log) . '</p><br><a href="/login">Buka Halaman Login / Dashboard</a>';
 });
 
 Route::get('/home', function () {
