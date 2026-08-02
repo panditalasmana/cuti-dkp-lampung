@@ -154,6 +154,13 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a href="{{ route('admin.panduan') }}" class="nav-link {{ request()->routeIs('admin.panduan') ? 'active' : '' }}">
+                    <i class="bi bi-journal-text"></i>
+                    <span>Panduan Sistem</span>
+                </a>
+            </li>
+
         @else
             {{-- PEGAWAI MENU --}}
             <li class="nav-label">Menu Utama</li>
@@ -186,7 +193,14 @@
                 </a>
             </li>
 
-            <li class="nav-label">Akun</li>
+            <li class="nav-label">Informasi & Akun</li>
+
+            <li class="nav-item">
+                <a href="{{ route('pegawai.panduan') }}" class="nav-link {{ request()->routeIs('pegawai.panduan') ? 'active' : '' }}">
+                    <i class="bi bi-journal-text"></i>
+                    <span>Panduan Penggunaan</span>
+                </a>
+            </li>
 
             <li class="nav-item">
                 <a href="{{ route('pegawai.profil.index') }}" class="nav-link {{ request()->routeIs('pegawai.profil.*') ? 'active' : '' }}">

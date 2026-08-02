@@ -148,4 +148,9 @@ class DashboardController extends Controller
             'latest_pengajuan' => $latestData,
         ]);
     }
+
+    public function panduan(): View
+    {
+        return view('admin.panduan');
+    }
 }

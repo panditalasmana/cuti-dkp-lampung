@@ -31,8 +31,8 @@ class BidangSeeder extends Seeder
             Bidang::create([
                 'kode_bidang' => trim($row[0]),
                 'nama_bidang' => trim($row[1]),
-                'kepala_bidang'     => '-',
-                'nip_kepala_bidang' => '-',
+                'kepala_bidang'     => !empty($row[2]) ? trim($row[2]) : null,
+                'nip_kepala_bidang' => !empty($row[3]) ? trim($row[3]) : null,
                 'keterangan'        => trim($row[1]),
                 'is_active'         => true,
             ]);

@@ -1,15 +1,34 @@
 kode_jabatan,nama_jabatan
-KADIS,Kepala Dinas
-SEKRETARIS,Sekretaris
+KADIS,Kepala Dinas Kelautan dan Perikanan Provinsi Lampung
+SEKRETARIS,Sekretaris Dinas Kelautan dan Perikanan Provinsi Lampung
 KABID_TANGKAP,Kepala Bidang Perikanan Tangkap
 KABID_BUDIDAYA,Kepala Bidang Perikanan Budidaya dan Penguatan Daya Saing
 KABID_RUANG_LAUT,Kepala Bidang Pengelolaan Ruang Laut
 KABID_PSDKP,Kepala Bidang Pengawasan Sumber Daya Kelautan dan Perikanan
-KASUBAG_UMUM,Kepala Sub Bagian Umum dan Kepegawaian
-KASUBAG_KEUANGAN,Kepala Sub Bagian Keuangan dan Aset
-KASUBAG_TU,Kepala Sub Bagian Tata Usaha
-KASIE,Kepala Seksi
-ANALIS,Analis
+KASUBAG_UMUM,Kepala Sub Bagian Umum dan Kepegawaian Sekretariat Dinas
+KASUBAG_KEUANGAN,Kepala Sub Bagian Keuangan dan Aset Sekretariat Dinas
+KASUBAG_TU_UPTDBA,Kepala Sub Bagian Tata Usaha UPTD Balai Perikanan Budidaya Air Laut dan Payau
+KASUBAG_TU_UPTDP4,Kepala Sub Bagian Tata Usaha UPTD Pelabuhan Perikanan Kota Agung
+KASUBAG_TU_UPTDP2,Kepala Sub Bagian Tata Usaha UPTD Pelabuhan Perikanan Labuhan Maringgai
+KASUBAG_TU_UPTDP3,Kepala Sub Bagian Tata Usaha UPTD Pelabuhan Perikanan Lempasing
+KASUBAG_TU_UPTDPE,Kepala Sub Bagian Tata Usaha UPTD Penerapan Mutu Hasil Perikanan
+KAUPTD_LEMPASING,Kepala UPTD Pelabuhan Perikanan Lempasing
+KAUPTD_MARINGGAI,Kepala UPTD Pelabuhan Perikanan Labuhan Maringgai
+KAUPTD_KOTA_AGUNG,Kepala UPTD Pelabuhan Perikanan Kota Agung
+KAUPTD_KALIANDA,Kepala UPTD Pelabuhan Perikanan Kalianda
+KAUPTD_MUTU,Kepala UPTD Penerapan Mutu Hasil Perikanan
+KASIE_SARANA_LEMP,Kepala Seksi Sarana dan Prasarana UPTD Pelabuhan Perikanan Lempasing
+KASIE_USAHA_LEMP,Kepala Seksi Pengusahaan UPTD Pelabuhan Perikanan Lempasing
+KASIE_SARANA_MAR,Kepala Seksi Sarana dan Prasarana UPTD Pelabuhan Perikanan Labuhan Maringgai
+KASIE_USAHA_MAR,Kepala Seksi Pengusahaan UPTD Pelabuhan Perikanan Labuhan Maringgai
+KASIE_SARANA_KA,Kepala Seksi Sarana dan Prasarana UPTD Pelabuhan Perikanan Kota Agung
+KASIE_USAHA_KA,Kepala Seksi Pengusahaan UPTD Pelabuhan Perikanan Kota Agung
+KASIE_SARANA_KAL,Kepala Seksi Sarana dan Prasarana UPTD Pelabuhan Perikanan Kalianda
+KASIE_USAHA_KAL,Kepala Seksi Pengusahaan UPTD Pelabuhan Perikanan Kalianda
+KASIE_MUTU_PROD,Kepala Seksi Pengembangan Hasil Perikanan UPTD Penerapan Mutu Hasil Perikanan
+KASIE_MUTU_UJI,Kepala Seksi Pengujian dan Monitoring UPTD Penerapan Mutu Hasil Perikanan
+KASIE_BA_PERBE,Kepala Seksi Pelayanan dan Pengendalian Mutu Perbenihan UPTD Balai Perikanan Budidaya Air Laut dan Payau
+KASIE_USAHA_LEMP2,Kepala Seksi Pengusahaan UPTD Pelabuhan Perikanan Lempasing
 PENELAAH,Penelaah Teknis Kebijakan
 PERENCANA,Perencana Ahli Muda
 PENATA_KELOLA,Penata Kelola Kelautan dan Perikanan
@@ -22,6 +41,7 @@ ANALIS_PASAR,Analis Pasar Hasil Perikanan Ahli Muda
 ANALIS_SDM,Analis Sumber Daya Manusia Aparatur Ahli Muda
 PENGADMINISTRASI,Pengadministrasi Perkantoran
 OPERATOR,Operator Layanan Operasional
+OPERATOR_UPTD,Operator Layanan Operasional UPTD Pelabuhan Perikanan Labuhan Maringgai
 PENGOLAH_DATA,Pengolah Data dan Informasi
 PENATA_TI,Penata Kelola Sistem dan Teknologi Informasi
 ASISTEN_MUTU,Asisten Pembina Mutu Hasil Kelautan dan Perikanan Pelaksana Lanjutan/Mahir
@@ -30,3 +50,16 @@ PENGENDALI_AHLI,Pengendali Hama dan Penyakit Ikan Ahli Pertama
 PENGENDALI_TERAMPIL,Pengendali Hama dan Penyakit Ikan Pelaksana/Terampil
 ANALIS_PASAR_TERAMPIL,Analis Pasar Hasil Perikanan Pelaksana/Terampil
 PENGELOLA_LAYANAN,Pengelola Layanan Operasional
+ANALIS_PASAR_MADYA,Analis Pasar Hasil Perikanan Ahli Madya
+ANALIS_PASAR_PERTAMA,Analis Pasar Hasil Perikanan Ahli Pertama
+ANALIS_JASA_LAUT,Analis Pengusahaan Jasa Kelautan Ahli Muda
+ANALIS_JASA_LAUT_PERTAMA,Analis Pengusahaan Jasa Kelautan Ahli Pertama
+PEMBINA_MUTU_MADYA,Pembina Mutu Hasil Kelautan dan Perikanan Ahli Madya
+PEMBINA_MUTU_PERTAMA,Pembina Mutu Hasil Kelautan dan Perikanan Ahli Pertama
+ASISTEN_PENGAWAS,Asisten Pengawas Kelautan Mahir
+ASISTEN_PENGAWAS2,Asisten Pengawas Perikanan Terampil
+PENGELOLA_EKOSISTEM_PERTAMA,Pengelola Ekosistem Laut dan Pesisir Ahli Pertama
+PENGELOLA_PRODUKSI_PERTAMA,Pengelola Produksi Perikanan Tangkap Ahli Pertama
+TEKNISI_AKUAKULTUR,Teknisi Akuakultur Terampil
+ASISTEN_PENGELOLA_PRODUKSI,Asisten Pengelola Produksi Perikanan Tangkap Pelaksana/Terampil
+PENATA_SARANA,Penata Sarana dan Prasarana Kelautan dan Perikanan

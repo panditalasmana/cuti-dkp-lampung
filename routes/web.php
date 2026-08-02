@@ -90,6 +90,9 @@ Route::middleware(['auth', 'role:admin'])
 
     // Activity Log
     Route::get('/activity-log', [Admin\ActivityLogController::class, 'index'])->name('activity-log.index');
+
+    // Panduan Sistem Admin
+    Route::get('/panduan', [Admin\DashboardController::class, 'panduan'])->name('panduan');
 });
 
 // ─── Pegawai Routes ────────────────────────────────────────────────────────────
@@ -102,6 +105,7 @@ Route::middleware(['auth', 'role:pegawai'])
     Route::get('/dashboard', [Pegawai\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/kalender',  [Pegawai\DashboardController::class, 'calendar'])->name('calendar');
     Route::get('/kalender/events', [Pegawai\DashboardController::class, 'calendarEvents'])->name('calendar.events');
+    Route::get('/panduan',   [Pegawai\DashboardController::class, 'panduan'])->name('panduan');
 
     // Pengajuan Cuti
     Route::prefix('pengajuan')->name('pengajuan.')->group(function () {

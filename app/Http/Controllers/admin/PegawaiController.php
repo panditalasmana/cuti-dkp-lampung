@@ -303,11 +303,17 @@ class PegawaiController extends Controller
                     continue;
                 }
 
-                $jabatan = \App\Models\Jabatan::where('nama_jabatan', 'LIKE', "%{$jabatanNama}%")->first();
+                // Cari jabatan: exact match dulu, baru LIKE
+                $jabatan = \App\Models\Jabatan::where('nama_jabatan', $jabatanNama)->first()
+                    ?? \App\Models\Jabatan::where('nama_jabatan', 'LIKE', "%{$jabatanNama}%")->first();
+
                 if (!$jabatan) {
-                    $errors[] = "Baris NIP {$nip}: Jabatan '{$jabatanNama}' tidak ditemukan.";
-                    $errorCount++;
-                    continue;
+                    // Auto-buat jabatan baru jika belum ada (agar tidak error)
+                    $kodeAuto = 'JABATAN_' . strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $jabatanNama), 0, 20));
+                    $jabatan = \App\Models\Jabatan::updateOrCreate(
+                        ['kode_jabatan' => $kodeAuto],
+                        ['nama_jabatan' => $jabatanNama, 'is_active' => true]
+                    );
                 }
 
                 try {

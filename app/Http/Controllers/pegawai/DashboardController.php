@@ -157,4 +157,9 @@ class DashboardController extends Controller
 
         return response()->json($events->concat($liburEvents)->values());
     }
+
+    public function panduan(): View
+    {
+        return view('pegawai.panduan');
+    }
 }

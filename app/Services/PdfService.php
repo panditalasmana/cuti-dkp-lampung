@@ -50,7 +50,12 @@ class PdfService
             'jabatan'   => $pengajuan->pegawai->jabatan,
             'jenisCuti' => $pengajuan->jenisCuti,
         ])
-        ->setPaper('a4', 'portrait');
+        ->setPaper('a4', 'portrait')
+        ->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'defaultFont'          => 'Times-Roman',
+        ]);
 
         $filename = "surat-cuti-{$pengajuan->nomor_surat}.pdf";
         $filename = str_replace(['/', ' '], ['-', '_'], $filename);
@@ -70,7 +75,12 @@ class PdfService
             'jabatan'   => $pengajuan->pegawai->jabatan,
             'jenisCuti' => $pengajuan->jenisCuti,
         ])
-        ->setPaper('a4', 'portrait');
+        ->setPaper('a4', 'portrait')
+        ->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'defaultFont'          => 'Times-Roman',
+        ]);
 
         $filename = "surat-cuti-{$pengajuan->nomor_surat}.pdf";
         $filename = str_replace(['/', ' '], ['-', '_'], $filename);
