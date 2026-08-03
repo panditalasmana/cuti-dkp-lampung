@@ -9,17 +9,19 @@
             margin: 28pt 64.5pt 24pt 64.5pt; /* top right bottom left — top & bottom dikecilkan agar muat di A4 */
         }
         @font-face {
-    font-family: 'TimesCustom';
-    src: url('{{ public_path('fonts/times.ttf') }}') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'TimesCustom';
-    src: url('{{ public_path('fonts/timesbd.ttf') }}') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
+            font-family: 'TimesCustom';
+            src: url('{{ public_path('fonts/times.ttf') }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'TimesCustom';
+            src: url('{{ public_path('fonts/timesbd.ttf') }}') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 12px;
