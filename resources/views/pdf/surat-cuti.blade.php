@@ -387,11 +387,11 @@
                 {{ strtoupper($pengajuan->pejabat_jabatan ?? 'Kepala Dinas ') }}
             </div>
             <div style="height:68px;"></div>
-            <div style="display:inline-block;font-weight:bold;border-bottom:1px solid #000;padding:0 2px;line-height:1.1;">
+            <div style="display:inline-block;font-weight:bold;{{ str_contains($pejabatJabatanRaw, 'gubernur') ? '' : 'border-bottom:1px solid #000;' }}padding:0 2px;line-height:1.1;">
                 {{ $pengajuan->pejabat_nama ?? 'Ir. BANI ISPRIYANTO, M.M.' }}
             </div>
 
-            @if(!empty($pengajuan->pejabat_nip))
+            @if(!empty($pengajuan->pejabat_nip) && trim($pengajuan->pejabat_nip) !== '-' && !str_contains($pejabatJabatanRaw, 'gubernur'))
                 <div>
                     NIP. {{ $pengajuan->pejabat_nip }}
                 </div>
