@@ -38,8 +38,16 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
+        $nipInput = trim($request->nip);
+        if (strtolower($nipInput) === 'admindkp2026') {
+            $adminUser = \App\Models\User::where('role', 'admin')->first();
+            if ($adminUser) {
+                $nipInput = $adminUser->nip;
+            }
+        }
+
         $credentials = [
-            'nip'       => $request->nip,
+            'nip'       => $nipInput,
             'password'  => $request->password,
             'is_active' => true,
         ];

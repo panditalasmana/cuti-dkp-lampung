@@ -94,17 +94,15 @@
 
                 <div class="form-group mb-4">
                     <label class="form-label fw-semibold" for="nip">
-                        <i class="bi bi-person-badge me-1"></i>NIP Administrator
+                        <i class="bi bi-person-badge me-1"></i>Username Administrator
                     </label>
                     <input
                         type="text"
                         id="nip"
                         name="nip"
                         class="form-control form-control-lg @error('nip') is-invalid @enderror"
-                        placeholder="Masukkan NIP Anda"
+                        placeholder="Masukkan Username atau NIP Admin"
                         value="{{ old('nip') }}"
-                        maxlength="18"
-                        inputmode="numeric"
                         autofocus
                         required
                     >

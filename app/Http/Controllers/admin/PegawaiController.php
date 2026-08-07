@@ -451,7 +451,7 @@ class PegawaiController extends Controller
 
             foreach ($pegawais as $p) {
                 fputcsv($file, [
-                    $p->nip,
+                    '="' . $p->nip . '"',
                     $p->nama_lengkap,
                     $p->user->email ?? '',
                     $p->bidang->nama_bidang ?? '',
@@ -508,7 +508,7 @@ class PegawaiController extends Controller
 
                 fputcsv($file, [
                     $no++,
-                    $cleanNip,
+                    '="' . $cleanNip . '"',
                     $p->nama_lengkap,
                     $passwordAktif
                 ], ';');

