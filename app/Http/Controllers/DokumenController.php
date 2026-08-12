@@ -43,6 +43,23 @@ class DokumenController extends Controller
     }
 
     /**
+     * Tampilkan foto profil pegawai.
+     */
+    public function viewFoto(\App\Models\Pegawai $pegawai): BinaryFileResponse
+    {
+        if ($pegawai->foto && !in_array(strtolower(trim($pegawai->foto)), ['foto', 'null', 'none', ''])) {
+            $filePath = $this->resolveFilePath($pegawai->foto);
+            if ($filePath && file_exists($filePath)) {
+                $mime = @mime_content_type($filePath) ?: 'image/jpeg';
+                return response()->file($filePath, ['Content-Type' => $mime]);
+            }
+        }
+
+        $defaultPath = public_path('images/default-avatar.svg');
+        return response()->file($defaultPath, ['Content-Type' => 'image/svg+xml']);
+    }
+
+    /**
      * Resolusi lokasi file fisik secara fleksibel (support storage/app/public dan storage/app).
      */
     private function resolveFilePath(string $pathFile): ?string

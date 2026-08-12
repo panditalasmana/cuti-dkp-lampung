@@ -47,8 +47,8 @@
     <!-- User Info -->
     <div class="sidebar-user">
         <div class="user-avatar">
-            @if(Auth::user()->pegawai?->foto)
-                <img src="{{ asset('storage/' . Auth::user()->pegawai->foto) }}" alt="foto">
+            @if(Auth::user()->pegawai?->foto && !in_array(strtolower(trim(Auth::user()->pegawai->foto)), ['foto', 'null', 'none', '']))
+                <img src="{{ Auth::user()->pegawai->foto_url }}" alt="foto">
             @else
                 <i class="bi bi-person-fill"></i>
             @endif

@@ -158,13 +158,15 @@
         <div class="card card-custom text-center">
             <div class="card-body py-4">
                 <div class="avatar-xl mx-auto mb-3">
-                    @if($pegawai->foto)
-                        <img src="{{ asset('storage/'.$pegawai->foto) }}" class="avatar-img-xl" alt="foto">
+                    @if($pegawai->foto && !in_array(strtolower(trim($pegawai->foto)), ['foto', 'null', 'none', '']))
+                        <img src="{{ $pegawai->foto_url }}" class="avatar-img-xl" alt="foto">
                     @else
-                        <span class="avatar-initial-xl">{{ substr($pegawai->nama_lengkap, 0, 1) }}</span>
+                        <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-circle mx-auto" style="width: 90px; height: 90px; font-size: 2.8rem;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
                     @endif
                 </div>
-                @if($pegawai->foto)
+                @if($pegawai->foto && !in_array(strtolower(trim($pegawai->foto)), ['foto', 'null', 'none', '']))
                     <form method="POST" action="{{ route('pegawai.profil.hapus-foto') }}" class="mb-3">
                         @csrf
                         <button type="submit" class="btn btn-xs btn-outline-danger py-1 px-2" style="font-size: 0.75rem;" onclick="return confirm('Apakah Anda yakin ingin menghapus foto profil ini?')">

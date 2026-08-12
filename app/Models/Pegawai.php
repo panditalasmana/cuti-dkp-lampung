@@ -72,10 +72,10 @@ class Pegawai extends Model
 
     public function getFotoUrlAttribute(): string
     {
-        if ($this->foto) {
-            return asset('storage/' . $this->foto);
+        if ($this->foto && !in_array(strtolower(trim($this->foto)), ['foto', 'null', 'none', ''])) {
+            return route('foto.view', $this->id);
         }
-        return asset('images/default-avatar.png');
+        return asset('images/default-avatar.svg');
     }
 
     // ─── Scopes ────────────────────────────────────────────────────

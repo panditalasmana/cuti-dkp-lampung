@@ -83,6 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/kalender/events', [Admin\DashboardController::class, 'calendarEvents'])->name('calendar.events');
     Route::get('/dokumen/view/{dokumen}', [\App\Http\Controllers\DokumenController::class, 'view'])->name('dokumen.view');
     Route::get('/dokumen/download/{dokumen}', [\App\Http\Controllers\DokumenController::class, 'download'])->name('dokumen.download');
+    Route::get('/foto/view/{pegawai}', [\App\Http\Controllers\DokumenController::class, 'viewFoto'])->name('foto.view');
 });
 
 // ─── Admin Routes ──────────────────────────────────────────────────────────────
