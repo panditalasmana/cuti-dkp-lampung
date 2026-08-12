@@ -81,6 +81,8 @@ Route::post('/logout', [AuthController::class, 'logout'])
 // Shared Auth Routes (Admin & Pegawai)
 Route::middleware('auth')->group(function () {
     Route::get('/kalender/events', [Admin\DashboardController::class, 'calendarEvents'])->name('calendar.events');
+    Route::get('/dokumen/view/{dokumen}', [\App\Http\Controllers\DokumenController::class, 'view'])->name('dokumen.view');
+    Route::get('/dokumen/download/{dokumen}', [\App\Http\Controllers\DokumenController::class, 'download'])->name('dokumen.download');
 });
 
 // ─── Admin Routes ──────────────────────────────────────────────────────────────

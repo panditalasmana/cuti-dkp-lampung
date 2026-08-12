@@ -36,7 +36,16 @@ class Dokumen extends Model
             return $this->path_file;
         }
 
-        return asset('storage/' . $this->path_file);
+        return route('dokumen.view', $this->id);
+    }
+
+    public function getDownloadUrlAttribute(): string
+    {
+        if (str_starts_with($this->path_file, 'http://') || str_starts_with($this->path_file, 'https://')) {
+            return $this->path_file;
+        }
+
+        return route('dokumen.download', $this->id);
     }
 
     public function getUkuranFormatAttribute(): string

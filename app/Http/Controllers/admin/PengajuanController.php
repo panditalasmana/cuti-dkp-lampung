@@ -183,17 +183,44 @@ class PengajuanController extends Controller
         $bulan = $request->get('bulan', 'tahunan');
 
         $query = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat'])
-            ->whereYear('tanggal_pengajuan', $tahun)
-            ->whereHas('scanSurat');
+            ->whereHas('scanSurat', function ($q) {
+                $q->whereNotNull('path_file')->where('path_file', '!=', '');
+            });
 
         if ($bulan !== 'tahunan') {
-            $query->whereMonth('tanggal_pengajuan', $bulan);
+            $query->where(function ($q) use ($tahun, $bulan) {
+                $q->where(function ($sub) use ($tahun, $bulan) {
+                    $sub->whereYear('tanggal_pengajuan', $tahun)
+                        ->whereMonth('tanggal_pengajuan', $bulan);
+                })->orWhere(function ($sub) use ($tahun, $bulan) {
+                    $sub->whereYear('tanggal_mulai', $tahun)
+                        ->whereMonth('tanggal_mulai', $bulan);
+                })->orWhere(function ($sub) use ($tahun, $bulan) {
+                    $sub->whereYear('created_at', $tahun)
+                        ->whereMonth('created_at', $bulan);
+                });
+            });
+        } else {
+            $query->where(function ($q) use ($tahun) {
+                $q->whereYear('tanggal_pengajuan', $tahun)
+                    ->orWhereYear('tanggal_mulai', $tahun)
+                    ->orWhereYear('created_at', $tahun);
+            });
         }
 
         $pengajuanList = $query->get();
 
+        // Fallback jika pencarian spesifik bulan kosong, ambil semua scan yang tersedia
         if ($pengajuanList->isEmpty()) {
-            return back()->with('error', 'Tidak ada dokumen bukti scan pada periode yang dipilih.');
+            $pengajuanList = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat'])
+                ->whereHas('scanSurat', function ($q) {
+                    $q->whereNotNull('path_file')->where('path_file', '!=', '');
+                })
+                ->get();
+        }
+
+        if ($pengajuanList->isEmpty()) {
+            return back()->with('error', 'Tidak ada dokumen bukti scan yang diunggah di sistem.');
         }
 
         $zipFileName = "Rekap_Bukti_Scan_Cuti_{$tahun}_" . ($bulan !== 'tahunan' ? "Bulan_{$bulan}" : "Tahunan") . ".zip";
@@ -207,13 +234,29 @@ class PengajuanController extends Controller
         $count = 0;
         foreach ($pengajuanList as $item) {
             if ($item->scanSurat && !empty($item->scanSurat->path_file)) {
-                $filePath = storage_path("app/public/" . $item->scanSurat->path_file);
-                if (file_exists($filePath)) {
+                $pathFile = ltrim($item->scanSurat->path_file, '/');
+                $possiblePaths = [
+                    storage_path('app/public/' . $pathFile),
+                    storage_path('app/' . $pathFile),
+                    public_path('storage/' . $pathFile),
+                    base_path('storage/app/public/' . $pathFile),
+                    base_path('storage/app/' . $pathFile),
+                ];
+
+                $filePath = null;
+                foreach ($possiblePaths as $p) {
+                    if (file_exists($p) && is_file($p)) {
+                        $filePath = $p;
+                        break;
+                    }
+                }
+
+                if ($filePath) {
                     $ext = pathinfo($filePath, PATHINFO_EXTENSION);
-                    $cleanNama = \Illuminate\Support\Str::slug($item->pegawai->nama_lengkap, '_');
-                    $cleanNip = $item->pegawai->nip;
-                    $cleanCuti = $item->jenisCuti->kode_cuti;
-                    $tanggal = $item->tanggal_pengajuan->format('Ymd');
+                    $cleanNama = \Illuminate\Support\Str::slug($item->pegawai->nama_lengkap ?? 'pegawai', '_');
+                    $cleanNip = $item->pegawai->nip ?? 'nip';
+                    $cleanCuti = $item->jenisCuti->kode_cuti ?? 'cuti';
+                    $tanggal = $item->tanggal_pengajuan ? $item->tanggal_pengajuan->format('Ymd') : date('Ymd');
                     
                     $entryName = "{$cleanNip}_{$cleanNama}_{$cleanCuti}_{$tanggal}.{$ext}";
                     $zip->addFile($filePath, $entryName);
@@ -224,7 +267,7 @@ class PengajuanController extends Controller
 
         $zip->close();
 
-        if ($count === 0) {
+        if ($count === 0 || !file_exists($zipPath)) {
             return back()->with('error', 'Berkas fisik bukti scan belum diunggah atau tidak ditemukan di penyimpanan server.');
         }
 
