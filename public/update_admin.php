@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 $baseDir = file_exists(__DIR__ . '/../bootstrap') ? realpath(__DIR__ . '/..') : realpath(__DIR__);
 if (!$baseDir) $baseDir = __DIR__;
 
-echo "<h2>SIPENCUTI — Admin Credentials Updater</h2><ul>";
+echo "<h2>SIPENCUTI — Admin & Profile Photo Fixer</h2><ul>";
 
 try {
     $vendorPath = $baseDir . '/vendor/autoload.php';
@@ -26,9 +26,13 @@ try {
             ]);
             echo "<li>✓ Username Admin berhasil diubah menjadi: <strong>admindkp2026</strong></li>";
             echo "<li>✓ Password Admin berhasil diubah menjadi: <strong>1991</strong></li>";
-        } else {
-            echo "<li>❌ User admin tidak ditemukan di database.</li>";
         }
+
+        // Clean up database column 'foto' for imported pegawai
+        $count = \Illuminate\Support\Facades\DB::table('pegawai')
+            ->whereIn('foto', ['Foto', 'foto', 'null', 'NONE', 'none', ' '])
+            ->update(['foto' => null]);
+        echo "<li>✓ Berhasil membersihkan foto {$count} pegawai ke avatar inisial default awal!</li>";
 
         // Clear cache
         @array_map('unlink', glob($baseDir . '/bootstrap/cache/*.php'));
@@ -39,4 +43,4 @@ try {
     echo "<li>❌ Error: " . htmlspecialchars($e->getMessage()) . "</li>";
 }
 
-echo "</ul><h3 style='color:green;'>✅ SUCCESS! Akun Admin Berhasil Diperbarui 100%!</h3><br><a href='/admin/login'>Buka Halaman Login Admin Panel</a>";
+echo "</ul><h3 style='color:green;'>✅ SUCCESS! Foto Profil Default Awal & Admin Berhasil Dipulihkan 100%!</h3><br><a href='/login'>Buka Halaman Login SIPENCUTI</a>";

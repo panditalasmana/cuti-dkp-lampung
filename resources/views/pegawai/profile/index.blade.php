@@ -161,9 +161,7 @@
                     @if($pegawai->foto && !in_array(strtolower(trim($pegawai->foto)), ['foto', 'null', 'none', '']))
                         <img src="{{ $pegawai->foto_url }}" class="avatar-img-xl" alt="foto">
                     @else
-                        <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-circle mx-auto" style="width: 90px; height: 90px; font-size: 2.8rem;">
-                            <i class="bi bi-person-fill"></i>
-                        </div>
+                        <span class="avatar-initial-xl">{{ strtoupper(substr($pegawai->nama_lengkap, 0, 1)) }}</span>
                     @endif
                 </div>
                 @if($pegawai->foto && !in_array(strtolower(trim($pegawai->foto)), ['foto', 'null', 'none', '']))

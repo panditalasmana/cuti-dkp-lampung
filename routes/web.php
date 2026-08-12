@@ -24,6 +24,11 @@ Route::get('/fix-folders', function () {
     \Illuminate\Support\Facades\DB::table('pegawai')->update(['sisa_cuti_tahunan' => 12]);
     $log[] = 'Sisa cuti tahunan SELURUH PEGAWAI BERHASIL DI-RESET MENJADI 12 HARI!';
 
+    \Illuminate\Support\Facades\DB::table('pegawai')
+        ->whereIn('foto', ['Foto', 'foto', 'null', 'NONE', 'none', ' '])
+        ->update(['foto' => null]);
+    $log[] = 'Kolom foto pegawai berhasil dibersihkan ke null default';
+
     return '<h2>✅ FIX CONTROLLER COMPLETED!</h2><p>' . (empty($log) ? 'Folder Admin & Pegawai status: OK' : implode('<br>', $log)) . '</p><br><a href="/login">Buka Halaman Login / Dashboard</a>';
 });
 
