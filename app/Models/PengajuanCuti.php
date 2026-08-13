@@ -145,7 +145,9 @@ class PengajuanCuti extends Model
 
     public function scanSurat(): HasOne
     {
-        return $this->hasOne(Dokumen::class)->where('jenis_dokumen', 'scan_surat_ditandatangani')
+        return $this->hasOne(Dokumen::class)
+                    ->where('jenis_dokumen', 'scan_surat_ditandatangani')
+                    ->where('path_file', 'LIKE', '%/scan/%')
                     ->latest();
     }
 }

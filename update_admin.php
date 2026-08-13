@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 $baseDir = file_exists(__DIR__ . '/bootstrap') ? realpath(__DIR__) : realpath(__DIR__ . '/..');
 if (!$baseDir) $baseDir = __DIR__;
 
-echo "<h2>SIPENCUTI — System Restorer</h2><ul>";
+echo "<h2>SIPENCUTI — Scan Cleaner & Admin Fixer</h2><ul>";
 
 try {
     $vendorPath = $baseDir . '/vendor/autoload.php';
@@ -31,6 +31,12 @@ try {
             ->whereIn('foto', ['Foto', 'foto', 'null', 'NONE', 'none', ' '])
             ->update(['foto' => null]);
 
+        // Hapus seluruh record dokumen yang BUKAN file scan fisik (yang tidak di subfolder /scan/)
+        $deleted = \App\Models\Dokumen::where('jenis_dokumen', 'scan_surat_ditandatangani')
+            ->where('path_file', 'NOT LIKE', '%/scan/%')
+            ->delete();
+        echo "<li>✓ Berhasil membersihkan {$deleted} dokumen non-scan fisik dari database!</li>";
+
         // Clear cache
         @array_map('unlink', glob($baseDir . '/bootstrap/cache/*.php'));
         @array_map('unlink', glob($baseDir . '/storage/framework/views/*.php'));
@@ -40,4 +46,4 @@ try {
     echo "<li>❌ Error: " . htmlspecialchars($e->getMessage()) . "</li>";
 }
 
-echo "</ul><h3 style='color:green;'>✅ SUCCESS! Sistem SIPENCUTI Berhasil Diperbarui 100%!</h3><br><a href='/login'>Buka Halaman Login SIPENCUTI</a>";
+echo "</ul><h3 style='color:green;'>✅ SUCCESS! Sistem Bersih 100%, Hanya Menyajikan Berkas Scan Fisik Asli Upload!</h3><br><a href='/login'>Buka Halaman Login SIPENCUTI</a>";
