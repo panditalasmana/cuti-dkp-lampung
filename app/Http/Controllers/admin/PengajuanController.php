@@ -182,14 +182,30 @@ class PengajuanController extends Controller
         $tahun = $request->get('tahun', date('Y'));
         $bulan = $request->get('bulan', 'tahunan');
 
-        // Ambil seluruh dokumen scan surat atau lampiran yang tersimpan di sistem
-        $dokumenList = \App\Models\Dokumen::with(['pengajuanCuti.pegawai', 'pengajuanCuti.jenisCuti'])
-            ->whereNotNull('path_file')
-            ->where('path_file', '!=', '')
-            ->get();
+        $query = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat']);
 
-        if ($dokumenList->isEmpty()) {
-            return back()->with('error', 'Belum ada berkas fisik bukti scan yang diunggah di sistem.');
+        if ($bulan !== 'tahunan') {
+            $query->where(function ($q) use ($tahun, $bulan) {
+                $q->whereYear('tanggal_pengajuan', $tahun)->whereMonth('tanggal_pengajuan', $bulan)
+                  ->orWhere(function ($sub) use ($tahun, $bulan) {
+                      $sub->whereYear('tanggal_mulai', $tahun)->whereMonth('tanggal_mulai', $bulan);
+                  });
+            });
+        } else {
+            $query->where(function ($q) use ($tahun) {
+                $q->whereYear('tanggal_pengajuan', $tahun)
+                  ->orWhereYear('tanggal_mulai', $tahun);
+            });
+        }
+
+        $pengajuanList = $query->get();
+
+        if ($pengajuanList->isEmpty()) {
+            $pengajuanList = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat'])->get();
+        }
+
+        if ($pengajuanList->isEmpty()) {
+            return back()->with('error', 'Belum ada data pengajuan cuti di sistem.');
         }
 
         $zipFileName = "Rekap_Bukti_Scan_Cuti_{$tahun}_" . ($bulan !== 'tahunan' ? "Bulan_{$bulan}" : "Tahunan") . ".zip";
@@ -201,40 +217,56 @@ class PengajuanController extends Controller
         }
 
         $count = 0;
-        foreach ($dokumenList as $doc) {
-            $rawPath = ltrim($doc->path_file, '/');
-            $cleanPath = preg_replace('#^(storage|public)/#i', '', $rawPath);
-            $cleanPath = ltrim($cleanPath, '/');
-
-            $possiblePaths = [
-                storage_path('app/public/' . $cleanPath),
-                storage_path('app/' . $cleanPath),
-                public_path('storage/' . $cleanPath),
-                public_path($cleanPath),
-                base_path('storage/app/public/' . $cleanPath),
-                base_path('storage/app/' . $cleanPath),
-                $doc->path_file,
-            ];
-
+        foreach ($pengajuanList as $item) {
             $filePath = null;
-            foreach ($possiblePaths as $p) {
-                if (file_exists($p) && is_file($p)) {
-                    $filePath = $p;
-                    break;
+            $ext = 'pdf';
+
+            // 1. Coba cari file scan jika ada
+            if ($item->scanSurat && !empty($item->scanSurat->path_file)) {
+                $rawPath = ltrim($item->scanSurat->path_file, '/');
+                $cleanPath = preg_replace('#^(storage|public)/#i', '', $rawPath);
+                $cleanPath = ltrim($cleanPath, '/');
+
+                $possiblePaths = [
+                    storage_path('app/public/' . $cleanPath),
+                    storage_path('app/' . $cleanPath),
+                    public_path('storage/' . $cleanPath),
+                    public_path($cleanPath),
+                    base_path('storage/app/public/' . $cleanPath),
+                    base_path('storage/app/' . $cleanPath),
+                    $item->scanSurat->path_file,
+                ];
+
+                foreach ($possiblePaths as $p) {
+                    if (file_exists($p) && is_file($p)) {
+                        $filePath = $p;
+                        $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+                        break;
+                    }
                 }
             }
 
-            if ($filePath) {
-                $ext = pathinfo($filePath, PATHINFO_EXTENSION);
-                $pegawai = $doc->pengajuanCuti->pegawai ?? null;
-                $jenisCuti = $doc->pengajuanCuti->jenisCuti ?? null;
+            // 2. Jika belum ada scan fisik, generate PDF resmi secara otomatis ke dalam ZIP
+            if (!$filePath) {
+                try {
+                    $generatedRelPath = $this->pdfService->generateSuratCuti($item);
+                    $filePath = storage_path('app/public/' . $generatedRelPath);
+                    if (!file_exists($filePath)) {
+                        $filePath = storage_path('app/' . $generatedRelPath);
+                    }
+                    $ext = 'pdf';
+                } catch (\Throwable $e) {
+                    $filePath = null;
+                }
+            }
 
-                $cleanNama = \Illuminate\Support\Str::slug($pegawai->nama_lengkap ?? 'pegawai', '_');
-                $cleanNip = $pegawai->nip ?? 'nip';
-                $cleanCuti = $jenisCuti->kode_cuti ?? 'cuti';
-                $tanggal = $doc->created_at ? $doc->created_at->format('Ymd') : date('Ymd');
+            if ($filePath && file_exists($filePath)) {
+                $cleanNama = \Illuminate\Support\Str::slug($item->pegawai->nama_lengkap ?? 'pegawai', '_');
+                $cleanNip = $item->pegawai->nip ?? 'nip';
+                $cleanCuti = $item->jenisCuti->kode_cuti ?? 'cuti';
+                $tanggal = $item->tanggal_pengajuan ? $item->tanggal_pengajuan->format('Ymd') : date('Ymd');
                 
-                $entryName = "{$cleanNip}_{$cleanNama}_{$cleanCuti}_{$tanggal}_{$doc->id}.{$ext}";
+                $entryName = "{$cleanNip}_{$cleanNama}_{$cleanCuti}_{$tanggal}.{$ext}";
                 $zip->addFile($filePath, $entryName);
                 $count++;
             }
@@ -243,7 +275,7 @@ class PengajuanController extends Controller
         $zip->close();
 
         if ($count === 0 || !file_exists($zipPath)) {
-            return back()->with('error', 'Berkas fisik bukti scan belum diunggah atau tidak ditemukan di penyimpanan server.');
+            return back()->with('error', 'Gagal memproses berkas ke dalam ZIP.');
         }
 
         return response()->download($zipPath)->deleteFileAfterSend(true);

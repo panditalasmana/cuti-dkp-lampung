@@ -15,6 +15,19 @@ class DokumenController extends Controller
     {
         $filePath = $this->resolveFilePath($dokumen->path_file);
 
+        if ((!$filePath || !file_exists($filePath)) && $dokumen->pengajuanCuti) {
+            try {
+                $pdfService = app(\App\Services\PdfService::class);
+                $generatedRelPath = $pdfService->generateSuratCuti($dokumen->pengajuanCuti);
+                $filePath = storage_path('app/public/' . $generatedRelPath);
+                if (!file_exists($filePath)) {
+                    $filePath = storage_path('app/' . $generatedRelPath);
+                }
+            } catch (\Throwable $e) {
+                // Ignore fallback error
+            }
+        }
+
         if (!$filePath || !file_exists($filePath)) {
             abort(404, 'File dokumen tidak ditemukan di server.');
         }
@@ -23,7 +36,7 @@ class DokumenController extends Controller
 
         return response()->file($filePath, [
             'Content-Type'        => $mime,
-            'Content-Disposition' => 'inline; filename="' . $dokumen->nama_file . '"',
+            'Content-Disposition' => 'inline; filename="' . rawurlencode($dokumen->nama_file) . '"',
             'Cache-Control'       => 'public, max-age=86400',
         ]);
     }
@@ -34,6 +47,19 @@ class DokumenController extends Controller
     public function download(Dokumen $dokumen): BinaryFileResponse
     {
         $filePath = $this->resolveFilePath($dokumen->path_file);
+
+        if ((!$filePath || !file_exists($filePath)) && $dokumen->pengajuanCuti) {
+            try {
+                $pdfService = app(\App\Services\PdfService::class);
+                $generatedRelPath = $pdfService->generateSuratCuti($dokumen->pengajuanCuti);
+                $filePath = storage_path('app/public/' . $generatedRelPath);
+                if (!file_exists($filePath)) {
+                    $filePath = storage_path('app/' . $generatedRelPath);
+                }
+            } catch (\Throwable $e) {
+                // Ignore fallback error
+            }
+        }
 
         if (!$filePath || !file_exists($filePath)) {
             abort(404, 'File dokumen tidak ditemukan di server.');
