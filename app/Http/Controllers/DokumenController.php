@@ -68,22 +68,24 @@ class DokumenController extends Controller
             return null;
         }
 
-        // Coba di storage/app/public/
-        $path1 = storage_path('app/public/' . $pathFile);
-        if (file_exists($path1)) {
-            return $path1;
-        }
+        $cleanPath = ltrim($pathFile, '/');
+        $cleanPath = preg_replace('#^(storage|public)/#i', '', $cleanPath);
+        $cleanPath = ltrim($cleanPath, '/');
 
-        // Coba di storage/app/
-        $path2 = storage_path('app/' . $pathFile);
-        if (file_exists($path2)) {
-            return $path2;
-        }
+        $possiblePaths = [
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/' . $cleanPath),
+            public_path('storage/' . $cleanPath),
+            public_path($cleanPath),
+            base_path('storage/app/public/' . $cleanPath),
+            base_path('storage/app/' . $cleanPath),
+            $pathFile,
+        ];
 
-        // Coba di public/storage/
-        $path3 = public_path('storage/' . $pathFile);
-        if (file_exists($path3)) {
-            return $path3;
+        foreach ($possiblePaths as $p) {
+            if (file_exists($p) && is_file($p)) {
+                return $p;
+            }
         }
 
         return null;

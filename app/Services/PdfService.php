@@ -24,7 +24,8 @@ class PdfService
         ->setPaper('a4', 'portrait')
         ->setOptions([
             'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled'      => false,
+            'isRemoteEnabled'      => true,
+            'chroot'               => [public_path(), storage_path(), base_path()],
             'defaultFont'          => 'Times-Roman',
         ]);
 
@@ -54,6 +55,7 @@ class PdfService
         ->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled'      => true,
+            'chroot'               => [public_path(), storage_path(), base_path()],
             'defaultFont'          => 'Times-Roman',
         ]);
 

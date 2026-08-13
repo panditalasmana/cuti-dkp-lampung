@@ -234,13 +234,18 @@ class PengajuanController extends Controller
         $count = 0;
         foreach ($pengajuanList as $item) {
             if ($item->scanSurat && !empty($item->scanSurat->path_file)) {
-                $pathFile = ltrim($item->scanSurat->path_file, '/');
+                $rawPath = ltrim($item->scanSurat->path_file, '/');
+                $cleanPath = preg_replace('#^(storage|public)/#i', '', $rawPath);
+                $cleanPath = ltrim($cleanPath, '/');
+
                 $possiblePaths = [
-                    storage_path('app/public/' . $pathFile),
-                    storage_path('app/' . $pathFile),
-                    public_path('storage/' . $pathFile),
-                    base_path('storage/app/public/' . $pathFile),
-                    base_path('storage/app/' . $pathFile),
+                    storage_path('app/public/' . $cleanPath),
+                    storage_path('app/' . $cleanPath),
+                    public_path('storage/' . $cleanPath),
+                    public_path($cleanPath),
+                    base_path('storage/app/public/' . $cleanPath),
+                    base_path('storage/app/' . $cleanPath),
+                    $item->scanSurat->path_file,
                 ];
 
                 $filePath = null;
