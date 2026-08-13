@@ -221,7 +221,7 @@ class PengajuanController extends Controller
             $filePath = null;
             $ext = 'pdf';
 
-            // 1. Coba cari file scan jika ada
+            // 1. Cari file scan asli jika ada
             if ($item->scanSurat && !empty($item->scanSurat->path_file)) {
                 $rawPath = ltrim($item->scanSurat->path_file, '/');
                 $cleanPath = preg_replace('#^(storage|public)/#i', '', $rawPath);
@@ -246,7 +246,7 @@ class PengajuanController extends Controller
                 }
             }
 
-            // 2. Jika belum ada scan fisik, generate PDF resmi secara otomatis ke dalam ZIP
+            // 2. Jika berkas fisik scan tidak ditemukan, sertakan PDF Surat Cuti Resmi pegawai
             if (!$filePath) {
                 try {
                     $generatedRelPath = $this->pdfService->generateSuratCuti($item);
