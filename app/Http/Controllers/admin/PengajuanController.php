@@ -182,7 +182,8 @@ class PengajuanController extends Controller
         $tahun = $request->get('tahun', date('Y'));
         $bulan = $request->get('bulan', 'tahunan');
 
-        $query = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat']);
+        $query = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat'])
+            ->whereHas('scanSurat');
 
         if ($bulan !== 'tahunan') {
             $query->where(function ($q) use ($tahun, $bulan) {
@@ -201,11 +202,7 @@ class PengajuanController extends Controller
         $pengajuanList = $query->get();
 
         if ($pengajuanList->isEmpty()) {
-            $pengajuanList = \App\Models\PengajuanCuti::with(['pegawai', 'jenisCuti', 'scanSurat'])->get();
-        }
-
-        if ($pengajuanList->isEmpty()) {
-            return back()->with('error', 'Belum ada data pengajuan cuti di sistem.');
+            return back()->with('error', 'Berkas fisik bukti scan belum diunggah atau tidak ditemukan di penyimpanan server.');
         }
 
         $zipFileName = "Rekap_Bukti_Scan_Cuti_{$tahun}_" . ($bulan !== 'tahunan' ? "Bulan_{$bulan}" : "Tahunan") . ".zip";
@@ -218,10 +215,6 @@ class PengajuanController extends Controller
 
         $count = 0;
         foreach ($pengajuanList as $item) {
-            $filePath = null;
-            $ext = 'pdf';
-
-            // 1. Cari file scan asli jika ada
             if ($item->scanSurat && !empty($item->scanSurat->path_file)) {
                 $rawPath = ltrim($item->scanSurat->path_file, '/');
                 $cleanPath = preg_replace('#^(storage|public)/#i', '', $rawPath);
@@ -237,45 +230,32 @@ class PengajuanController extends Controller
                     $item->scanSurat->path_file,
                 ];
 
+                $filePath = null;
                 foreach ($possiblePaths as $p) {
                     if (file_exists($p) && is_file($p)) {
                         $filePath = $p;
-                        $ext = pathinfo($filePath, PATHINFO_EXTENSION);
                         break;
                     }
                 }
-            }
 
-            // 2. Jika berkas fisik scan tidak ditemukan, sertakan PDF Surat Cuti Resmi pegawai
-            if (!$filePath) {
-                try {
-                    $generatedRelPath = $this->pdfService->generateSuratCuti($item);
-                    $filePath = storage_path('app/public/' . $generatedRelPath);
-                    if (!file_exists($filePath)) {
-                        $filePath = storage_path('app/' . $generatedRelPath);
-                    }
-                    $ext = 'pdf';
-                } catch (\Throwable $e) {
-                    $filePath = null;
+                if ($filePath) {
+                    $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+                    $cleanNama = \Illuminate\Support\Str::slug($item->pegawai->nama_lengkap ?? 'pegawai', '_');
+                    $cleanNip = $item->pegawai->nip ?? 'nip';
+                    $cleanCuti = $item->jenisCuti->kode_cuti ?? 'cuti';
+                    $tanggal = $item->tanggal_pengajuan ? $item->tanggal_pengajuan->format('Ymd') : date('Ymd');
+                    
+                    $entryName = "{$cleanNip}_{$cleanNama}_{$cleanCuti}_{$tanggal}.{$ext}";
+                    $zip->addFile($filePath, $entryName);
+                    $count++;
                 }
-            }
-
-            if ($filePath && file_exists($filePath)) {
-                $cleanNama = \Illuminate\Support\Str::slug($item->pegawai->nama_lengkap ?? 'pegawai', '_');
-                $cleanNip = $item->pegawai->nip ?? 'nip';
-                $cleanCuti = $item->jenisCuti->kode_cuti ?? 'cuti';
-                $tanggal = $item->tanggal_pengajuan ? $item->tanggal_pengajuan->format('Ymd') : date('Ymd');
-                
-                $entryName = "{$cleanNip}_{$cleanNama}_{$cleanCuti}_{$tanggal}.{$ext}";
-                $zip->addFile($filePath, $entryName);
-                $count++;
             }
         }
 
         $zip->close();
 
         if ($count === 0 || !file_exists($zipPath)) {
-            return back()->with('error', 'Gagal memproses berkas ke dalam ZIP.');
+            return back()->with('error', 'Berkas fisik bukti scan belum diunggah atau tidak ditemukan di penyimpanan server.');
         }
 
         return response()->download($zipPath)->deleteFileAfterSend(true);
